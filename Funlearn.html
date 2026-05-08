@@ -1,0 +1,4316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TypeFun Kids Game</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        --white: #ffffff;
+        --dark: #253047;
+        --pink: #ff5fa2;
+        --yellow: #ffd84d;
+        --green: #54d66a;
+        --blue: #4da3ff;
+        --purple: #9b6bff;
+        --orange: #ff9b3d;
+        --glass: rgba(255,255,255,0.20);
+        --glass-strong: rgba(255,255,255,0.82);
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+        color: var(--white);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        user-select: none;
+    }
+
+    body {
+        cursor: default;
+        transition: background 1.5s ease;
+    }
+
+    button, select {
+        font-family: inherit;
+    }
+
+    .screen {
+        position: fixed;
+        inset: 0;
+        display: none;
+        padding: 22px;
+        overflow: hidden;
+    }
+
+    .screen.active {
+        display: block;
+    }
+
+    #home-screen {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: clamp(14px, 3vw, 28px);
+        padding-bottom: 80px;
+    }
+
+    .home-shell {
+        position: relative;
+        z-index: 3;
+        width: min(1180px, 96vw);
+        margin: 0 auto;
+        display: grid;
+        gap: 20px;
+    }
+
+    .home-hero-card {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        align-items: center;
+        padding: clamp(18px, 3.4vw, 34px);
+        padding-right: clamp(86px, 10vw, 116px);
+        border-radius: 38px;
+        background: rgba(255,255,255,0.20);
+        box-shadow: inset 0 0 0 3px rgba(255,255,255,0.20), 0 22px 50px rgba(0,0,0,0.20);
+        backdrop-filter: blur(14px);
+    }
+
+    .hero-copy {
+        display: grid;
+        gap: 10px;
+    }
+
+    .hero-kicker {
+        justify-self: start;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.86);
+        color: #47338f;
+        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+        font-weight: 1000;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    #home-screen .game-grid {
+        margin-bottom: 0;
+    }
+
+    @media (max-height: 720px), (max-width: 860px) {
+        #home-screen {
+            height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .home-shell {
+            gap: 16px;
+        }
+    }
+
+    .topbar {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        height: 66px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 50;
+        pointer-events: none;
+    }
+
+    .topbar > * { pointer-events: auto; }
+
+    .back-btn, .menu-btn, .round-btn {
+        border: 0;
+        border-radius: 22px;
+        padding: 14px 22px;
+        color: white;
+        font-weight: 900;
+        font-size: 1.05rem;
+        background: linear-gradient(145deg, #ff7bbd, #695cff);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.22), inset 0 2px 0 rgba(255,255,255,0.35);
+        cursor: pointer;
+        transition: transform 0.18s ease, filter 0.18s ease;
+    }
+
+    .back-btn:hover, .menu-btn:hover, .round-btn:hover {
+        transform: translateY(-2px) scale(1.04);
+        filter: brightness(1.08);
+    }
+
+    .pill {
+        padding: 12px 18px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.23);
+        backdrop-filter: blur(10px);
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,0.2), 0 10px 24px rgba(0,0,0,0.15);
+        font-weight: 900;
+        font-size: 1.05rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.22);
+    }
+
+    .hero-title {
+        position: relative;
+        z-index: 3;
+        text-align: left;
+        margin-top: 0;
+        font-size: clamp(2.35rem, 6vw, 5.5rem);
+        line-height: 0.95;
+        font-weight: 1000;
+        letter-spacing: 1px;
+        text-shadow: 0 8px 0 rgba(0,0,0,0.14), 0 16px 30px rgba(0,0,0,0.22);
+        animation: titleBob 4s ease-in-out infinite;
+    }
+
+    .hero-subtitle {
+        position: relative;
+        z-index: 3;
+        text-align: left;
+        margin-top: 0;
+        max-width: 720px;
+        font-size: clamp(1.05rem, 2.5vw, 1.65rem);
+        line-height: 1.25;
+        font-weight: 900;
+        text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .home-menu {
+        position: absolute;
+        top: clamp(14px, 2.4vw, 22px);
+        right: clamp(14px, 2.4vw, 22px);
+        z-index: 20;
+    }
+
+    .home-menu-btn {
+        width: 58px;
+        height: 58px;
+        border: 0;
+        border-radius: 20px;
+        display: grid;
+        place-items: center;
+        color: #3d2f78;
+        background: rgba(255,255,255,0.92);
+        font-size: 2rem;
+        font-weight: 1000;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 14px 28px rgba(0,0,0,0.18), inset 0 2px 0 rgba(255,255,255,0.85);
+        transition: transform 0.18s ease, filter 0.18s ease;
+    }
+
+    .home-menu-btn:hover {
+        transform: translateY(-2px) scale(1.05);
+        filter: brightness(1.06);
+    }
+
+    .home-menu-panel {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        width: min(330px, calc(100vw - 44px));
+        border-radius: 30px;
+        background: rgba(255,255,255,0.18);
+        box-shadow: 0 22px 50px rgba(0,0,0,0.22), inset 0 0 0 2px rgba(255,255,255,0.20);
+        backdrop-filter: blur(14px);
+        animation: menuDrop 0.18s ease forwards;
+    }
+
+    .home-menu-panel[hidden] {
+        display: none;
+    }
+
+    @keyframes menuDrop {
+        from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .language-card {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        margin: 0;
+        padding: 18px;
+        border-radius: 28px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        align-items: center;
+        background: rgba(255,255,255,0.92);
+        color: #303752;
+        box-shadow: 0 16px 34px rgba(0,0,0,0.16), inset 0 0 0 3px rgba(255,255,255,0.62);
+        backdrop-filter: blur(12px);
+    }
+
+    .language-card label {
+        font-size: clamp(1rem, 2.2vw, 1.25rem);
+        font-weight: 1000;
+        text-shadow: none;
+    }
+
+    .language-card p {
+        font-size: 0.9rem;
+        line-height: 1.3;
+        font-weight: 900;
+        opacity: 0.78;
+        text-shadow: none;
+    }
+
+    .language-select {
+        width: 100%;
+        min-width: 0;
+        border: 0;
+        border-radius: 18px;
+        padding: 13px 16px;
+        color: #303752;
+        background: #ffffff;
+        font-size: 1.02rem;
+        font-weight: 1000;
+        cursor: pointer;
+        box-shadow: 0 10px 18px rgba(0,0,0,0.14), inset 0 2px 0 rgba(255,255,255,0.85);
+    }
+
+    .home-section {
+        border-radius: 34px;
+        padding: clamp(14px, 2.4vw, 22px);
+        background: rgba(255,255,255,0.20);
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15), 0 16px 40px rgba(0,0,0,0.14);
+        backdrop-filter: blur(10px);
+    }
+
+    .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .section-heading h2 {
+        font-size: clamp(1.35rem, 3vw, 2.2rem);
+        font-weight: 1000;
+        text-shadow: 0 5px 12px rgba(0,0,0,0.18);
+    }
+
+    .section-heading p {
+        max-width: 420px;
+        text-align: right;
+        font-size: clamp(0.92rem, 1.8vw, 1.05rem);
+        line-height: 1.25;
+        font-weight: 900;
+        opacity: 0.92;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.16);
+    }
+
+    .game-grid {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .game-card {
+        border: 0;
+        border-radius: 24px;
+        padding: 18px;
+        min-height: 106px;
+        color: white;
+        cursor: pointer;
+        background: rgba(255,255,255,0.26);
+        box-shadow: inset 0 0 0 3px rgba(255,255,255,0.26), 0 16px 34px rgba(0,0,0,0.18);
+        backdrop-filter: blur(12px);
+        text-align: left;
+        transition: transform 0.18s ease, filter 0.18s ease, background 0.18s ease;
+        overflow: hidden;
+        position: relative;
+        display: grid;
+        grid-template-columns: 62px 1fr;
+        gap: 14px;
+        align-items: center;
+    }
+
+    .game-card::after {
+        content: "";
+        position: absolute;
+        inset: auto -20px -36px auto;
+        width: 104px;
+        height: 104px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.14);
+    }
+
+    .game-card:hover {
+        transform: translateY(-5px) scale(1.015);
+        filter: brightness(1.07);
+        background: rgba(255,255,255,0.32);
+    }
+
+    .game-card:nth-child(2):hover,
+    .game-card:nth-child(3):hover { rotate: 0deg; }
+
+    .game-card .big-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 20px;
+        display: grid;
+        place-items: center;
+        background: rgba(255,255,255,0.88);
+        font-size: clamp(1.28rem, 2.5vw, 1.65rem);
+        filter: drop-shadow(0 6px 10px rgba(0,0,0,0.14));
+        animation: none;
+        box-shadow: inset 0 2px 0 rgba(255,255,255,0.75), 0 8px 16px rgba(0,0,0,0.12);
+    }
+
+    .game-card h2 {
+        margin-top: 0;
+        font-size: clamp(1.18rem, 2.35vw, 1.72rem);
+        line-height: 1.05;
+        text-shadow: 0 4px 0 rgba(0,0,0,0.13);
+    }
+
+    .cloud {
+        position: absolute;
+        width: 170px;
+        height: 62px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.55);
+        filter: blur(0.1px);
+        opacity: 0.28;
+        animation: drift linear infinite;
+        z-index: 1;
+    }
+
+    .cloud::before, .cloud::after {
+        content: "";
+        position: absolute;
+        background: inherit;
+        border-radius: 50%;
+    }
+
+    .cloud::before { width: 78px; height: 78px; left: 26px; top: -35px; }
+    .cloud::after { width: 98px; height: 98px; right: 24px; top: -49px; }
+
+    .cloud.c1 { left: -220px; top: 12%; animation-duration: 26s; }
+    .cloud.c2 { left: -260px; top: 69%; animation-duration: 34s; animation-delay: -9s; transform: scale(0.8); }
+    .cloud.c3 { left: -260px; top: 38%; animation-duration: 42s; animation-delay: -17s; transform: scale(1.25); }
+
+    #letter-game {
+        cursor: pointer;
+    }
+
+    #instructions {
+        position: absolute;
+        top: 96px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(980px, 88vw);
+        text-align: center;
+        font-size: clamp(1.4rem, 3vw, 2.5rem);
+        font-weight: 1000;
+        text-shadow: 0 5px 14px rgba(0,0,0,0.25);
+        animation: pulse 1.6s ease-in-out infinite;
+        z-index: 15;
+    }
+
+    #main-character {
+        position: absolute;
+        top: 32%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: clamp(10rem, 30vh, 23rem);
+        line-height: 0.84;
+        font-weight: 1000;
+        color: #fff;
+        text-shadow: 13px 13px 0 rgba(0,0,0,0.23), 0 24px 55px rgba(0,0,0,0.25);
+        z-index: 10;
+        transition: color 0.25s ease;
+        pointer-events: none;
+    }
+
+    #word-display {
+        position: absolute;
+        top: 59%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: min(1200px, 96vw);
+        text-align: center;
+        font-size: clamp(3.2rem, 8vw, 8.6rem);
+        line-height: 1.05;
+        font-weight: 1000;
+        color: #fff;
+        text-shadow: 8px 8px 0 rgba(0,0,0,0.2), 0 18px 40px rgba(0,0,0,0.22);
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .highlight-letter {
+        color: #fff45a;
+        text-shadow: 0 0 20px rgba(255,240,90,0.95), 6px 6px 0 rgba(0,0,0,0.26);
+        font-size: 1.22em;
+    }
+
+    #scrabble-area {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%);
+        width: min(1120px, 94vw);
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        z-index: 20;
+        pointer-events: none;
+    }
+
+    .scrabble-letter {
+        min-width: 64px;
+        min-height: 64px;
+        border-radius: 22px;
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        font-weight: 1000;
+        text-shadow: 0 4px 0 rgba(0,0,0,0.18);
+        box-shadow: inset 0 3px 0 rgba(255,255,255,0.35), 0 12px 20px rgba(0,0,0,0.18);
+        animation: popIn 0.38s cubic-bezier(.2,1.8,.35,1);
+        pointer-events: none;
+    }
+
+    .fly-letter {
+        position: fixed;
+        z-index: 45;
+        font-size: clamp(4rem, 11vw, 9rem);
+        line-height: 1;
+        font-weight: 1000;
+        color: white;
+        text-shadow: 8px 8px 0 rgba(0,0,0,0.20), 0 14px 28px rgba(0,0,0,0.22);
+        pointer-events: none;
+        will-change: transform, opacity;
+    }
+
+    .praise-bubble {
+        position: fixed;
+        left: 50%;
+        top: 18%;
+        transform: translate(-50%, -50%);
+        z-index: 70;
+        padding: 18px 28px;
+        border-radius: 30px;
+        background: rgba(255,255,255,0.88);
+        color: #5530c9;
+        font-size: clamp(1.8rem, 4vw, 4rem);
+        font-weight: 1000;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.22);
+        pointer-events: none;
+        animation: praisePop 1.4s ease forwards;
+    }
+
+    .particle, .confetti {
+        position: fixed;
+        pointer-events: none;
+        z-index: 280;
+    }
+
+    .particle {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+    }
+
+    .confetti {
+        width: 14px;
+        height: 22px;
+        border-radius: 5px;
+        opacity: 0.95;
+    }
+
+    .star-pop {
+        position: fixed;
+        pointer-events: none;
+        z-index: 280;
+        font-size: 3.4rem;
+        filter: drop-shadow(0 8px 12px rgba(0,0,0,0.25));
+    }
+
+    .balloon {
+        position: fixed;
+        z-index: 7;
+        width: 112px;
+        height: 140px;
+        border-radius: 50% 50% 47% 47% / 58% 58% 44% 44%;
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: 4.2rem;
+        font-weight: 1000;
+        text-shadow: 0 5px 0 rgba(0,0,0,0.18);
+        box-shadow: inset -14px -18px 0 rgba(0,0,0,0.12), inset 15px 12px 0 rgba(255,255,255,0.24), 0 18px 30px rgba(0,0,0,0.18);
+        cursor: pointer;
+    }
+
+    .balloon::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 138px;
+        width: 3px;
+        height: 90px;
+        background: rgba(255,255,255,0.58);
+        transform: translateX(-50%);
+    }
+
+    .balloon:hover { transform: scale(1.1); }
+
+
+    #balloon-game {
+        cursor: default;
+    }
+
+    .balloon-game-title {
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 14;
+        width: min(1060px, 92vw);
+        text-align: center;
+        font-size: clamp(1.6rem, 4vw, 3.4rem);
+        font-weight: 1000;
+        text-shadow: 0 6px 16px rgba(0,0,0,0.26);
+        animation: pulse 1.9s ease-in-out infinite;
+    }
+
+    .balloon-playfield {
+        position: absolute;
+        inset: 90px 12px 12px;
+        overflow: visible;
+        z-index: 6;
+        border-radius: 36px;
+        pointer-events: none;
+    }
+
+    .type-balloon {
+        position: absolute;
+        width: 128px;
+        height: 168px;
+        border-radius: 50% 50% 47% 47% / 58% 58% 44% 44%;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        place-items: center;
+        padding: 18px 10px 22px;
+        color: white;
+        box-shadow: inset -16px -18px 0 rgba(0,0,0,0.14), inset 16px 12px 0 rgba(255,255,255,0.25), 0 20px 34px rgba(0,0,0,0.2);
+        text-shadow: 0 5px 0 rgba(0,0,0,0.2);
+        pointer-events: auto;
+        cursor: pointer;
+        will-change: transform, opacity;
+    }
+
+    .type-balloon::before {
+        content: "";
+        position: absolute;
+        left: 20px;
+        top: 18px;
+        width: 34px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.26);
+        transform: rotate(24deg);
+    }
+
+    .type-balloon::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 164px;
+        width: 4px;
+        height: 104px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.76);
+        transform: translateX(-50%);
+    }
+
+    .type-balloon .balloon-emoji {
+        font-size: 4.2rem;
+        line-height: 1;
+        filter: drop-shadow(0 8px 10px rgba(0,0,0,0.18));
+        z-index: 1;
+    }
+
+    .type-balloon .balloon-key {
+        position: absolute;
+        left: 50%;
+        top: 244px;
+        transform: translateX(-50%);
+        min-width: 70px;
+        min-height: 62px;
+        display: grid;
+        place-items: center;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.96);
+        color: #453190;
+        font-size: 3rem;
+        font-weight: 1000;
+        box-shadow: 0 10px 18px rgba(0,0,0,0.22), inset 0 2px 0 rgba(255,255,255,0.85);
+        text-shadow: none;
+        z-index: 2;
+    }
+
+    .type-balloon.pop-now {
+        pointer-events: none;
+        animation: balloonPop 0.42s ease forwards;
+    }
+
+    .balloon-hud {
+        position: absolute;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%);
+        z-index: 30;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .target-letter-badge {
+        position: fixed;
+        z-index: 95;
+        left: 50%;
+        top: 45%;
+        transform: translate(-50%, -50%);
+        font-size: clamp(5rem, 15vw, 12rem);
+        font-weight: 1000;
+        color: white;
+        text-shadow: 10px 10px 0 rgba(0,0,0,0.19), 0 20px 40px rgba(0,0,0,0.25);
+        pointer-events: none;
+        animation: targetBadge 0.75s ease forwards;
+    }
+
+    @keyframes balloonFloatUp {
+        0% { transform: translateY(0) translateX(0) rotate(-5deg); opacity: 1; }
+        50% { transform: translateY(calc(-50vh - 150px)) translateX(var(--wiggle)) rotate(5deg); opacity: 1; }
+        100% { transform: translateY(calc(-100vh - 560px)) translateX(calc(var(--wiggle) * -1)) rotate(-4deg); opacity: 1; }
+    }
+
+    @keyframes balloonPop {
+        0% { transform: scale(1) rotate(0deg); opacity: 1; filter: brightness(1); }
+        38% { transform: scale(1.32) rotate(9deg); opacity: 1; filter: brightness(1.35); }
+        100% { transform: scale(0.04) rotate(45deg); opacity: 0; filter: brightness(1.8); }
+    }
+
+    @keyframes targetBadge {
+        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2) rotate(-15deg); }
+        35% { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(6deg); }
+        100% { opacity: 0; transform: translate(-50%, -90%) scale(0.65) rotate(18deg); }
+    }
+
+    .recognize-layout {
+        position: absolute;
+        inset: 92px 18px 18px;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 18px;
+        z-index: 5;
+    }
+
+    .side-panel, .quiz-panel {
+        border-radius: 34px;
+        background: rgba(255,255,255,0.20);
+        backdrop-filter: blur(12px);
+        box-shadow: inset 0 0 0 3px rgba(255,255,255,0.18), 0 20px 46px rgba(0,0,0,0.18);
+        overflow: hidden;
+    }
+
+    .side-panel {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .side-title {
+        text-align: center;
+        font-size: 1.7rem;
+        font-weight: 1000;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .category-list {
+        display: grid;
+        gap: 10px;
+        overflow: auto;
+        padding-right: 4px;
+    }
+
+    .category-list::-webkit-scrollbar { width: 10px; }
+    .category-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.42); border-radius: 20px; }
+
+    .cat-btn {
+        border: 0;
+        border-radius: 20px;
+        padding: 12px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.78);
+        color: #303752;
+        font-size: 1.04rem;
+        font-weight: 1000;
+        cursor: pointer;
+        box-shadow: 0 7px 14px rgba(0,0,0,0.12), inset 0 2px 0 rgba(255,255,255,0.55);
+        transition: transform 0.16s ease, background 0.16s ease;
+        text-align: left;
+    }
+
+    .cat-btn:hover { transform: translateX(4px) scale(1.02); }
+    .cat-btn.active { background: #fff069; color: #522e9d; }
+    .cat-emoji { font-size: 1.7rem; }
+
+    .quiz-panel {
+        position: relative;
+        padding: 24px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 18px;
+    }
+
+    .quiz-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .quiz-title {
+        font-size: clamp(1.4rem, 3vw, 2.4rem);
+        font-weight: 1000;
+        text-shadow: 0 5px 12px rgba(0,0,0,0.22);
+    }
+
+    .score-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .emoji-card {
+        align-self: center;
+        justify-self: center;
+        width: min(500px, 62vw);
+        aspect-ratio: 1.25 / 1;
+        border-radius: 46px;
+        background: rgba(255,255,255,0.82);
+        color: #263047;
+        display: grid;
+        place-items: center;
+        box-shadow: inset 0 0 0 7px rgba(255,255,255,0.55), 0 28px 60px rgba(0,0,0,0.24);
+        animation: emojiCardFloat 2.6s ease-in-out infinite;
+    }
+
+    #quiz-emoji {
+        font-size: clamp(8rem, 20vw, 16rem);
+        filter: drop-shadow(0 16px 14px rgba(0,0,0,0.15));
+    }
+
+    .answers {
+        width: min(940px, 100%);
+        justify-self: center;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(170px, 1fr));
+        gap: 16px;
+    }
+
+    .answer-btn {
+        border: 0;
+        border-radius: 28px;
+        min-height: 86px;
+        padding: 18px;
+        font-size: clamp(1.35rem, 3vw, 2.2rem);
+        font-weight: 1000;
+        color: white;
+        background: linear-gradient(145deg, #41d1ff, #7c5cff);
+        box-shadow: inset 0 3px 0 rgba(255,255,255,0.35), 0 15px 24px rgba(0,0,0,0.18);
+        cursor: pointer;
+        transition: transform 0.12s ease, filter 0.12s ease;
+    }
+
+    .answer-btn:hover { transform: translateY(-3px) scale(1.02); }
+    .answer-btn.correct { background: linear-gradient(145deg, #42e66d, #16a84a); animation: correctBounce 0.55s ease; }
+    .answer-btn.wrong { background: linear-gradient(145deg, #ff5a7d, #cc244e); animation: wrongShake 0.45s ease; }
+
+    .win-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: none;
+        place-items: center;
+        background: rgba(26, 20, 56, 0.55);
+        backdrop-filter: blur(8px);
+    }
+
+    .win-overlay.show { display: grid; }
+
+    .win-card {
+        width: min(720px, 92vw);
+        border-radius: 46px;
+        padding: 38px 28px;
+        background: rgba(255,255,255,0.92);
+        color: #38206e;
+        text-align: center;
+        box-shadow: 0 34px 80px rgba(0,0,0,0.32);
+        animation: winCardPop 0.65s cubic-bezier(.2,1.7,.35,1);
+    }
+
+    .win-card .trophy { font-size: clamp(5rem, 14vw, 10rem); }
+    .win-card h2 { font-size: clamp(2.3rem, 7vw, 5rem); margin: 8px 0; }
+    .win-card p { font-size: clamp(1.25rem, 3vw, 2rem); font-weight: 900; margin-bottom: 22px; }
+
+    .floating-emoji {
+        position: fixed;
+        z-index: 2;
+        font-size: 3.4rem;
+        pointer-events: none;
+        opacity: 0.65;
+        animation: floatDecor linear infinite;
+    }
+
+    .egg-banner {
+        position: fixed;
+        z-index: 250;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(780px, 90vw);
+        border-radius: 44px;
+        padding: 34px 24px;
+        text-align: center;
+        color: white;
+        background: linear-gradient(145deg, rgba(255,108,181,0.95), rgba(100,90,255,0.95));
+        box-shadow: 0 30px 90px rgba(0,0,0,0.35), inset 0 0 0 4px rgba(255,255,255,0.28);
+        animation: eggPop 2.3s ease forwards;
+        pointer-events: none;
+    }
+
+    .egg-banner .egg-title {
+        font-size: clamp(2.7rem, 9vw, 7rem);
+        font-weight: 1000;
+        line-height: 0.95;
+        text-shadow: 0 8px 0 rgba(0,0,0,0.17);
+    }
+
+    .egg-banner .egg-sub {
+        margin-top: 16px;
+        font-size: clamp(1.4rem, 4vw, 3rem);
+        font-weight: 1000;
+    }
+
+    @keyframes titleBob {
+        0%, 100% { transform: translateY(0) rotate(-0.7deg); }
+        50% { transform: translateY(-10px) rotate(0.7deg); }
+    }
+
+    @keyframes iconWobble {
+        0%, 100% { transform: rotate(-4deg) scale(1); }
+        50% { transform: rotate(5deg) scale(1.07); }
+    }
+
+    @keyframes drift {
+        from { transform: translateX(0); }
+        to { transform: translateX(calc(100vw + 520px)); }
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+        50% { opacity: 0.78; transform: translateX(-50%) scale(1.04); }
+    }
+
+    @keyframes popIn {
+        0% { opacity: 0; transform: scale(0) rotate(-30deg); }
+        70% { transform: scale(1.16) rotate(8deg); }
+        100% { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    @keyframes fadeOut {
+        to { opacity: 0; transform: translateY(80px) scale(0.45) rotate(40deg); }
+    }
+
+    @keyframes praisePop {
+        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(-8deg); }
+        20% { opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(3deg); }
+        75% { opacity: 1; transform: translate(-50%, -85%) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -120%) scale(0.75); }
+    }
+
+    @keyframes bounceCenter {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.18); }
+    }
+
+    @keyframes spinCenter {
+        0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+        50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.22); }
+        100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+    }
+
+    @keyframes wiggleCenter {
+        0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+        25% { transform: translate(-50%, -50%) rotate(-13deg); }
+        75% { transform: translate(-50%, -50%) rotate(13deg); }
+    }
+
+    @keyframes jumpCenter {
+        0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+        50% { transform: translate(-50%, -50%) translateY(-90px); }
+    }
+
+    @keyframes rainbowPulse {
+        0% { color: #ff6b6b; transform: translate(-50%, -50%) scale(1); }
+        20% { color: #ffd93d; }
+        40% { color: #6bcf7f; transform: translate(-50%, -50%) scale(1.2); }
+        60% { color: #4d96ff; }
+        80% { color: #9d4edd; }
+        100% { color: #ff6b6b; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes wordFloat {
+        0%, 100% { transform: translate(-50%, -50%) rotate(-1deg) scale(1); }
+        50% { transform: translate(-50%, -56%) rotate(1deg) scale(1.04); }
+    }
+
+    @keyframes emojiCardFloat {
+        0%, 100% { transform: translateY(0) rotate(-1deg); }
+        50% { transform: translateY(-12px) rotate(1deg); }
+    }
+
+    @keyframes correctBounce {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1) rotate(-2deg); }
+    }
+
+    @keyframes wrongShake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-10px); }
+        40% { transform: translateX(10px); }
+        60% { transform: translateX(-8px); }
+        80% { transform: translateX(8px); }
+    }
+
+    @keyframes winCardPop {
+        0% { opacity: 0; transform: scale(0.35) rotate(-8deg); }
+        100% { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    @keyframes floatDecor {
+        from { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+        15% { opacity: 0.65; }
+        85% { opacity: 0.65; }
+        to { transform: translateY(-160px) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes balloonPopBurst {
+        0% { transform: scale(1) rotate(0deg); opacity: 1; filter: brightness(1); }
+        35% { transform: scale(1.28) rotate(8deg); opacity: 1; filter: brightness(1.35); }
+        100% { transform: scale(0.05) rotate(40deg); opacity: 0; filter: brightness(1.8); }
+    }
+
+    @keyframes eggPop {
+        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2) rotate(-12deg); }
+        16% { opacity: 1; transform: translate(-50%, -50%) scale(1.07) rotate(3deg); }
+        72% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -80%) scale(0.82); }
+    }
+
+
+
+    .learning-layout {
+        position: absolute;
+        inset: 92px 18px 18px;
+        z-index: 5;
+        display: grid;
+        place-items: center;
+    }
+
+    .learning-panel {
+        width: min(1080px, 94vw);
+        min-height: min(720px, calc(100vh - 130px));
+        border-radius: 38px;
+        padding: 24px;
+        background: rgba(255,255,255,0.20);
+        backdrop-filter: blur(12px);
+        box-shadow: inset 0 0 0 3px rgba(255,255,255,0.18), 0 20px 46px rgba(0,0,0,0.18);
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        gap: 18px;
+    }
+
+    .learning-prompt {
+        text-align: center;
+        font-size: clamp(1.4rem, 3.4vw, 2.8rem);
+        font-weight: 1000;
+        text-shadow: 0 5px 12px rgba(0,0,0,0.22);
+    }
+
+    .learning-sequence, .count-display, .odd-set {
+        justify-self: center;
+        width: min(880px, 100%);
+        min-height: 150px;
+        border-radius: 36px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        background: rgba(255,255,255,0.82);
+        color: #263047;
+        box-shadow: inset 0 0 0 6px rgba(255,255,255,0.55), 0 18px 36px rgba(0,0,0,0.18);
+    }
+
+    .symbol-tile {
+        min-width: 92px;
+        min-height: 92px;
+        border-radius: 26px;
+        display: grid;
+        place-items: center;
+        font-size: clamp(3rem, 8vw, 5.6rem);
+        background: rgba(255,255,255,0.78);
+        box-shadow: 0 10px 18px rgba(0,0,0,0.14), inset 0 3px 0 rgba(255,255,255,0.82);
+    }
+
+    .symbol-tile.question {
+        color: #5530c9;
+        background: #fff069;
+        animation: pulseQuestion 1.1s ease-in-out infinite;
+    }
+
+    .learning-options {
+        width: min(920px, 100%);
+        justify-self: center;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(120px, 1fr));
+        gap: 14px;
+    }
+
+    .learning-options .answer-btn {
+        min-height: 106px;
+    }
+
+    .answer-btn .option-number {
+        display: block;
+        font-size: clamp(2.2rem, 6vw, 4.2rem);
+        line-height: 1;
+    }
+
+    .answer-btn .option-word {
+        display: block;
+        margin-top: 8px;
+        font-size: clamp(1rem, 2vw, 1.5rem);
+        opacity: 0.95;
+    }
+
+    .memory-grid {
+        justify-self: center;
+        width: min(760px, 100%);
+        display: grid;
+        grid-template-columns: repeat(4, minmax(112px, 1fr));
+        gap: 14px;
+        align-content: center;
+    }
+
+    .memory-card {
+        border: 0;
+        min-height: 150px;
+        border-radius: 28px;
+        color: white;
+        font-weight: 1000;
+        background: linear-gradient(145deg, #41d1ff, #7c5cff);
+        box-shadow: inset 0 3px 0 rgba(255,255,255,0.35), 0 15px 24px rgba(0,0,0,0.18);
+        cursor: pointer;
+        transition: transform 0.16s ease, filter 0.16s ease;
+        display: grid;
+        place-items: center;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .memory-card:hover { transform: translateY(-3px) scale(1.03); filter: brightness(1.08); }
+    .memory-card.flipped, .memory-card.matched { background: rgba(255,255,255,0.92); color: #38206e; }
+    .memory-card.matched { outline: 6px solid rgba(84,214,106,0.85); }
+
+    .memory-card .memory-emoji { display: block; font-size: clamp(2.4rem, 6vw, 4.6rem); }
+    .memory-card .memory-word { display: block; margin-top: 6px; font-size: clamp(0.95rem, 2vw, 1.35rem); }
+    .memory-card .memory-back { font-size: clamp(2.8rem, 7vw, 5rem); }
+
+    .smart-stimulus {
+        min-height: 190px;
+        cursor: default;
+    }
+
+    .smart-stimulus.listen-mode {
+        cursor: pointer;
+    }
+
+    .smart-big-letter {
+        min-width: 160px;
+        min-height: 160px;
+        border-radius: 38px;
+        display: grid;
+        place-items: center;
+        font-size: clamp(4.6rem, 13vw, 9rem);
+        font-weight: 1000;
+        color: #5530c9;
+        background: #fff069;
+        box-shadow: 0 18px 34px rgba(0,0,0,0.18), inset 0 4px 0 rgba(255,255,255,0.75);
+        animation: pulseQuestion 1.35s ease-in-out infinite;
+    }
+
+    .smart-word-card {
+        min-width: min(560px, 92vw);
+        border-radius: 36px;
+        padding: 24px;
+        text-align: center;
+        font-size: clamp(2.4rem, 8vw, 6rem);
+        line-height: 1.05;
+        font-weight: 1000;
+        color: #5530c9;
+        background: rgba(255,255,255,0.88);
+        box-shadow: 0 18px 34px rgba(0,0,0,0.16), inset 0 4px 0 rgba(255,255,255,0.78);
+    }
+
+    .smart-speaker {
+        width: min(290px, 64vw);
+        aspect-ratio: 1;
+        border-radius: 48px;
+        display: grid;
+        place-items: center;
+        font-size: clamp(5rem, 18vw, 11rem);
+        background: linear-gradient(145deg, #fff069, #ff9b3d);
+        box-shadow: 0 24px 45px rgba(0,0,0,0.20), inset 0 4px 0 rgba(255,255,255,0.75);
+        animation: pulseQuestion 1.45s ease-in-out infinite;
+    }
+
+    .smart-mini-label {
+        display: block;
+        margin-top: 8px;
+        font-size: clamp(1rem, 2.2vw, 1.55rem);
+        font-weight: 1000;
+    }
+
+    .smart-options-2 {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+        max-width: 640px;
+    }
+
+    .answer-btn .smart-letter-option {
+        display: block;
+        font-size: clamp(3rem, 9vw, 6rem);
+        line-height: 1;
+    }
+
+    .answer-btn .smart-emoji-option {
+        display: block;
+        font-size: clamp(2.8rem, 8vw, 5.4rem);
+        line-height: 1;
+    }
+
+    .answer-btn.size-big .smart-emoji-option { font-size: clamp(4.2rem, 11vw, 7rem); }
+    .answer-btn.size-small .smart-emoji-option { font-size: clamp(2rem, 5vw, 3.4rem); }
+
+    @keyframes pulseQuestion {
+        0%, 100% { transform: scale(1) rotate(-2deg); }
+        50% { transform: scale(1.08) rotate(2deg); }
+    }
+
+    @media (max-width: 1040px) {
+        .hero-title, .hero-subtitle { text-align: center; }
+        .hero-kicker { justify-self: center; }
+        .game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .section-heading { align-items: start; }
+    }
+
+    @media (max-width: 860px) {
+        .game-grid { grid-template-columns: 1fr; }
+        .section-heading { display: grid; text-align: center; justify-items: center; }
+        .section-heading p { text-align: center; }
+        .learning-layout { inset: 86px 10px 10px; }
+        .learning-panel { min-height: calc(100vh - 110px); padding: 16px; }
+        .learning-options { grid-template-columns: repeat(2, minmax(120px, 1fr)); gap: 10px; }
+        .learning-options .answer-btn { min-height: 82px; }
+        .symbol-tile { min-width: 68px; min-height: 68px; border-radius: 20px; }
+        .memory-grid { grid-template-columns: repeat(2, minmax(116px, 1fr)); gap: 10px; }
+        .memory-card { min-height: 112px; border-radius: 22px; }
+        .home-hero-card { padding-right: 74px; }
+        .home-menu-btn { width: 50px; height: 50px; border-radius: 18px; font-size: 1.75rem; }
+        .language-card { text-align: center; }
+        .language-select { width: 100%; }
+        .game-card { min-height: 96px; padding: 16px; grid-template-columns: 58px 1fr; }
+        .recognize-layout { grid-template-columns: 1fr; grid-template-rows: 155px 1fr; inset: 86px 10px 10px; }
+        .side-panel { padding: 12px; }
+        .category-list { grid-template-columns: repeat(3, minmax(120px, 1fr)); overflow: auto; }
+        .cat-btn { padding: 9px 10px; font-size: 0.92rem; border-radius: 16px; }
+        .answers { grid-template-columns: 1fr; gap: 10px; }
+        .answer-btn { min-height: 68px; }
+        .emoji-card { width: min(340px, 85vw); }
+        #scrabble-area { bottom: 10px; gap: 8px; }
+        .scrabble-letter { min-width: 48px; min-height: 48px; border-radius: 16px; }
+        .type-balloon { width: 104px; height: 142px; padding: 14px 8px 18px; }
+        .type-balloon::after { top: 138px; height: 70px; }
+        .type-balloon .balloon-emoji { font-size: 3.2rem; }
+        .type-balloon .balloon-key { min-width: 54px; min-height: 46px; font-size: 2.1rem; border-radius: 16px; }
+        .balloon-game-title { top: 92px; font-size: clamp(1.25rem, 5vw, 2.3rem); }
+    }
+</style>
+</head>
+<body>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+
+    <section id="home-screen" class="screen active">
+        <div class="home-shell">
+            <div class="home-hero-card">
+                <div class="home-menu">
+                    <button id="home-menu-btn" class="home-menu-btn" type="button" onclick="toggleHomeMenu(event)" aria-label="Open menu" aria-expanded="false">☰</button>
+                    <div id="home-menu-panel" class="home-menu-panel" hidden>
+                        <div class="language-card">
+                            <label for="language-select" data-i18n="languageLabel">🌐 Language</label>
+                            <select id="language-select" class="language-select" onchange="setLanguage(this.value)" aria-label="Language">
+                                <option value="en">English</option>
+                                <option value="ne">नेपाली</option>
+                                <option value="nl">Nederlands</option>
+                            </select>
+                            <p data-i18n="languageHint">Voice and text follow this choice.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-copy">
+                    <div class="hero-kicker" data-i18n="homeKicker">Learning games for ages 3–4</div>
+                    <h1 class="hero-title" data-i18n="homeTitle">🌈 Type Fun Kids</h1>
+                    <p class="hero-subtitle" data-i18n="homeSubtitle">Type, play, recognize, laugh, and learn!</p>
+                </div>
+            </div>
+
+            <div class="home-section">
+                <div class="section-heading">
+                    <h2 data-i18n="coreSkillsTitle">Play & Learn</h2>
+                    <p data-i18n="coreSkillsHint">Letters, words, emojis, and keyboard practice.</p>
+                </div>
+                <div class="game-grid">
+                    <button class="game-card" onclick="showScreen('letter-game')">
+                        <span class="big-icon">🔤🚀</span>
+                        <h2 data-i18n="letterPlayTitle">Letter Play</h2>
+                    </button>
+                    <button class="game-card" onclick="startRecognizeGame()">
+                        <span class="big-icon">🧠🎯</span>
+                        <h2 data-i18n="recognizeTitle">Recognize</h2>
+                    </button>
+                    <button class="game-card" onclick="startBalloonGame()">
+                        <span class="big-icon">🎈⌨️</span>
+                        <h2 data-i18n="balloonTitleCard">Balloon Pop</h2>
+                    </button>
+                    <button class="game-card" onclick="startReverseRecognizeGame()">
+                        <span class="big-icon">📝😀</span>
+                        <h2 data-i18n="emojiMatchTitle">Emoji Match</h2>
+                    </button>
+                </div>
+            </div>
+
+            <div class="home-section">
+                <div class="section-heading">
+                    <h2 data-i18n="brainBoostTitle">Brain Boost</h2>
+                    <p data-i18n="brainBoostHint">Patterns, memory, counting, and sorting skills.</p>
+                </div>
+                <div class="game-grid">
+                    <button class="game-card" onclick="startPatternGame()">
+                        <span class="big-icon">🧩🔁</span>
+                        <h2 data-i18n="patternTitleCard">Pattern Play</h2>
+                    </button>
+                    <button class="game-card" onclick="startMemoryGame()">
+                        <span class="big-icon">🧠🃏</span>
+                        <h2 data-i18n="memoryTitleCard">Memory Match</h2>
+                    </button>
+                    <button class="game-card" onclick="startCountGame()">
+                        <span class="big-icon">🔢⭐</span>
+                        <h2 data-i18n="countTitleCard">Count Stars</h2>
+                    </button>
+                    <button class="game-card" onclick="startOddGame()">
+                        <span class="big-icon">🕵️‍♀️🌈</span>
+                        <h2 data-i18n="oddTitleCard">Odd One Out</h2>
+                    </button>
+                </div>
+            </div>
+
+            <div class="home-section">
+                <div class="section-heading">
+                    <h2 data-i18n="languageBuilderTitle">Language Builder</h2>
+                    <p data-i18n="languageBuilderHint">First sounds, matching letters, missing letters, and listening skills.</p>
+                </div>
+                <div class="game-grid">
+                    <button class="game-card" onclick="startSmartChoiceGame('sound')">
+                        <span class="big-icon">👂🔤</span>
+                        <h2 data-i18n="soundDetectiveTitleCard">Sound Detective</h2>
+                    </button>
+                    <button class="game-card" onclick="startSmartChoiceGame('letterMatch')">
+                        <span class="big-icon">Aa✨</span>
+                        <h2 data-i18n="letterMatchTitleCard">Big & Small</h2>
+                    </button>
+                    <button class="game-card" onclick="startSmartChoiceGame('missingLetter')">
+                        <span class="big-icon">_BC🧠</span>
+                        <h2 data-i18n="missingLetterTitleCard">Missing Letter</h2>
+                    </button>
+                    <button class="game-card" onclick="startSmartChoiceGame('listenPick')">
+                        <span class="big-icon">🔊👆</span>
+                        <h2 data-i18n="listenPickTitleCard">Listen & Pick</h2>
+                    </button>
+                </div>
+            </div>
+
+            <div class="home-section">
+                <div class="section-heading">
+                    <h2 data-i18n="littleExplorerTitle">Little Explorer</h2>
+                    <p data-i18n="littleExplorerHint">Feelings, opposites, sizes, and daily order thinking.</p>
+                </div>
+                <div class="game-grid">
+                    <button class="game-card" onclick="startSmartChoiceGame('feelings')">
+                        <span class="big-icon">😊💬</span>
+                        <h2 data-i18n="feelingsTitleCard">Feelings</h2>
+                    </button>
+                    <button class="game-card" onclick="startSmartChoiceGame('opposites')">
+                        <span class="big-icon">↔️🌙</span>
+                        <h2 data-i18n="oppositesTitleCard">Opposites</h2>
+                    </button>
+                    <button class="game-card" onclick="startSmartChoiceGame('sizeSort')">
+                        <span class="big-icon">🐘🐭</span>
+                        <h2 data-i18n="sizeSortTitleCard">Size Sort</h2>
+                    </button>
+                    <button class="game-card" onclick="startSmartChoiceGame('dailyOrder')">
+                        <span class="big-icon">🌞➡️</span>
+                        <h2 data-i18n="dailyOrderTitleCard">Daily Order</h2>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="letter-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+        </div>
+        <div id="instructions" data-i18n="letterInstructions">✨ Type any letter! Try hidden names too! ✨</div>
+        <div id="main-character">?</div>
+        <div id="word-display"></div>
+        <div id="scrabble-area"></div>
+    </section>
+
+
+    <section id="balloon-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="startBalloonGame(true)">🔄 New Game</button>
+        </div>
+        <div class="balloon-game-title" data-i18n="balloonGameTitle">🎈 Type the first letter of the emoji word to pop the balloon! 🎉</div>
+        <div id="balloon-playfield" class="balloon-playfield"></div>
+        <div class="balloon-hud">
+            <div id="balloon-score" class="pill">Popped: 0 / 10</div>
+            <div id="balloon-target" class="pill">Type a letter!</div>
+            <div id="balloon-combo" class="pill">🔥 Combo 0</div>
+        </div>
+    </section>
+
+
+    <section id="recognize-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="startRecognizeGame(true)">🔄 New Game</button>
+        </div>
+        <div class="recognize-layout">
+            <aside class="side-panel">
+                <div class="side-title" data-i18n="categoriesTitle">🎨 Categories</div>
+                <div id="category-list" class="category-list"></div>
+            </aside>
+            <main class="quiz-panel">
+                <div class="quiz-header">
+                    <div id="quiz-title" class="quiz-title" data-i18n="recognizeTitle">Recognize</div>
+                    <div class="score-row">
+                        <div id="quiz-category" class="pill">Category: All</div>
+                        <div id="quiz-score" class="pill">Correct: 0 / 10</div>
+                        <div id="quiz-streak" class="pill">⭐ 0</div>
+                    </div>
+                </div>
+                <div class="emoji-card">
+                    <div id="quiz-emoji">🍎</div>
+                </div>
+                <div id="answers" class="answers"></div>
+            </main>
+        </div>
+    </section>
+
+
+    <section id="reverse-recognize-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="startReverseRecognizeGame(true)">🔄 New Game</button>
+        </div>
+        <div class="recognize-layout">
+            <aside class="side-panel">
+                <div class="side-title" data-i18n="categoriesTitle">🎨 Categories</div>
+                <div id="reverse-category-list" class="category-list"></div>
+            </aside>
+            <main class="quiz-panel">
+                <div class="quiz-header">
+                    <div id="reverse-quiz-title" class="quiz-title" data-i18n="pickEmojiTitle">Pick the emoji</div>
+                    <div class="score-row">
+                        <div id="reverse-quiz-category" class="pill">Category: All</div>
+                        <div id="reverse-quiz-score" class="pill">Correct: 0 / 10</div>
+                        <div id="reverse-quiz-streak" class="pill">⭐ 0</div>
+                    </div>
+                </div>
+                <div class="emoji-card">
+                    <div id="reverse-quiz-word" style="font-size: clamp(2.4rem, 6vw, 5.8rem); font-weight: 1000; text-align: center; padding: 20px; line-height: 1.05;">Apple</div>
+                </div>
+                <div id="reverse-answers" class="answers"></div>
+            </main>
+        </div>
+    </section>
+
+
+
+    <section id="pattern-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="startPatternGame(true)">🔄 New Game</button>
+        </div>
+        <div class="learning-layout">
+            <main class="learning-panel">
+                <div class="quiz-header">
+                    <div id="pattern-title" class="quiz-title" data-i18n="patternGameTitle">Pattern Play</div>
+                    <div class="score-row">
+                        <div id="pattern-score" class="pill">Correct: 0 / 10</div>
+                    </div>
+                </div>
+                <div id="pattern-prompt" class="learning-prompt" data-i18n="patternPrompt">What comes next?</div>
+                <div id="pattern-sequence" class="learning-sequence"></div>
+                <div id="pattern-options" class="learning-options"></div>
+            </main>
+        </div>
+    </section>
+
+    <section id="memory-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="startMemoryGame(true)">🔄 New Game</button>
+        </div>
+        <div class="learning-layout">
+            <main class="learning-panel">
+                <div class="quiz-header">
+                    <div id="memory-title" class="quiz-title" data-i18n="memoryGameTitle">Memory Match</div>
+                    <div class="score-row">
+                        <div id="memory-pairs" class="pill">Pairs: 0 / 4</div>
+                        <div id="memory-moves" class="pill">Moves: 0</div>
+                    </div>
+                </div>
+                <div id="memory-prompt" class="learning-prompt" data-i18n="memoryPrompt">Flip two cards. Find matching pairs!</div>
+                <div id="memory-grid" class="memory-grid"></div>
+                <div></div>
+            </main>
+        </div>
+    </section>
+
+    <section id="count-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="startCountGame(true)">🔄 New Game</button>
+        </div>
+        <div class="learning-layout">
+            <main class="learning-panel">
+                <div class="quiz-header">
+                    <div id="count-title" class="quiz-title" data-i18n="countGameTitle">Count Stars</div>
+                    <div class="score-row">
+                        <div id="count-score" class="pill">Correct: 0 / 10</div>
+                    </div>
+                </div>
+                <div id="count-prompt" class="learning-prompt" data-i18n="countPrompt">How many do you see?</div>
+                <div id="count-display" class="count-display"></div>
+                <div id="count-options" class="learning-options"></div>
+            </main>
+        </div>
+    </section>
+
+    <section id="odd-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="startOddGame(true)">🔄 New Game</button>
+        </div>
+        <div class="learning-layout">
+            <main class="learning-panel">
+                <div class="quiz-header">
+                    <div id="odd-title" class="quiz-title" data-i18n="oddGameTitle">Odd One Out</div>
+                    <div class="score-row">
+                        <div id="odd-score" class="pill">Correct: 0 / 10</div>
+                    </div>
+                </div>
+                <div id="odd-prompt" class="learning-prompt" data-i18n="oddPrompt">Which one does not belong?</div>
+                <div id="odd-set" class="odd-set"></div>
+                <div id="odd-options" class="learning-options"></div>
+            </main>
+        </div>
+    </section>
+
+    <section id="smart-choice-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="restartSmartChoiceGame(true)">🔄 New Game</button>
+        </div>
+        <div class="learning-layout">
+            <main class="learning-panel smart-panel">
+                <div class="quiz-header">
+                    <div id="smart-title" class="quiz-title">Learning Game</div>
+                    <div class="score-row">
+                        <div id="smart-score" class="pill">Correct: 0 / 10</div>
+                    </div>
+                </div>
+                <div id="smart-prompt" class="learning-prompt">Choose the answer.</div>
+                <div id="smart-stimulus" class="learning-sequence smart-stimulus"></div>
+                <div id="smart-options" class="learning-options"></div>
+            </main>
+        </div>
+    </section>
+
+    <div id="win-overlay" class="win-overlay">
+        <div class="win-card">
+            <div class="trophy">🏆</div>
+            <h2 data-i18n="youWon">You Won!</h2>
+            <p data-i18n="winMessage">10 correct answers! Super learning star!</p>
+            <button class="round-btn" data-i18n="playAgainButton" onclick="playAgain()">🎮 Play Again</button>
+            <button class="round-btn" data-i18n="mainMenuButton" onclick="showScreen('home-screen'); hideWin();">🏠 Main Menu</button>
+        </div>
+    </div>
+
+<script>
+const colors = ['#ff5fa2', '#ffd84d', '#54d66a', '#4da3ff', '#9b6bff', '#ff9b3d', '#00d9c0', '#ff5b5b'];
+let praiseWords = ['WOW!', 'Great!', 'Super!', 'Magic!', 'Brilliant!', 'Yay!', 'Star!', 'Nice!'];
+
+const VOICE_LANGS = { en: 'en-US', ne: 'ne-NP', nl: 'nl-NL' };
+const HTML_LANGS = { en: 'en', ne: 'ne', nl: 'nl' };
+const LOCALIZED_TEXT = {
+    "en": {
+        "documentTitle": "TypeFun Kids Game",
+        "homeTitle": "🌈 Type Fun Kids",
+        "homeSubtitle": "Type, play, recognize, laugh, and learn!",
+        "homeKicker": "Learning games for ages 3–4",
+        "coreSkillsTitle": "Play & Learn",
+        "coreSkillsHint": "Letters, words, emojis, and keyboard practice.",
+        "brainBoostTitle": "Brain Boost",
+        "brainBoostHint": "Patterns, memory, counting, and sorting skills.",
+        "languageBuilderTitle": "Language Builder",
+        "languageBuilderHint": "First sounds, matching letters, missing letters, and listening skills.",
+        "littleExplorerTitle": "Little Explorer",
+        "littleExplorerHint": "Feelings, opposites, sizes, and daily order thinking.",
+        "languageLabel": "🌐 Language",
+        "languageHint": "Voice and text follow this choice.",
+        "languageSelected": "English selected. Voice and text are now in English.",
+        "letterPlayTitle": "Letter Play",
+        "letterPlayDesc": "Type letters and watch them fly!",
+        "recognizeTitle": "Recognize",
+        "recognizeDesc": "Guess the emoji from 4 choices!",
+        "balloonTitleCard": "Balloon Pop",
+        "balloonDesc": "Type the letter under the emoji balloon!",
+        "emojiMatchTitle": "Emoji Match",
+        "emojiMatchDesc": "Read the word and pick the right emoji!",
+        "patternTitleCard": "Pattern Play",
+        "patternDesc": "Find what comes next in the pattern!",
+        "memoryTitleCard": "Memory Match",
+        "memoryDesc": "Flip cards and match the pairs!",
+        "countTitleCard": "Count Stars",
+        "countDesc": "Count the pictures and pick the number!",
+        "oddTitleCard": "Odd One Out",
+        "oddDesc": "Find the picture that does not belong!",
+        "soundDetectiveTitleCard": "Sound Detective",
+        "letterMatchTitleCard": "Big & Small",
+        "missingLetterTitleCard": "Missing Letter",
+        "listenPickTitleCard": "Listen & Pick",
+        "feelingsTitleCard": "Feelings",
+        "oppositesTitleCard": "Opposites",
+        "sizeSortTitleCard": "Size Sort",
+        "dailyOrderTitleCard": "Daily Order",
+        "patternGameTitle": "Pattern Play",
+        "patternPrompt": "What comes next?",
+        "memoryGameTitle": "Memory Match",
+        "memoryPrompt": "Flip two cards. Find matching pairs!",
+        "countGameTitle": "Count Stars",
+        "countPrompt": "How many do you see?",
+        "oddGameTitle": "Odd One Out",
+        "oddPrompt": "Which one does not belong?",
+        "soundDetectivePrompt": "Which picture starts with {letter}?",
+        "letterMatchPrompt": "Find the matching letter.",
+        "missingLetterPrompt": "Which letter is missing?",
+        "listenPickPrompt": "Listen and pick the picture.",
+        "feelingsPrompt": "How does the face feel?",
+        "oppositesPrompt": "What is the opposite of {word}?",
+        "sizeSortPrompt": "Which one is {word}?",
+        "dailyOrderPrompt": "What comes next?",
+        "tapSpeakerPrompt": "Tap the speaker to hear it again.",
+        "pairs": "Pairs",
+        "moves": "Moves",
+        "startPatternSpeak": "Pattern play. Look carefully and choose what comes next.",
+        "startMemorySpeak": "Memory match. Flip cards and find matching pairs.",
+        "startCountSpeak": "Counting game. Count the pictures and choose the number.",
+        "startOddSpeak": "Odd one out. Find the picture that does not belong.",
+        "startSoundSpeak": "Sound detective. Listen for the first sound and choose the picture.",
+        "startLetterMatchSpeak": "Big and small letters. Find the matching letter.",
+        "startMissingLetterSpeak": "Missing letter. Choose the letter that starts the word.",
+        "startListenPickSpeak": "Listen and pick. Hear the word, then choose the picture.",
+        "startFeelingsSpeak": "Feelings game. Look at the face and choose the feeling.",
+        "startOppositesSpeak": "Opposites game. Choose the opposite word.",
+        "startSizeSortSpeak": "Size sort. Choose big or small.",
+        "startDailyOrderSpeak": "Daily order. Choose what comes next.",
+        "patternCorrectSpeak": "Yes! The next one is {item}.",
+        "countCorrectSpeak": "Correct! There are {number}.",
+        "oddCorrectSpeak": "Correct! {word} does not belong.",
+        "smartCorrectSpeak": "Correct! {word}.",
+        "smartTryAgain": "Try again. The answer is {word}.",
+        "smartWinMessage": "Great learning! You solved all the little challenges!",
+        "memoryMatchedSpeak": "Match! {word}.",
+        "memoryTryAgain": "Try again. Remember the cards.",
+        "brainBoostWinMessage": "Great thinking! Your brain found the pattern!",
+        "memoryWinMessage": "Great memory! You matched all the pairs!",
+        "countWinMessage": "Great counting! You counted like a star!",
+        "oddWinMessage": "Great sorting! You found the odd one out!",
+        "menuButton": "← Back",
+        "newGameButton": "🔄 New Game",
+        "letterInstructions": "✨ Type any letter! Try hidden names too! ✨",
+        "balloonGameTitle": "🎈 Type the first letter of the emoji word to pop the balloon! 🎉",
+        "popped": "Popped",
+        "typeALetter": "Type a letter!",
+        "type": "Type",
+        "combo": "🔥 Combo",
+        "categoriesTitle": "🎨 Categories",
+        "category": "Category",
+        "correct": "Correct",
+        "whatIsThis": "What is this?",
+        "pickEmojiTitle": "Pick the emoji",
+        "reverseQuestionTitle": "Which emoji matches this word?",
+        "youWon": "You Won!",
+        "winMessage": "10 correct answers! Super learning star!",
+        "playAgainButton": "🎮 Play Again",
+        "mainMenuButton": "🏠 Main Menu",
+        "startBalloonSpeak": "Balloon pop. Type the letter under the emoji balloon.",
+        "startRecognizeSpeak": "Recognize game. Choose the correct answer.",
+        "startReverseSpeak": "Emoji match game. Read the word and choose the correct emoji.",
+        "categorySpeak": "Category {category}",
+        "correctSpeak": "Correct! {word}",
+        "tryAgainWord": "Try again. This is {word}",
+        "tryAgainShort": "Try again. {word}",
+        "wonSpeak": "You won! Celebration time!",
+        "tryAnotherLetter": "Try another letter!",
+        "letterForWord": "{letter} for {word}. Pop!",
+        "letterForWordShort": "{letter} for {word}!",
+        "letterIntro": "{letter} ... {word}",
+        "eggGeneric": "{name}! Magic sparkle unlocked!",
+        "praiseWords": [
+            "WOW!",
+            "Great!",
+            "Super!",
+            "Magic!",
+            "Brilliant!",
+            "Yay!",
+            "Star!",
+            "Nice!",
+            "Great job!",
+            "Correct!",
+            "You did it!",
+            "Super star!",
+            "Amazing!"
+        ]
+    },
+    "nl": {
+        "documentTitle": "TypeFun Kinderspel",
+        "homeTitle": "🌈 Type Fun Kids",
+        "homeSubtitle": "Typ, speel, herken, lach en leer!",
+        "homeKicker": "Leerspelletjes voor 3–4 jaar",
+        "coreSkillsTitle": "Spelen & leren",
+        "coreSkillsHint": "Letters, woorden, emoji's en typen oefenen.",
+        "brainBoostTitle": "Brein boost",
+        "brainBoostHint": "Patronen, geheugen, tellen en sorteren.",
+        "languageBuilderTitle": "Taalbouwer",
+        "languageBuilderHint": "Eerste klanken, letters koppelen, ontbrekende letters en luisteren.",
+        "littleExplorerTitle": "Kleine ontdekker",
+        "littleExplorerHint": "Gevoelens, tegenstellingen, grootte en dagelijkse volgorde.",
+        "languageLabel": "🌐 Taal",
+        "languageHint": "Stem en tekst volgen deze keuze.",
+        "languageSelected": "Nederlands geselecteerd. Stem en tekst zijn nu in het Nederlands.",
+        "letterPlayTitle": "Letterspel",
+        "letterPlayDesc": "Typ letters en zie ze vliegen!",
+        "recognizeTitle": "Herkennen",
+        "recognizeDesc": "Raad de emoji uit 4 keuzes!",
+        "balloonTitleCard": "Ballon poppen",
+        "balloonDesc": "Typ de letter onder de emoji-ballon!",
+        "emojiMatchTitle": "Emoji koppelen",
+        "emojiMatchDesc": "Lees het woord en kies de juiste emoji!",
+        "patternTitleCard": "Patronen",
+        "patternDesc": "Kijk wat er daarna komt!",
+        "memoryTitleCard": "Geheugen",
+        "memoryDesc": "Draai kaarten om en vind paren!",
+        "countTitleCard": "Tellen",
+        "countDesc": "Tel de plaatjes en kies het getal!",
+        "oddTitleCard": "Wat hoort niet?",
+        "oddDesc": "Vind het plaatje dat er niet bij hoort!",
+        "soundDetectiveTitleCard": "Klank speurder",
+        "letterMatchTitleCard": "Groot & klein",
+        "missingLetterTitleCard": "Letter mist",
+        "listenPickTitleCard": "Luister & kies",
+        "feelingsTitleCard": "Gevoelens",
+        "oppositesTitleCard": "Tegenstellingen",
+        "sizeSortTitleCard": "Grootte kiezen",
+        "dailyOrderTitleCard": "Volgorde",
+        "patternGameTitle": "Patronen",
+        "patternPrompt": "Wat komt hierna?",
+        "memoryGameTitle": "Geheugen",
+        "memoryPrompt": "Draai twee kaarten om. Vind dezelfde paren!",
+        "countGameTitle": "Tellen",
+        "countPrompt": "Hoeveel zie je?",
+        "oddGameTitle": "Wat hoort niet?",
+        "oddPrompt": "Welke hoort er niet bij?",
+        "soundDetectivePrompt": "Welk plaatje begint met {letter}?",
+        "letterMatchPrompt": "Zoek de bijpassende letter.",
+        "missingLetterPrompt": "Welke letter mist?",
+        "listenPickPrompt": "Luister en kies het plaatje.",
+        "feelingsPrompt": "Hoe voelt dit gezicht?",
+        "oppositesPrompt": "Wat is het tegenovergestelde van {word}?",
+        "sizeSortPrompt": "Welke is {word}?",
+        "dailyOrderPrompt": "Wat komt hierna?",
+        "tapSpeakerPrompt": "Tik op de speaker om het nog eens te horen.",
+        "pairs": "Paren",
+        "moves": "Beurten",
+        "startPatternSpeak": "Patronenspel. Kijk goed en kies wat hierna komt.",
+        "startMemorySpeak": "Geheugenspel. Draai kaarten om en vind dezelfde paren.",
+        "startCountSpeak": "Telspel. Tel de plaatjes en kies het getal.",
+        "startOddSpeak": "Wat hoort niet. Vind het plaatje dat er niet bij hoort.",
+        "startSoundSpeak": "Klankspeurder. Luister naar de eerste klank en kies het plaatje.",
+        "startLetterMatchSpeak": "Grote en kleine letters. Zoek de bijpassende letter.",
+        "startMissingLetterSpeak": "Ontbrekende letter. Kies de letter waarmee het woord begint.",
+        "startListenPickSpeak": "Luister en kies. Hoor het woord en kies het plaatje.",
+        "startFeelingsSpeak": "Gevoelensspel. Kijk naar het gezicht en kies het gevoel.",
+        "startOppositesSpeak": "Tegenstellingen. Kies het tegenovergestelde woord.",
+        "startSizeSortSpeak": "Grootte kiezen. Kies groot of klein.",
+        "startDailyOrderSpeak": "Volgorde. Kies wat hierna komt.",
+        "patternCorrectSpeak": "Ja! De volgende is {item}.",
+        "countCorrectSpeak": "Goed! Er zijn {number}.",
+        "oddCorrectSpeak": "Goed! {word} hoort er niet bij.",
+        "smartCorrectSpeak": "Goed! {word}.",
+        "smartTryAgain": "Probeer opnieuw. Het antwoord is {word}.",
+        "smartWinMessage": "Knap geleerd! Je hebt alle kleine opdrachten opgelost!",
+        "memoryMatchedSpeak": "Paar! {word}.",
+        "memoryTryAgain": "Probeer opnieuw. Onthoud de kaarten.",
+        "brainBoostWinMessage": "Knap gedacht! Je brein vond het patroon!",
+        "memoryWinMessage": "Goed geheugen! Je hebt alle paren gevonden!",
+        "countWinMessage": "Goed geteld! Jij telt als een ster!",
+        "oddWinMessage": "Goed gesorteerd! Je vond wat er niet bij hoort!",
+        "menuButton": "← Terug",
+        "newGameButton": "🔄 Nieuw spel",
+        "letterInstructions": "✨ Typ een letter! Probeer ook verborgen namen! ✨",
+        "balloonGameTitle": "🎈 Typ de eerste letter van het emojiwoord om de ballon te laten knappen! 🎉",
+        "popped": "Geknapt",
+        "typeALetter": "Typ een letter!",
+        "type": "Typ",
+        "combo": "🔥 Combo",
+        "categoriesTitle": "🎨 Categorieën",
+        "category": "Categorie",
+        "correct": "Goed",
+        "whatIsThis": "Wat is dit?",
+        "pickEmojiTitle": "Kies de emoji",
+        "reverseQuestionTitle": "Welke emoji hoort bij dit woord?",
+        "youWon": "Je hebt gewonnen!",
+        "winMessage": "10 goede antwoorden! Super leerster!",
+        "playAgainButton": "🎮 Opnieuw spelen",
+        "mainMenuButton": "🏠 Hoofdmenu",
+        "startBalloonSpeak": "Ballon poppen. Typ de letter onder de emoji-ballon.",
+        "startRecognizeSpeak": "Herkenningsspel. Kies het juiste antwoord.",
+        "startReverseSpeak": "Emoji-koppelspel. Lees het woord en kies de juiste emoji.",
+        "categorySpeak": "Categorie {category}",
+        "correctSpeak": "Goed! {word}",
+        "tryAgainWord": "Probeer opnieuw. Dit is {word}",
+        "tryAgainShort": "Probeer opnieuw. {word}",
+        "wonSpeak": "Je hebt gewonnen! Tijd voor feest!",
+        "tryAnotherLetter": "Probeer een andere letter!",
+        "letterForWord": "{letter} van {word}. Pop!",
+        "letterForWordShort": "{letter} van {word}!",
+        "letterIntro": "{letter} ... {word}",
+        "eggGeneric": "{name}! Magische sprankel vrijgespeeld!",
+        "praiseWords": [
+            "Wauw!",
+            "Goed zo!",
+            "Super!",
+            "Magisch!",
+            "Briljant!",
+            "Jeej!",
+            "Ster!",
+            "Mooi!",
+            "Goed gedaan!",
+            "Goed!",
+            "Gelukt!",
+            "Superster!",
+            "Geweldig!"
+        ]
+    },
+    "ne": {
+        "documentTitle": "TypeFun बाल खेल",
+        "homeTitle": "🌈 टाइप फन किड्स",
+        "homeSubtitle": "टाइप गर, खेल, चिन, हाँस र सिक!",
+        "homeKicker": "३–४ वर्षका लागि सिकाइ खेल",
+        "coreSkillsTitle": "खेल्दै सिक",
+        "coreSkillsHint": "अक्षर, शब्द, इमोजी र टाइप अभ्यास।",
+        "brainBoostTitle": "दिमाग बलियो",
+        "brainBoostHint": "ढाँचा, सम्झना, गन्ने र छुट्याउने सीप।",
+        "languageBuilderTitle": "भाषा सिकाइ",
+        "languageBuilderHint": "पहिलो आवाज, अक्षर मिलाउने, छुटेको अक्षर र सुन्ने सीप।",
+        "littleExplorerTitle": "सानो अन्वेषक",
+        "littleExplorerHint": "भावना, उल्टा कुरा, ठूलो-सानो र दैनिक क्रम।",
+        "languageLabel": "🌐 भाषा",
+        "languageHint": "आवाज र लेखाइ यही छनोट अनुसार हुन्छ।",
+        "languageSelected": "नेपाली छानियो। अब आवाज र लेखाइ नेपालीमा छन्।",
+        "letterPlayTitle": "अक्षर खेल",
+        "letterPlayDesc": "अक्षर टाइप गर अनि उडेको हेर!",
+        "recognizeTitle": "चिन्ने खेल",
+        "recognizeDesc": "४ विकल्पबाट सही इमोजीको नाम छान!",
+        "balloonTitleCard": "बेलुन फुटाऊ",
+        "balloonDesc": "इमोजी बेलुन मुनिको अक्षर टाइप गर!",
+        "emojiMatchTitle": "इमोजी मिलाऊ",
+        "emojiMatchDesc": "शब्द पढ र सही इमोजी छान!",
+        "patternTitleCard": "ढाँचा खेल",
+        "patternDesc": "ढाँचामा अब के आउँछ छान!",
+        "memoryTitleCard": "सम्झना मिलाऊ",
+        "memoryDesc": "कार्ड पल्टाएर जोडी मिलाऊ!",
+        "countTitleCard": "गन्ने खेल",
+        "countDesc": "तस्बिर गनेर नम्बर छान!",
+        "oddTitleCard": "फरक कुन?",
+        "oddDesc": "नमिल्ने तस्बिर पत्ता लगाऊ!",
+        "soundDetectiveTitleCard": "आवाज खोजी",
+        "letterMatchTitleCard": "अक्षर मिलाऊ",
+        "missingLetterTitleCard": "छुटेको अक्षर",
+        "listenPickTitleCard": "सुन र छान",
+        "feelingsTitleCard": "भावना",
+        "oppositesTitleCard": "उल्टा कुरा",
+        "sizeSortTitleCard": "ठूलो-सानो",
+        "dailyOrderTitleCard": "क्रम मिलाऊ",
+        "patternGameTitle": "ढाँचा खेल",
+        "patternPrompt": "अब के आउँछ?",
+        "memoryGameTitle": "सम्झना मिलाऊ",
+        "memoryPrompt": "दुई कार्ड पल्टाऊ। मिल्ने जोडी खोज!",
+        "countGameTitle": "गन्ने खेल",
+        "countPrompt": "कति देख्यौ?",
+        "oddGameTitle": "फरक कुन?",
+        "oddPrompt": "कुन चाहिँ मिल्दैन?",
+        "soundDetectivePrompt": "कुन तस्बिर {letter} बाट सुरु हुन्छ?",
+        "letterMatchPrompt": "मिल्ने अक्षर खोज।",
+        "missingLetterPrompt": "कुन अक्षर छुटेको छ?",
+        "listenPickPrompt": "सुन र तस्बिर छान।",
+        "feelingsPrompt": "यो अनुहार कस्तो महसुस गर्छ?",
+        "oppositesPrompt": "{word} को उल्टो के हो?",
+        "sizeSortPrompt": "कुन चाहिँ {word} हो?",
+        "dailyOrderPrompt": "अब के आउँछ?",
+        "tapSpeakerPrompt": "फेरि सुन्न स्पिकर थिच।",
+        "pairs": "जोडी",
+        "moves": "पालो",
+        "startPatternSpeak": "ढाँचा खेल। राम्ररी हेर र अब के आउँछ छान।",
+        "startMemorySpeak": "सम्झना खेल। कार्ड पल्टाएर मिल्ने जोडी खोज।",
+        "startCountSpeak": "गन्ने खेल। तस्बिर गनेर नम्बर छान।",
+        "startOddSpeak": "फरक कुन खेल। नमिल्ने तस्बिर पत्ता लगाऊ।",
+        "startSoundSpeak": "आवाज खोजी। पहिलो आवाज सुनेर तस्बिर छान।",
+        "startLetterMatchSpeak": "अक्षर मिलाउने खेल। मिल्ने अक्षर खोज।",
+        "startMissingLetterSpeak": "छुटेको अक्षर। शब्द सुरु हुने अक्षर छान।",
+        "startListenPickSpeak": "सुन र छान। शब्द सुनेर तस्बिर छान।",
+        "startFeelingsSpeak": "भावना खेल। अनुहार हेर र भावना छान।",
+        "startOppositesSpeak": "उल्टा कुरा खेल। उल्टो शब्द छान।",
+        "startSizeSortSpeak": "ठूलो-सानो खेल। ठूलो वा सानो छान।",
+        "startDailyOrderSpeak": "क्रम खेल। अब के आउँछ छान।",
+        "patternCorrectSpeak": "हो! अर्को {item} हो।",
+        "countCorrectSpeak": "सही! यहाँ {number} वटा छन्।",
+        "oddCorrectSpeak": "सही! {word} मिल्दैन।",
+        "smartCorrectSpeak": "सही! {word}।",
+        "smartTryAgain": "फेरि प्रयास गर। उत्तर {word} हो।",
+        "smartWinMessage": "धेरै राम्रो सिकाइ! सबै साना चुनौती हल गर्‍यौ!",
+        "memoryMatchedSpeak": "मिल्यो! {word}।",
+        "memoryTryAgain": "फेरि प्रयास गर। कार्ड सम्झ।",
+        "brainBoostWinMessage": "धेरै राम्रो सोचाइ! तिम्रो दिमागले ढाँचा भेट्यो!",
+        "memoryWinMessage": "धेरै राम्रो सम्झना! सबै जोडी मिलायौ!",
+        "countWinMessage": "धेरै राम्रो गन्यौ! तिमी तारा जस्तै छौ!",
+        "oddWinMessage": "धेरै राम्रो छुट्यायौ! फरक कुरा भेट्यौ!",
+        "menuButton": "← पछाडि",
+        "newGameButton": "🔄 नयाँ खेल",
+        "letterInstructions": "✨ कुनै अक्षर टाइप गर! लुकेका नाम पनि प्रयास गर! ✨",
+        "balloonGameTitle": "🎈 बेलुन फुटाउन इमोजी शब्दको पहिलो अक्षर टाइप गर! 🎉",
+        "popped": "फुटेको",
+        "typeALetter": "अक्षर टाइप गर!",
+        "type": "टाइप",
+        "combo": "🔥 कम्बो",
+        "categoriesTitle": "🎨 समूहहरू",
+        "category": "समूह",
+        "correct": "सही",
+        "whatIsThis": "यो के हो?",
+        "pickEmojiTitle": "इमोजी छान",
+        "reverseQuestionTitle": "यो शब्दसँग कुन इमोजी मिल्छ?",
+        "youWon": "तिमीले जित्यौ!",
+        "winMessage": "१० सही उत्तर! सुपर सिकाइ तारा!",
+        "playAgainButton": "🎮 फेरि खेल",
+        "mainMenuButton": "🏠 मुख्य मेनु",
+        "startBalloonSpeak": "बेलुन फुटाऊ। इमोजी बेलुन मुनिको अक्षर टाइप गर।",
+        "startRecognizeSpeak": "चिन्ने खेल। सही उत्तर छान।",
+        "startReverseSpeak": "इमोजी मिलाउने खेल। शब्द पढ र सही इमोजी छान।",
+        "categorySpeak": "समूह {category}",
+        "correctSpeak": "सही! {word}",
+        "tryAgainWord": "फेरि प्रयास गर। यो {word} हो",
+        "tryAgainShort": "फेरि प्रयास गर। {word}",
+        "wonSpeak": "तिमीले जित्यौ! अब उत्सव!",
+        "tryAnotherLetter": "अर्को अक्षर प्रयास गर!",
+        "letterForWord": "{word} का लागि {letter}. पप!",
+        "letterForWordShort": "{word} का लागि {letter}!",
+        "letterIntro": "{letter} ... {word}",
+        "eggGeneric": "{name}! जादुई चमक खुल्यो!",
+        "praiseWords": [
+            "वाह!",
+            "राम्रो!",
+            "सुपर!",
+            "जादु!",
+            "उत्कृष्ट!",
+            "याय!",
+            "तारा!",
+            "ठिक!",
+            "धेरै राम्रो!",
+            "सही!",
+            "तिमीले गर्‍यौ!",
+            "सुपर तारा!",
+            "अद्भुत!"
+        ]
+    }
+};
+const CATEGORY_LABELS = {
+    "en": {
+        "all": "All Mix",
+        "food": "Food",
+        "princess": "Princess",
+        "animals": "Animals",
+        "pets": "Pets",
+        "flowers": "Flowers",
+        "plants": "Plants",
+        "vehicles": "Vehicles",
+        "space": "Space",
+        "ocean": "Ocean",
+        "weather": "Weather",
+        "sports": "Sports",
+        "music": "Music",
+        "shapes": "Shapes",
+        "colors": "Colors",
+        "numbers": "Numbers",
+        "body": "Body",
+        "clothes": "Clothes",
+        "tools": "Tools",
+        "nature": "Nature",
+        "insects": "Insects"
+    },
+    "nl": {
+        "all": "Alles gemixt",
+        "food": "Eten",
+        "princess": "Prinses",
+        "animals": "Dieren",
+        "pets": "Huisdieren",
+        "flowers": "Bloemen",
+        "plants": "Planten",
+        "vehicles": "Voertuigen",
+        "space": "Ruimte",
+        "ocean": "Oceaan",
+        "weather": "Weer",
+        "sports": "Sport",
+        "music": "Muziek",
+        "shapes": "Vormen",
+        "colors": "Kleuren",
+        "numbers": "Getallen",
+        "body": "Lichaam",
+        "clothes": "Kleding",
+        "tools": "Gereedschap",
+        "nature": "Natuur",
+        "insects": "Insecten"
+    },
+    "ne": {
+        "all": "सबै मिस",
+        "food": "खाना",
+        "princess": "राजकुमारी",
+        "animals": "जनावरहरू",
+        "pets": "घरपालुवा जनावर",
+        "flowers": "फूलहरू",
+        "plants": "बिरुवाहरू",
+        "vehicles": "सवारी साधन",
+        "space": "अन्तरिक्ष",
+        "ocean": "समुद्र",
+        "weather": "मौसम",
+        "sports": "खेलकुद",
+        "music": "संगीत",
+        "shapes": "आकारहरू",
+        "colors": "रङहरू",
+        "numbers": "संख्याहरू",
+        "body": "शरीर",
+        "clothes": "कपडा",
+        "tools": "औजारहरू",
+        "nature": "प्रकृति",
+        "insects": "कीराहरू"
+    }
+};
+const WORD_TRANSLATIONS = {
+    "nl": {
+        "Apple": "Appel",
+        "Ant": "Mier",
+        "Airplane": "Vliegtuig",
+        "Astronaut": "Astronaut",
+        "Alligator": "Alligator",
+        "Ball": "Bal",
+        "Bear": "Beer",
+        "Butterfly": "Vlinder",
+        "Banana": "Banaan",
+        "Boat": "Boot",
+        "Cat": "Kat",
+        "Car": "Auto",
+        "Cake": "Taart",
+        "Cloud": "Wolk",
+        "Crown": "Kroon",
+        "Dog": "Hond",
+        "Duck": "Eend",
+        "Dinosaur": "Dinosaurus",
+        "Drum": "Trommel",
+        "Dragon": "Draak",
+        "Elephant": "Olifant",
+        "Egg": "Ei",
+        "Eagle": "Adelaar",
+        "Earth": "Aarde",
+        "Engine": "Motor",
+        "Fish": "Vis",
+        "Flower": "Bloem",
+        "Frog": "Kikker",
+        "Fire": "Vuur",
+        "Fox": "Vos",
+        "Giraffe": "Giraffe",
+        "Grape": "Druif",
+        "Grapes": "Druiven",
+        "Goat": "Geit",
+        "Guitar": "Gitaar",
+        "Gift": "Cadeau",
+        "House": "Huis",
+        "Horse": "Paard",
+        "Heart": "Hart",
+        "Hat": "Hoed",
+        "Hippo": "Nijlpaard",
+        "Ice Cream": "IJsje",
+        "Igloo": "Iglo",
+        "Island": "Eiland",
+        "Insect": "Insect",
+        "Idea": "Idee",
+        "Juice": "Sap",
+        "Jellyfish": "Kwal",
+        "Jet": "Straalvliegtuig",
+        "Jacket": "Jas",
+        "Joy": "Blijdschap",
+        "Kite": "Vlieger",
+        "Kangaroo": "Kangoeroe",
+        "Key": "Sleutel",
+        "King": "Koning",
+        "Koala": "Koala",
+        "Lion": "Leeuw",
+        "Leaf": "Blad",
+        "Lemon": "Citroen",
+        "Lamp": "Lamp",
+        "Ladybug": "Lieveheersbeestje",
+        "Monkey": "Aap",
+        "Moon": "Maan",
+        "Mouse": "Muis",
+        "Milk": "Melk",
+        "Mountain": "Berg",
+        "Nest": "Nest",
+        "Nose": "Neus",
+        "Night": "Nacht",
+        "Nine": "Negen",
+        "Nut": "Noot",
+        "Orange": "Sinaasappel",
+        "Octopus": "Octopus",
+        "Owl": "Uil",
+        "Ocean": "Oceaan",
+        "Onion": "Ui",
+        "Pizza": "Pizza",
+        "Penguin": "Pinguïn",
+        "Panda": "Panda",
+        "Princess": "Prinses",
+        "Piano": "Piano",
+        "Queen": "Koningin",
+        "Question": "Vraag",
+        "Quiet": "Stil",
+        "Quack": "Kwak",
+        "Quilt": "Dekbed",
+        "Rabbit": "Konijn",
+        "Rainbow": "Regenboog",
+        "Rocket": "Raket",
+        "Robot": "Robot",
+        "Rose": "Roos",
+        "Sun": "Zon",
+        "Star": "Ster",
+        "Snake": "Slang",
+        "Snow": "Sneeuw",
+        "Ship": "Schip",
+        "Tiger": "Tijger",
+        "Tree": "Boom",
+        "Train": "Trein",
+        "Turtle": "Schildpad",
+        "Tomato": "Tomaat",
+        "Umbrella": "Paraplu",
+        "Unicorn": "Eenhoorn",
+        "Up": "Omhoog",
+        "Uniform": "Uniform",
+        "Ukulele": "Ukelele",
+        "Van": "Busje",
+        "Violin": "Viool",
+        "Volcano": "Vulkaan",
+        "Vegetable": "Groente",
+        "Vase": "Vaas",
+        "Whale": "Walvis",
+        "Water": "Water",
+        "Wolf": "Wolf",
+        "Watch": "Horloge",
+        "Worm": "Worm",
+        "X-ray": "Röntgenfoto",
+        "Xylophone": "Xylofoon",
+        "Box": "Doos",
+        "Six": "Zes",
+        "Yo-yo": "Jojo",
+        "Yellow": "Geel",
+        "Yak": "Jak",
+        "Yacht": "Jacht",
+        "Yogurt": "Yoghurt",
+        "Zebra": "Zebra",
+        "Zoo": "Dierentuin",
+        "Zipper": "Rits",
+        "Zero": "Nul",
+        "Zigzag": "Zigzag",
+        "Strawberry": "Aardbei",
+        "X mark": "Kruisje",
+        "Burger": "Burger",
+        "Donut": "Donut",
+        "Castle": "Kasteel",
+        "Diamond": "Diamant",
+        "Magic Wand": "Toverstaf",
+        "Fairy": "Fee",
+        "Glass Shoe": "Glazen schoen",
+        "Bouquet": "Boeket",
+        "Hamster": "Hamster",
+        "Parrot": "Papegaai",
+        "Paw": "Poot",
+        "Cherry Blossom": "Kersenbloesem",
+        "Sunflower": "Zonnebloem",
+        "Tulip": "Tulp",
+        "Daisy": "Madelief",
+        "Lotus": "Lotus",
+        "Hibiscus": "Hibiscus",
+        "Wilted Flower": "Verwelkte bloem",
+        "Rosette": "Rozet",
+        "Seedling": "Zaailing",
+        "Cactus": "Cactus",
+        "Clover": "Klaver",
+        "Herb": "Kruid",
+        "Potted Plant": "Kamerplant",
+        "Bamboo": "Bamboe",
+        "Pine Tree": "Dennenboom",
+        "Mushroom": "Paddenstoel",
+        "Taxi": "Taxi",
+        "Bus": "Bus",
+        "Bicycle": "Fiets",
+        "Tractor": "Tractor",
+        "Ambulance": "Ambulance",
+        "Planet": "Planeet",
+        "Comet": "Komeet",
+        "UFO": "Ufo",
+        "Milky Way": "Melkweg",
+        "Dolphin": "Dolfijn",
+        "Crab": "Krab",
+        "Tropical Fish": "Tropische vis",
+        "Shark": "Haai",
+        "Shell": "Schelpen",
+        "Wave": "Golf",
+        "Squid": "Inktvis",
+        "Rain": "Regen",
+        "Storm": "Storm",
+        "Tornado": "Tornado",
+        "Fog": "Mist",
+        "Lightning": "Bliksem",
+        "Wind": "Wind",
+        "Soccer": "Voetbal",
+        "Basketball": "Basketbal",
+        "Football": "American football",
+        "Baseball": "Honkbal",
+        "Tennis": "Tennis",
+        "Volleyball": "Volleybal",
+        "Ping Pong": "Tafeltennis",
+        "Boxing": "Boksen",
+        "Golf": "Golf",
+        "Trophy": "Trofee",
+        "Music Note": "Muzieknoot",
+        "Trumpet": "Trompet",
+        "Microphone": "Microfoon",
+        "Headphones": "Koptelefoon",
+        "Horn": "Hoorn",
+        "Maracas": "Maracas",
+        "Circle": "Cirkel",
+        "Square": "Vierkant",
+        "Triangle": "Driehoek",
+        "Green Square": "Groen vierkant",
+        "Yellow Square": "Geel vierkant",
+        "Purple Circle": "Paarse cirkel",
+        "Black Square": "Zwart vierkant",
+        "Red": "Rood",
+        "Green": "Groen",
+        "Blue": "Blauw",
+        "Purple": "Paars",
+        "Black": "Zwart",
+        "White": "Wit",
+        "Brown": "Bruin",
+        "One": "Een",
+        "Two": "Twee",
+        "Three": "Drie",
+        "Four": "Vier",
+        "Five": "Vijf",
+        "Seven": "Zeven",
+        "Eight": "Acht",
+        "Eye": "Oog",
+        "Ear": "Oor",
+        "Mouth": "Mond",
+        "Tooth": "Tand",
+        "Tongue": "Tong",
+        "Hand": "Hand",
+        "Foot": "Voet",
+        "Brain": "Brein",
+        "T-Shirt": "T-shirt",
+        "Jeans": "Spijkerbroek",
+        "Dress": "Jurk",
+        "Coat": "Jas",
+        "Cap": "Pet",
+        "Shoe": "Schoen",
+        "Socks": "Sokken",
+        "Gloves": "Handschoenen",
+        "Backpack": "Rugzak",
+        "Hammer": "Hamer",
+        "Wrench": "Moersleutel",
+        "Screwdriver": "Schroevendraaier",
+        "Scissors": "Schaar",
+        "Magnet": "Magneet",
+        "Flashlight": "Zaklamp",
+        "Ladder": "Ladder",
+        "Toolbox": "Gereedschapskist",
+        "Ruler": "Liniaal",
+        "Paintbrush": "Kwast",
+        "Beach": "Strand",
+        "Desert": "Woestijn",
+        "Forest": "Bos",
+        "Cricket": "Krekel",
+        "Beetle": "Kever",
+        "Cockroach": "Kakkerlak",
+        "Spider": "Spin",
+        "Web": "Web"
+    },
+    "ne": {
+        "Apple": "स्याउ",
+        "Ant": "कमिला",
+        "Airplane": "हवाईजहाज",
+        "Astronaut": "अन्तरिक्ष यात्री",
+        "Alligator": "गोही",
+        "Ball": "बल",
+        "Bear": "भालु",
+        "Butterfly": "पुतली",
+        "Banana": "केरा",
+        "Boat": "डुङ्गा",
+        "Cat": "बिरालो",
+        "Car": "कार",
+        "Cake": "केक",
+        "Cloud": "बादल",
+        "Crown": "मुकुट",
+        "Dog": "कुकुर",
+        "Duck": "हाँस",
+        "Dinosaur": "डाइनोसर",
+        "Drum": "ढोल",
+        "Dragon": "ड्रागन",
+        "Elephant": "हात्ती",
+        "Egg": "अण्डा",
+        "Eagle": "चिल",
+        "Earth": "पृथ्वी",
+        "Engine": "इन्जिन",
+        "Fish": "माछा",
+        "Flower": "फूल",
+        "Frog": "भ्यागुता",
+        "Fire": "आगो",
+        "Fox": "स्याल",
+        "Giraffe": "जिराफ",
+        "Grape": "अङ्गुर",
+        "Grapes": "अङ्गुर",
+        "Goat": "बाख्रा",
+        "Guitar": "गिटार",
+        "Gift": "उपहार",
+        "House": "घर",
+        "Horse": "घोडा",
+        "Heart": "मुटु",
+        "Hat": "टोपी",
+        "Hippo": "दरियाई घोडा",
+        "Ice Cream": "आइसक्रिम",
+        "Igloo": "इग्लु",
+        "Island": "टापु",
+        "Insect": "किरा",
+        "Idea": "विचार",
+        "Juice": "जुस",
+        "Jellyfish": "जेलीफिस",
+        "Jet": "जेट",
+        "Jacket": "ज्याकेट",
+        "Joy": "खुसी",
+        "Kite": "चंगा",
+        "Kangaroo": "कंगारु",
+        "Key": "साँचो",
+        "King": "राजा",
+        "Koala": "कोआला",
+        "Lion": "सिंह",
+        "Leaf": "पात",
+        "Lemon": "कागती",
+        "Lamp": "बत्ती",
+        "Ladybug": "लेडीबग",
+        "Monkey": "बाँदर",
+        "Moon": "चन्द्रमा",
+        "Mouse": "मुसा",
+        "Milk": "दूध",
+        "Mountain": "पहाड",
+        "Nest": "गुँड",
+        "Nose": "नाक",
+        "Night": "रात",
+        "Nine": "नौ",
+        "Nut": "नट",
+        "Orange": "सुन्तला",
+        "Octopus": "अक्टोपस",
+        "Owl": "लाटोकोसेरो",
+        "Ocean": "समुद्र",
+        "Onion": "प्याज",
+        "Pizza": "पिज्जा",
+        "Penguin": "पेन्गुइन",
+        "Panda": "पाण्डा",
+        "Princess": "राजकुमारी",
+        "Piano": "पियानो",
+        "Queen": "रानी",
+        "Question": "प्रश्न",
+        "Quiet": "शान्त",
+        "Quack": "क्वाक",
+        "Quilt": "सिरक",
+        "Rabbit": "खरायो",
+        "Rainbow": "इन्द्रेणी",
+        "Rocket": "रकेट",
+        "Robot": "रोबोट",
+        "Rose": "गुलाब",
+        "Sun": "सूर्य",
+        "Star": "तारा",
+        "Snake": "सर्प",
+        "Snow": "हिउँ",
+        "Ship": "जहाज",
+        "Tiger": "बाघ",
+        "Tree": "रुख",
+        "Train": "रेल",
+        "Turtle": "कछुवा",
+        "Tomato": "गोलभेंडा",
+        "Umbrella": "छाता",
+        "Unicorn": "युनिकर्न",
+        "Up": "माथि",
+        "Uniform": "वर्दी",
+        "Ukulele": "युकुलेले",
+        "Van": "भ्यान",
+        "Violin": "भायोलिन",
+        "Volcano": "ज्वालामुखी",
+        "Vegetable": "तरकारी",
+        "Vase": "फूलदानी",
+        "Whale": "ह्वेल",
+        "Water": "पानी",
+        "Wolf": "ब्वाँसो",
+        "Watch": "घडी",
+        "Worm": "जुका",
+        "X-ray": "एक्स-रे",
+        "Xylophone": "जाइलोफोन",
+        "Box": "बाकस",
+        "Six": "छ",
+        "Yo-yo": "यो-यो",
+        "Yellow": "पहेंलो",
+        "Yak": "चौंरी",
+        "Yacht": "याट",
+        "Yogurt": "दही",
+        "Zebra": "जेब्रा",
+        "Zoo": "चिडियाखाना",
+        "Zipper": "जिप",
+        "Zero": "शून्य",
+        "Zigzag": "बाङ्गोटिङ्गो",
+        "Strawberry": "स्ट्रबेरी",
+        "X mark": "क्रस चिन्ह",
+        "Burger": "बर्गर",
+        "Donut": "डोनट",
+        "Castle": "दरबार",
+        "Diamond": "हिरा",
+        "Magic Wand": "जादूको छडी",
+        "Fairy": "परी",
+        "Glass Shoe": "काँचको जुत्ता",
+        "Bouquet": "फूलको गुच्छा",
+        "Hamster": "ह्याम्स्टर",
+        "Parrot": "सुगा",
+        "Paw": "पन्जा",
+        "Cherry Blossom": "चेरी फूल",
+        "Sunflower": "सूर्यमुखी",
+        "Tulip": "ट्युलिप",
+        "Daisy": "डेजी",
+        "Lotus": "कमल",
+        "Hibiscus": "जपाकुसुम",
+        "Wilted Flower": "ओइलाएको फूल",
+        "Rosette": "फूलाकार चिन्ह",
+        "Seedling": "बेर्ना",
+        "Cactus": "क्याक्टस",
+        "Clover": "क्लोभर",
+        "Herb": "जडीबुटी",
+        "Potted Plant": "गमलाको बिरुवा",
+        "Bamboo": "बाँस",
+        "Pine Tree": "सल्लो रुख",
+        "Mushroom": "च्याउ",
+        "Taxi": "ट्याक्सी",
+        "Bus": "बस",
+        "Bicycle": "साइकल",
+        "Tractor": "ट्र्याक्टर",
+        "Ambulance": "एम्बुलेन्स",
+        "Planet": "ग्रह",
+        "Comet": "धूमकेतु",
+        "UFO": "युएफओ",
+        "Milky Way": "आकाशगंगा",
+        "Dolphin": "डल्फिन",
+        "Crab": "गँगटो",
+        "Tropical Fish": "रङ्गीन माछा",
+        "Shark": "सार्क",
+        "Shell": "शंख",
+        "Wave": "छाल",
+        "Squid": "स्क्विड",
+        "Rain": "वर्षा",
+        "Storm": "आँधी",
+        "Tornado": "भुमरी",
+        "Fog": "कुहिरो",
+        "Lightning": "चट्याङ",
+        "Wind": "हावा",
+        "Soccer": "फुटबल",
+        "Basketball": "बास्केटबल",
+        "Football": "अमेरिकी फुटबल",
+        "Baseball": "बेसबल",
+        "Tennis": "टेनिस",
+        "Volleyball": "भलिबल",
+        "Ping Pong": "टेबल टेनिस",
+        "Boxing": "बक्सिङ",
+        "Golf": "गल्फ",
+        "Trophy": "ट्रफी",
+        "Music Note": "संगीत चिन्ह",
+        "Trumpet": "ट्रम्पेट",
+        "Microphone": "माइक्रोफोन",
+        "Headphones": "हेडफोन",
+        "Horn": "सिङ",
+        "Maracas": "मराकास",
+        "Circle": "वृत्त",
+        "Square": "वर्ग",
+        "Triangle": "त्रिभुज",
+        "Green Square": "हरियो वर्ग",
+        "Yellow Square": "पहेंलो वर्ग",
+        "Purple Circle": "बैजनी वृत्त",
+        "Black Square": "कालो वर्ग",
+        "Red": "रातो",
+        "Green": "हरियो",
+        "Blue": "निलो",
+        "Purple": "बैजनी",
+        "Black": "कालो",
+        "White": "सेतो",
+        "Brown": "खैरो",
+        "One": "एक",
+        "Two": "दुई",
+        "Three": "तीन",
+        "Four": "चार",
+        "Five": "पाँच",
+        "Seven": "सात",
+        "Eight": "आठ",
+        "Eye": "आँखा",
+        "Ear": "कान",
+        "Mouth": "मुख",
+        "Tooth": "दाँत",
+        "Tongue": "जिब्रो",
+        "Hand": "हात",
+        "Foot": "खुट्टा",
+        "Brain": "मस्तिष्क",
+        "T-Shirt": "टी-सर्ट",
+        "Jeans": "जिन्स",
+        "Dress": "पोशाक",
+        "Coat": "कोट",
+        "Cap": "टोपी",
+        "Shoe": "जुत्ता",
+        "Socks": "मोजा",
+        "Gloves": "पन्जा",
+        "Backpack": "झोला",
+        "Hammer": "हथौडा",
+        "Wrench": "रेन्च",
+        "Screwdriver": "पेचकस",
+        "Scissors": "कैंची",
+        "Magnet": "चुम्बक",
+        "Flashlight": "टर्च",
+        "Ladder": "भर्‍याङ",
+        "Toolbox": "औजार बाकस",
+        "Ruler": "स्केल",
+        "Paintbrush": "ब्रस",
+        "Beach": "समुद्री किनार",
+        "Desert": "मरुभूमि",
+        "Forest": "जंगल",
+        "Cricket": "झ्याउँकिरी",
+        "Beetle": "भँमरा",
+        "Cockroach": "साङ्लो",
+        "Spider": "माकुरा",
+        "Web": "जालो"
+    }
+};
+
+
+const EXTRA_WORD_TRANSLATIONS = {
+    nl: {
+        "Happy": "Blij", "Sad": "Verdrietig", "Angry": "Boos", "Sleepy": "Slaperig", "Surprised": "Verrast", "Silly": "Gek",
+        "Hot": "Warm", "Cold": "Koud", "Big": "Groot", "Small": "Klein", "Up": "Omhoog", "Down": "Omlaag", "Day": "Dag", "Night": "Nacht", "Full": "Vol", "Empty": "Leeg", "Fast": "Snel", "Slow": "Langzaam",
+        "Wake up": "Wakker worden", "Brush teeth": "Tanden poetsen", "Breakfast": "Ontbijt", "Cloud": "Wolk", "Rain": "Regen", "Rainbow": "Regenboog", "Seed": "Zaadje", "Flower": "Bloem", "Fruit": "Fruit", "Egg": "Ei", "Chick": "Kuiken", "Chicken": "Kip", "Bedtime": "Bedtijd", "Book": "Boek", "Sleep": "Slapen"
+    },
+    ne: {
+        "Happy": "खुसी", "Sad": "दुखी", "Angry": "रिसाएको", "Sleepy": "निन्द्रा लागेको", "Surprised": "अचम्म", "Silly": "रमाइलो",
+        "Hot": "तातो", "Cold": "चिसो", "Big": "ठूलो", "Small": "सानो", "Up": "माथि", "Down": "तल", "Day": "दिन", "Night": "रात", "Full": "भरिएको", "Empty": "खाली", "Fast": "छिटो", "Slow": "ढिलो",
+        "Wake up": "उठ्ने", "Brush teeth": "दाँत माझ्ने", "Breakfast": "नास्ता", "Cloud": "बादल", "Rain": "वर्षा", "Rainbow": "इन्द्रेणी", "Seed": "बीउ", "Flower": "फूल", "Fruit": "फल", "Egg": "अण्डा", "Chick": "चल्‍ला", "Chicken": "कुखुरा", "Bedtime": "सुत्ने बेला", "Book": "किताब", "Sleep": "सुत्ने"
+    }
+};
+
+function getSavedLanguage() {
+    try {
+        const saved = localStorage.getItem('typefun-language');
+        return LOCALIZED_TEXT[saved] ? saved : 'en';
+    } catch (e) {
+        return 'en';
+    }
+}
+
+function rawText(key) {
+    const pack = LOCALIZED_TEXT[currentLanguage] || LOCALIZED_TEXT.en;
+    return Object.prototype.hasOwnProperty.call(pack, key) ? pack[key] : LOCALIZED_TEXT.en[key];
+}
+
+function t(key, params = {}) {
+    let value = rawText(key);
+    if (Array.isArray(value)) return value;
+    if (value === undefined || value === null) value = key;
+    return String(value).replace(/\{(\w+)\}/g, (_, name) => params[name] ?? '');
+}
+
+function categoryLabel(key) {
+    return (CATEGORY_LABELS[currentLanguage] && CATEGORY_LABELS[currentLanguage][key]) || CATEGORY_LABELS.en[key] || key;
+}
+
+function itemLabel(word) {
+    return (WORD_TRANSLATIONS[currentLanguage] && WORD_TRANSLATIONS[currentLanguage][word])
+        || (EXTRA_WORD_TRANSLATIONS[currentLanguage] && EXTRA_WORD_TRANSLATIONS[currentLanguage][word])
+        || word;
+}
+
+function setLanguage(lang, shouldSpeak = true) {
+    currentLanguage = LOCALIZED_TEXT[lang] ? lang : 'en';
+    try { localStorage.setItem('typefun-language', currentLanguage); } catch (e) {}
+    applyLanguage();
+    closeHomeMenu();
+    if (shouldSpeak) speak(t('languageSelected'));
+}
+
+function applyLanguage() {
+    document.documentElement.lang = HTML_LANGS[currentLanguage] || 'en';
+    document.title = t('documentTitle');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = t(el.dataset.i18n);
+    });
+    const select = document.getElementById('language-select');
+    if (select) select.value = currentLanguage;
+    const localizedPraise = rawText('praiseWords');
+    praiseWords = Array.isArray(localizedPraise) ? localizedPraise : LOCALIZED_TEXT.en.praiseWords;
+    buildCategoryButtons();
+    buildReverseCategoryButtons();
+    updateBalloonHud();
+    updateScore();
+    updateReverseScore();
+    updatePatternScore();
+    updateMemoryHud();
+    updateCountScore();
+    updateOddScore();
+    if (currentScreen === 'recognize-game' && currentQuestion) renderRecognizeQuestion();
+    if (currentScreen === 'reverse-recognize-game' && reverseCurrentQuestion) renderReverseQuestion();
+    if (currentScreen === 'pattern-game' && patternQuestion) renderPatternQuestion();
+    if (currentScreen === 'memory-game' && memoryCards.length) renderMemoryBoard();
+    if (currentScreen === 'count-game' && countQuestion) renderCountQuestion();
+    if (currentScreen === 'odd-game' && oddQuestion) renderOddQuestion();
+    if (currentScreen === 'smart-choice-game' && smartQuestion) renderSmartChoiceQuestion();
+}
+
+
+const wordList = {
+    a: [{word:'Apple',emoji:'🍎'}, {word:'Ant',emoji:'🐜'}, {word:'Airplane',emoji:'✈️'}, {word:'Astronaut',emoji:'👩‍🚀'}, {word:'Alligator',emoji:'🐊'}],
+    b: [{word:'Ball',emoji:'⚽'}, {word:'Bear',emoji:'🐻'}, {word:'Butterfly',emoji:'🦋'}, {word:'Banana',emoji:'🍌'}, {word:'Boat',emoji:'⛵'}],
+    c: [{word:'Cat',emoji:'🐱'}, {word:'Car',emoji:'🚗'}, {word:'Cake',emoji:'🎂'}, {word:'Cloud',emoji:'☁️'}, {word:'Crown',emoji:'👑'}],
+    d: [{word:'Dog',emoji:'🐶'}, {word:'Duck',emoji:'🦆'}, {word:'Dinosaur',emoji:'🦕'}, {word:'Drum',emoji:'🥁'}, {word:'Dragon',emoji:'🐉'}],
+    e: [{word:'Elephant',emoji:'🐘'}, {word:'Egg',emoji:'🥚'}, {word:'Eagle',emoji:'🦅'}, {word:'Earth',emoji:'🌍'}, {word:'Engine',emoji:'🚂'}],
+    f: [{word:'Fish',emoji:'🐟'}, {word:'Flower',emoji:'🌸'}, {word:'Frog',emoji:'🐸'}, {word:'Fire',emoji:'🔥'}, {word:'Fox',emoji:'🦊'}],
+    g: [{word:'Giraffe',emoji:'🦒'}, {word:'Grape',emoji:'🍇'}, {word:'Goat',emoji:'🐐'}, {word:'Guitar',emoji:'🎸'}, {word:'Gift',emoji:'🎁'}],
+    h: [{word:'House',emoji:'🏠'}, {word:'Horse',emoji:'🐴'}, {word:'Heart',emoji:'❤️'}, {word:'Hat',emoji:'🎩'}, {word:'Hippo',emoji:'🦛'}],
+    i: [{word:'Ice Cream',emoji:'🍦'}, {word:'Igloo',emoji:'🏔️'}, {word:'Island',emoji:'🏝️'}, {word:'Insect',emoji:'🐞'}, {word:'Idea',emoji:'💡'}],
+    j: [{word:'Juice',emoji:'🧃'}, {word:'Jellyfish',emoji:'🪼'}, {word:'Jet',emoji:'🛩️'}, {word:'Jacket',emoji:'🧥'}, {word:'Joy',emoji:'😊'}],
+    k: [{word:'Kite',emoji:'🪁'}, {word:'Kangaroo',emoji:'🦘'}, {word:'Key',emoji:'🔑'}, {word:'King',emoji:'🤴'}, {word:'Koala',emoji:'🐨'}],
+    l: [{word:'Lion',emoji:'🦁'}, {word:'Leaf',emoji:'🍃'}, {word:'Lemon',emoji:'🍋'}, {word:'Lamp',emoji:'💡'}, {word:'Ladybug',emoji:'🐞'}],
+    m: [{word:'Monkey',emoji:'🐵'}, {word:'Moon',emoji:'🌙'}, {word:'Mouse',emoji:'🐭'}, {word:'Milk',emoji:'🥛'}, {word:'Mountain',emoji:'⛰️'}],
+    n: [{word:'Nest',emoji:'🪹'}, {word:'Nose',emoji:'👃'}, {word:'Night',emoji:'🌃'}, {word:'Nine',emoji:'9️⃣'}, {word:'Nut',emoji:'🥜'}],
+    o: [{word:'Orange',emoji:'🍊'}, {word:'Octopus',emoji:'🐙'}, {word:'Owl',emoji:'🦉'}, {word:'Ocean',emoji:'🌊'}, {word:'Onion',emoji:'🧅'}],
+    p: [{word:'Pizza',emoji:'🍕'}, {word:'Penguin',emoji:'🐧'}, {word:'Panda',emoji:'🐼'}, {word:'Princess',emoji:'👸'}, {word:'Piano',emoji:'🎹'}],
+    q: [{word:'Queen',emoji:'👸'}, {word:'Question',emoji:'❓'}, {word:'Quiet',emoji:'🤫'}, {word:'Quack',emoji:'🦆'}, {word:'Quilt',emoji:'🛌'}],
+    r: [{word:'Rabbit',emoji:'🐰'}, {word:'Rainbow',emoji:'🌈'}, {word:'Rocket',emoji:'🚀'}, {word:'Robot',emoji:'🤖'}, {word:'Rose',emoji:'🌹'}],
+    s: [{word:'Sun',emoji:'☀️'}, {word:'Star',emoji:'⭐'}, {word:'Snake',emoji:'🐍'}, {word:'Snow',emoji:'❄️'}, {word:'Ship',emoji:'🚢'}],
+    t: [{word:'Tiger',emoji:'🐯'}, {word:'Tree',emoji:'🌳'}, {word:'Train',emoji:'🚂'}, {word:'Turtle',emoji:'🐢'}, {word:'Tomato',emoji:'🍅'}],
+    u: [{word:'Umbrella',emoji:'☂️'}, {word:'Unicorn',emoji:'🦄'}, {word:'Up',emoji:'⬆️'}, {word:'Uniform',emoji:'👮'}, {word:'Ukulele',emoji:'🎸'}],
+    v: [{word:'Van',emoji:'🚐'}, {word:'Violin',emoji:'🎻'}, {word:'Volcano',emoji:'🌋'}, {word:'Vegetable',emoji:'🥦'}, {word:'Vase',emoji:'🏺'}],
+    w: [{word:'Whale',emoji:'🐳'}, {word:'Water',emoji:'💧'}, {word:'Wolf',emoji:'🐺'}, {word:'Watch',emoji:'⌚'}, {word:'Worm',emoji:'🪱'}],
+    x: [{word:'X-ray',emoji:'🦴'}, {word:'Xylophone',emoji:'🎹'}, {word:'Box',emoji:'📦'}, {word:'Fox',emoji:'🦊'}, {word:'Six',emoji:'6️⃣'}],
+    y: [{word:'Yo-yo',emoji:'🪀'}, {word:'Yellow',emoji:'🟡'}, {word:'Yak',emoji:'🐂'}, {word:'Yacht',emoji:'🛥️'}, {word:'Yogurt',emoji:'🥣'}],
+    z: [{word:'Zebra',emoji:'🦓'}, {word:'Zoo',emoji:'🏞️'}, {word:'Zipper',emoji:'🤐'}, {word:'Zero',emoji:'0️⃣'}, {word:'Zigzag',emoji:'〰️'}]
+};
+
+const categories = {
+    all: {label:'All Mix', emoji:'🌈', items:[]},
+    food: {label:'Food', emoji:'🍕', items:[['🍎','Apple'],['🍌','Banana'],['🍕','Pizza'],['🍰','Cake'],['🍦','Ice Cream'],['🍇','Grapes'],['🍉','Watermelon'],['🥕','Carrot'],['🍔','Burger'],['🍩','Donut']]},
+    princess: {label:'Princess', emoji:'👸', items:[['👸','Princess'],['👑','Crown'],['🏰','Castle'],['🦄','Unicorn'],['💎','Diamond'],['🪄','Magic Wand'],['🧚','Fairy'],['🐉','Dragon'],['🥿','Glass Shoe'],['💐','Bouquet']]},
+    animals: {label:'Animals', emoji:'🦁', items:[['🦁','Lion'],['🐯','Tiger'],['🐘','Elephant'],['🦒','Giraffe'],['🐼','Panda'],['🦓','Zebra'],['🐵','Monkey'],['🦊','Fox'],['🐻','Bear'],['🐊','Alligator']]},
+    pets: {label:'Pets', emoji:'🐶', items:[['🐶','Dog'],['🐱','Cat'],['🐰','Rabbit'],['🐹','Hamster'],['🐟','Fish'],['🐢','Turtle'],['🦜','Parrot'],['🐴','Horse'],['🐭','Mouse'],['🐾','Paw']]},
+    flowers: {label:'Flowers', emoji:'🌸', items:[['🌸','Cherry Blossom'],['🌹','Rose'],['🌻','Sunflower'],['🌷','Tulip'],['🌼','Daisy'],['💐','Bouquet'],['🪷','Lotus'],['🌺','Hibiscus'],['🥀','Wilted Flower'],['🏵️','Rosette']]},
+    plants: {label:'Plants', emoji:'🌱', items:[['🌱','Seedling'],['🌳','Tree'],['🌵','Cactus'],['🍀','Clover'],['🍃','Leaf'],['🌿','Herb'],['🪴','Potted Plant'],['🎋','Bamboo'],['🌲','Pine Tree'],['🍄','Mushroom']]},
+    vehicles: {label:'Vehicles', emoji:'🚗', items:[['🚗','Car'],['🚕','Taxi'],['🚌','Bus'],['🚂','Train'],['✈️','Airplane'],['🚀','Rocket'],['🚲','Bicycle'],['🚢','Ship'],['🚜','Tractor'],['🚑','Ambulance']]},
+    space: {label:'Space', emoji:'🚀', items:[['🚀','Rocket'],['🌙','Moon'],['⭐','Star'],['☀️','Sun'],['🌍','Earth'],['🪐','Planet'],['☄️','Comet'],['👩‍🚀','Astronaut'],['🛸','UFO'],['🌌','Milky Way']]},
+    ocean: {label:'Ocean', emoji:'🐳', items:[['🐳','Whale'],['🐬','Dolphin'],['🐙','Octopus'],['🦀','Crab'],['🐠','Tropical Fish'],['🦈','Shark'],['🐚','Shell'],['🌊','Wave'],['🪼','Jellyfish'],['🦑','Squid']]},
+    weather: {label:'Weather', emoji:'☀️', items:[['☀️','Sun'],['🌧️','Rain'],['❄️','Snow'],['🌈','Rainbow'],['⛈️','Storm'],['☁️','Cloud'],['🌪️','Tornado'],['🌫️','Fog'],['🌩️','Lightning'],['💨','Wind']]},
+    sports: {label:'Sports', emoji:'⚽', items:[['⚽','Soccer'],['🏀','Basketball'],['🏈','Football'],['⚾','Baseball'],['🎾','Tennis'],['🏐','Volleyball'],['🏓','Ping Pong'],['🥊','Boxing'],['⛳','Golf'],['🏆','Trophy']]},
+    music: {label:'Music', emoji:'🎵', items:[['🎵','Music Note'],['🎸','Guitar'],['🎹','Piano'],['🥁','Drum'],['🎺','Trumpet'],['🎻','Violin'],['🎤','Microphone'],['🎧','Headphones'],['📯','Horn'],['🪇','Maracas']]},
+    shapes: {label:'Shapes', emoji:'🔺', items:[['🔴','Circle'],['🟦','Square'],['🔺','Triangle'],['🔶','Diamond'],['⭐','Star'],['❤️','Heart'],['🟩','Green Square'],['🟨','Yellow Square'],['🟣','Purple Circle'],['⬛','Black Square']]},
+    colors: {label:'Colors', emoji:'🎨', items:[['🔴','Red'],['🟠','Orange'],['🟡','Yellow'],['🟢','Green'],['🔵','Blue'],['🟣','Purple'],['⚫','Black'],['⚪','White'],['🟤','Brown'],['🌈','Rainbow']]},
+    numbers: {label:'Numbers', emoji:'🔢', items:[['0️⃣','Zero'],['1️⃣','One'],['2️⃣','Two'],['3️⃣','Three'],['4️⃣','Four'],['5️⃣','Five'],['6️⃣','Six'],['7️⃣','Seven'],['8️⃣','Eight'],['9️⃣','Nine']]},
+    body: {label:'Body', emoji:'👃', items:[['👁️','Eye'],['👂','Ear'],['👃','Nose'],['👄','Mouth'],['🦷','Tooth'],['👅','Tongue'],['✋','Hand'],['🦶','Foot'],['🧠','Brain'],['❤️','Heart']]},
+    clothes: {label:'Clothes', emoji:'👕', items:[['👕','T-Shirt'],['👖','Jeans'],['👗','Dress'],['🧥','Coat'],['🧢','Cap'],['👟','Shoe'],['🧦','Socks'],['🧤','Gloves'],['👑','Crown'],['🎒','Backpack']]},
+    tools: {label:'Tools', emoji:'🔧', items:[['🔨','Hammer'],['🔧','Wrench'],['🪛','Screwdriver'],['✂️','Scissors'],['🧲','Magnet'],['🔦','Flashlight'],['🪜','Ladder'],['🧰','Toolbox'],['📏','Ruler'],['🖌️','Paintbrush']]},
+    nature: {label:'Nature', emoji:'⛰️', items:[['⛰️','Mountain'],['🏝️','Island'],['🏖️','Beach'],['🌋','Volcano'],['🏜️','Desert'],['🌲','Forest'],['🌊','Ocean'],['🌙','Moon'],['☀️','Sun'],['🌈','Rainbow']]},
+    insects: {label:'Insects', emoji:'🐞', items:[['🐞','Ladybug'],['🦋','Butterfly'],['🐝','Bee'],['🐜','Ant'],['🦗','Cricket'],['🪲','Beetle'],['🪳','Cockroach'],['🕷️','Spider'],['🕸️','Web'],['🪱','Worm']]}
+};
+
+categories.all.items = Object.keys(categories)
+    .filter(key => key !== 'all')
+    .flatMap(key => categories[key].items);
+
+let currentScreen = 'home-screen';
+let scrabbleLetters = [];
+let balloons = [];
+let gameBalloons = [];
+let balloonSpawnTimer = null;
+let balloonPopped = 0;
+let balloonCombo = 0;
+let typedBuffer = '';
+let activeCategory = 'all';
+let currentQuestion = null;
+let correctCount = 0;
+let streak = 0;
+let lockedAnswer = false;
+let reverseActiveCategory = 'all';
+let reverseCurrentQuestion = null;
+let reverseCorrectCount = 0;
+let reverseStreak = 0;
+let reverseLockedAnswer = false;
+let patternCorrect = 0;
+let patternQuestion = null;
+let patternLocked = false;
+let memoryCards = [];
+let memoryFlipped = [];
+let memoryMatched = 0;
+let memoryMoves = 0;
+let memoryLocked = false;
+let countCorrect = 0;
+let countQuestion = null;
+let countLocked = false;
+let oddCorrect = 0;
+let oddQuestion = null;
+let oddLocked = false;
+let smartGameType = 'sound';
+let smartCorrect = 0;
+let smartQuestion = null;
+let smartLocked = false;
+let audioCtx = null;
+let lastWords = {};
+let firstLetterKey = true;
+let currentLanguage = getSavedLanguage();
+
+const synth = window.speechSynthesis;
+
+function closeHomeMenu() {
+    const panel = document.getElementById('home-menu-panel');
+    const btn = document.getElementById('home-menu-btn');
+    if (panel) panel.hidden = true;
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+function toggleHomeMenu(event) {
+    if (event) event.stopPropagation();
+    const panel = document.getElementById('home-menu-panel');
+    const btn = document.getElementById('home-menu-btn');
+    if (!panel) return;
+    panel.hidden = !panel.hidden;
+    if (btn) btn.setAttribute('aria-expanded', panel.hidden ? 'false' : 'true');
+}
+
+function showScreen(id) {
+    closeHomeMenu();
+    if (currentScreen === 'balloon-game' && id !== 'balloon-game') stopBalloonGame();
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    currentScreen = id;
+    hideWin();
+    if (id === 'letter-game') {
+        document.getElementById('instructions').style.display = firstLetterKey ? 'block' : 'none';
+    }
+}
+
+
+function startBalloonGame(resetOnly = false) {
+    stopBalloonGame();
+    balloonPopped = 0;
+    balloonCombo = 0;
+    showScreen('balloon-game');
+    updateBalloonHud();
+    for (let i = 0; i < 6; i++) setTimeout(spawnLetterBalloon, i * 360);
+    balloonSpawnTimer = setInterval(() => {
+        if (currentScreen === 'balloon-game' && gameBalloons.length < 7) spawnLetterBalloon();
+    }, 1200);
+    if (!resetOnly) speak(t('startBalloonSpeak'));
+}
+
+function stopBalloonGame() {
+    if (balloonSpawnTimer) clearInterval(balloonSpawnTimer);
+    balloonSpawnTimer = null;
+    gameBalloons.forEach(item => {
+        if (item.el && item.el.parentElement) item.el.remove();
+    });
+    gameBalloons = [];
+}
+
+function updateBalloonHud() {
+    const score = document.getElementById('balloon-score');
+    const target = document.getElementById('balloon-target');
+    const combo = document.getElementById('balloon-combo');
+    if (!score || !target || !combo) return;
+    score.textContent = `${t('popped')}: ${balloonPopped} / 10`;
+    combo.textContent = `${t('combo')} ${balloonCombo}`;
+    const letters = [...new Set(gameBalloons.map(item => item.letter))].sort();
+    target.textContent = letters.length ? `${t('type')}: ${letters.join('  ')}` : t('typeALetter');
+}
+
+function balloonItemForLetter(letter) {
+    const lower = letter.toLowerCase();
+    const balloonWords = {
+        a: [{word:'Apple',emoji:'🍎'}, {word:'Ant',emoji:'🐜'}, {word:'Airplane',emoji:'✈️'}],
+        b: [{word:'Banana',emoji:'🍌'}, {word:'Bear',emoji:'🐻'}, {word:'Ball',emoji:'⚽'}],
+        c: [{word:'Cat',emoji:'🐱'}, {word:'Cake',emoji:'🎂'}, {word:'Car',emoji:'🚗'}],
+        d: [{word:'Dog',emoji:'🐶'}, {word:'Duck',emoji:'🦆'}, {word:'Dinosaur',emoji:'🦕'}],
+        e: [{word:'Elephant',emoji:'🐘'}, {word:'Egg',emoji:'🥚'}, {word:'Earth',emoji:'🌍'}],
+        f: [{word:'Fish',emoji:'🐟'}, {word:'Flower',emoji:'🌸'}, {word:'Frog',emoji:'🐸'}],
+        g: [{word:'Grapes',emoji:'🍇'}, {word:'Giraffe',emoji:'🦒'}, {word:'Gift',emoji:'🎁'}],
+        h: [{word:'House',emoji:'🏠'}, {word:'Heart',emoji:'❤️'}, {word:'Horse',emoji:'🐴'}],
+        i: [{word:'Ice Cream',emoji:'🍦'}, {word:'Island',emoji:'🏝️'}, {word:'Idea',emoji:'💡'}],
+        j: [{word:'Juice',emoji:'🧃'}, {word:'Jellyfish',emoji:'🪼'}, {word:'Jet',emoji:'🛩️'}],
+        k: [{word:'Kite',emoji:'🪁'}, {word:'Key',emoji:'🔑'}, {word:'Koala',emoji:'🐨'}],
+        l: [{word:'Lion',emoji:'🦁'}, {word:'Leaf',emoji:'🍃'}, {word:'Lemon',emoji:'🍋'}],
+        m: [{word:'Monkey',emoji:'🐵'}, {word:'Moon',emoji:'🌙'}, {word:'Milk',emoji:'🥛'}],
+        n: [{word:'Nest',emoji:'🪹'}, {word:'Nose',emoji:'👃'}, {word:'Night',emoji:'🌃'}],
+        o: [{word:'Orange',emoji:'🍊'}, {word:'Octopus',emoji:'🐙'}, {word:'Owl',emoji:'🦉'}],
+        p: [{word:'Pizza',emoji:'🍕'}, {word:'Panda',emoji:'🐼'}, {word:'Princess',emoji:'👸'}],
+        q: [{word:'Queen',emoji:'👸'}, {word:'Question',emoji:'❓'}, {word:'Quiet',emoji:'🤫'}],
+        r: [{word:'Rabbit',emoji:'🐰'}, {word:'Rainbow',emoji:'🌈'}, {word:'Rocket',emoji:'🚀'}],
+        s: [{word:'Strawberry',emoji:'🍓'}, {word:'Sun',emoji:'☀️'}, {word:'Star',emoji:'⭐'}],
+        t: [{word:'Tiger',emoji:'🐯'}, {word:'Tree',emoji:'🌳'}, {word:'Train',emoji:'🚂'}],
+        u: [{word:'Umbrella',emoji:'☂️'}, {word:'Unicorn',emoji:'🦄'}, {word:'Up',emoji:'⬆️'}],
+        v: [{word:'Van',emoji:'🚐'}, {word:'Violin',emoji:'🎻'}, {word:'Volcano',emoji:'🌋'}],
+        w: [{word:'Whale',emoji:'🐳'}, {word:'Water',emoji:'💧'}, {word:'Wolf',emoji:'🐺'}],
+        x: [{word:'X-ray',emoji:'🦴'}, {word:'Xylophone',emoji:'🎹'}, {word:'X mark',emoji:'❌'}],
+        y: [{word:'Yo-yo',emoji:'🪀'}, {word:'Yellow',emoji:'🟡'}, {word:'Yacht',emoji:'🛥️'}],
+        z: [{word:'Zebra',emoji:'🦓'}, {word:'Zoo',emoji:'🏞️'}, {word:'Zipper',emoji:'🤐'}]
+    };
+
+    const pool = balloonWords[lower] || wordList[lower] || [{word: letter.toUpperCase(), emoji: '🎈'}];
+    return randomItem(pool);
+}
+
+function pickBalloonLetter() {
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    const existing = new Set(gameBalloons.map(item => item.letter.toLowerCase()));
+    const available = alphabet.filter(letter => !existing.has(letter));
+    return randomItem(available.length ? available : alphabet).toUpperCase();
+}
+
+function spawnLetterBalloon() {
+    const playfield = document.getElementById('balloon-playfield');
+    if (!playfield || currentScreen !== 'balloon-game') return;
+
+    const letter = pickBalloonLetter();
+    const item = balloonItemForLetter(letter);
+    const el = document.createElement('div');
+    el.className = 'type-balloon';
+    el.dataset.letter = letter;
+    el.dataset.word = item.word;
+    el.innerHTML = `<div class="balloon-emoji">${item.emoji}</div><div class="balloon-key">${letter}</div>`;
+    el.style.left = `${Math.random() * Math.max(80, window.innerWidth - 190) + 20}px`;
+    el.style.bottom = '-330px';
+    el.style.background = `linear-gradient(145deg, ${randomItem(colors)}, ${randomItem(colors)})`;
+    el.style.setProperty('--wiggle', `${(Math.random() - 0.5) * 170}px`);
+    el.style.animation = `balloonFloatUp ${18500 + Math.random() * 7500}ms linear forwards`;
+    playfield.appendChild(el);
+
+    const record = { el, letter, word: item.word, emoji: item.emoji };
+    gameBalloons.push(record);
+    updateBalloonHud();
+
+    el.onclick = e => {
+        e.stopPropagation();
+        popLetterBalloon(record, true);
+    };
+
+    el.addEventListener('animationend', () => {
+        if (el.classList.contains('pop-now')) return;
+        if (el.parentElement) el.remove();
+        gameBalloons = gameBalloons.filter(b => b !== record);
+        balloonCombo = 0;
+        updateBalloonHud();
+        if (currentScreen === 'balloon-game' && gameBalloons.length < 7) spawnLetterBalloon();
+    });
+}
+
+function handleBalloonGameKey(char) {
+    if (!/^[a-zA-Z]$/.test(char)) return;
+    const letter = char.toUpperCase();
+    const matches = gameBalloons
+        .filter(item => item.letter === letter && item.el && item.el.parentElement && !item.el.classList.contains('pop-now'))
+        .sort((a, b) => a.el.getBoundingClientRect().top - b.el.getBoundingClientRect().top);
+
+    if (!matches.length) {
+        balloonCombo = 0;
+        updateBalloonHud();
+        playSoftWrong();
+        praise(t('tryAnotherLetter'));
+        return;
+    }
+    popLetterBalloon(matches[0], false);
+}
+
+function popLetterBalloon(record, fromClick = false) {
+    if (!record || !record.el || !record.el.parentElement || record.el.classList.contains('pop-now')) return;
+    const r = record.el.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+
+    record.el.style.animation = 'none';
+    record.el.style.position = 'fixed';
+    record.el.style.left = r.left + 'px';
+    record.el.style.top = r.top + 'px';
+    record.el.style.bottom = 'auto';
+    record.el.style.width = r.width + 'px';
+    record.el.style.height = r.height + 'px';
+    record.el.style.transform = 'none';
+    record.el.classList.add('pop-now');
+    record.el.style.animation = 'balloonPop 0.42s ease forwards';
+    gameBalloons = gameBalloons.filter(item => item !== record);
+    balloonPopped++;
+    balloonCombo++;
+    updateBalloonHud();
+
+    showTargetLetter(record.letter);
+    createExplosion(x, y, 52);
+    createStarburst(x, y);
+    localConfettiBurst(x, y, 62);
+    playDing();
+    const localizedWord = itemLabel(record.word);
+    speak(t('letterForWord', { letter: record.letter, word: localizedWord }));
+    praise(t('letterForWordShort', { letter: record.letter, word: localizedWord }));
+
+    setTimeout(() => {
+        if (record.el && record.el.parentElement) record.el.remove();
+    }, 460);
+
+    if (balloonPopped >= 10) {
+        setTimeout(() => {
+            stopBalloonGame();
+            winGame();
+        }, 500);
+    } else {
+        setTimeout(spawnLetterBalloon, 500);
+    }
+}
+
+function showTargetLetter(letter) {
+    const badge = document.createElement('div');
+    badge.className = 'target-letter-badge';
+    badge.textContent = letter;
+    badge.style.color = randomItem(colors);
+    document.body.appendChild(badge);
+    setTimeout(() => badge.remove(), 820);
+}
+
+function buildCategoryButtons() {
+    const list = document.getElementById('category-list');
+    if (!list) return;
+    list.innerHTML = '';
+    Object.entries(categories).forEach(([key, cat]) => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn' + (key === activeCategory ? ' active' : '');
+        btn.innerHTML = `<span class="cat-emoji">${cat.emoji}</span><span>${categoryLabel(key)}</span>`;
+        btn.onclick = () => {
+            activeCategory = key;
+            correctCount = 0;
+            streak = 0;
+            updateCategoryActive();
+            nextQuestion();
+            speak(t('categorySpeak', { category: categoryLabel(key) }));
+        };
+        list.appendChild(btn);
+    });
+}
+
+function updateCategoryActive() {
+    document.querySelectorAll('#category-list .cat-btn').forEach(btn => btn.classList.remove('active'));
+    const keys = Object.keys(categories);
+    const idx = keys.indexOf(activeCategory);
+    const buttons = document.querySelectorAll('#category-list .cat-btn');
+    if (idx >= 0 && buttons[idx]) buttons[idx].classList.add('active');
+    document.getElementById('quiz-category').textContent = `${t('category')}: ${categoryLabel(activeCategory)}`;
+    updateScore();
+}
+
+function updateScore() {
+    const score = document.getElementById('quiz-score');
+    const streakEl = document.getElementById('quiz-streak');
+    if (score) score.textContent = `${t('correct')}: ${correctCount} / 10`;
+    if (streakEl) streakEl.textContent = `⭐ ${streak}`;
+}
+
+function startRecognizeGame(resetOnly = false) {
+    correctCount = 0;
+    streak = 0;
+    lockedAnswer = false;
+    buildCategoryButtons();
+    buildReverseCategoryButtons();
+    showScreen('recognize-game');
+    nextQuestion();
+    if (!resetOnly) speak(t('startRecognizeSpeak'));
+}
+
+function nextQuestion() {
+    lockedAnswer = false;
+    updateCategoryActive();
+    const pool = categories[activeCategory].items;
+    const answer = pool[Math.floor(Math.random() * pool.length)];
+    currentQuestion = { emoji: answer[0], answerKey: answer[1], options: [] };
+
+    const allNames = [...new Set(categories.all.items.map(item => item[1]))].filter(name => name !== currentQuestion.answerKey);
+    shuffle(allNames);
+    currentQuestion.options = [currentQuestion.answerKey, ...allNames.slice(0, 3)];
+    shuffle(currentQuestion.options);
+    renderRecognizeQuestion();
+}
+
+function renderRecognizeQuestion() {
+    if (!currentQuestion) return;
+    document.getElementById('quiz-title').textContent = t('whatIsThis');
+    document.getElementById('quiz-emoji').textContent = currentQuestion.emoji;
+
+    const answers = document.getElementById('answers');
+    answers.innerHTML = '';
+    currentQuestion.options.forEach(optionKey => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.dataset.answerKey = optionKey;
+        btn.textContent = itemLabel(optionKey);
+        btn.onclick = () => answerQuestion(btn, optionKey);
+        answers.appendChild(btn);
+    });
+}
+
+function answerQuestion(btn, optionKey) {
+    if (lockedAnswer) return;
+    lockedAnswer = true;
+
+    if (optionKey === currentQuestion.answerKey) {
+        btn.classList.add('correct');
+        correctCount++;
+        streak++;
+        updateScore();
+        speak(t('correctSpeak', { word: itemLabel(currentQuestion.answerKey) }));
+        praise(randomItem(praiseWords));
+        createExplosion(window.innerWidth / 2, window.innerHeight / 2, 34);
+        playDing();
+
+        if (correctCount >= 10) {
+            setTimeout(winGame, 650);
+        } else {
+            setTimeout(nextQuestion, 900);
+        }
+    } else {
+        btn.classList.add('wrong');
+        streak = 0;
+        updateScore();
+        speak(t('tryAgainWord', { word: itemLabel(currentQuestion.answerKey) }));
+        document.querySelectorAll('.answer-btn').forEach(b => {
+            if (b.dataset.answerKey === currentQuestion.answerKey) b.classList.add('correct');
+        });
+        playSoftWrong();
+        setTimeout(nextQuestion, 1500);
+    }
+}
+
+function winGame(messageKey = 'winMessage', speakKey = 'wonSpeak') {
+    const winMessage = document.querySelector('.win-card p');
+    if (winMessage) winMessage.textContent = t(messageKey);
+    document.getElementById('win-overlay').classList.add('show');
+    speak(t(speakKey));
+    confettiShower(230);
+    playCelebrationMusic();
+    for (let i = 0; i < 14; i++) setTimeout(() => createFloatingPraise(), i * 150);
+}
+
+function playAgain() {
+    hideWin();
+    if (currentScreen === 'balloon-game') {
+        startBalloonGame(true);
+        return;
+    }
+    if (currentScreen === 'reverse-recognize-game') {
+        startReverseRecognizeGame(true);
+        return;
+    }
+    if (currentScreen === 'pattern-game') {
+        startPatternGame(true);
+        return;
+    }
+    if (currentScreen === 'memory-game') {
+        startMemoryGame(true);
+        return;
+    }
+    if (currentScreen === 'count-game') {
+        startCountGame(true);
+        return;
+    }
+    if (currentScreen === 'odd-game') {
+        startOddGame(true);
+        return;
+    }
+    if (currentScreen === 'smart-choice-game') {
+        restartSmartChoiceGame(true);
+        return;
+    }
+    correctCount = 0;
+    streak = 0;
+    nextQuestion();
+}
+
+function hideWin() {
+    document.getElementById('win-overlay').classList.remove('show');
+    const winMessage = document.querySelector('.win-card p');
+    if (winMessage) winMessage.textContent = t('winMessage');
+}
+
+
+function buildReverseCategoryButtons() {
+    const list = document.getElementById('reverse-category-list');
+    if (!list) return;
+    list.innerHTML = '';
+    Object.entries(categories).forEach(([key, cat]) => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn' + (key === reverseActiveCategory ? ' active' : '');
+        btn.innerHTML = `<span class="cat-emoji">${cat.emoji}</span><span>${categoryLabel(key)}</span>`;
+        btn.onclick = () => {
+            reverseActiveCategory = key;
+            reverseCorrectCount = 0;
+            reverseStreak = 0;
+            updateReverseCategoryActive();
+            nextReverseQuestion();
+            speak(t('categorySpeak', { category: categoryLabel(key) }));
+        };
+        list.appendChild(btn);
+    });
+}
+
+function updateReverseCategoryActive() {
+    const buttons = document.querySelectorAll('#reverse-category-list .cat-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    const keys = Object.keys(categories);
+    const idx = keys.indexOf(reverseActiveCategory);
+    if (idx >= 0 && buttons[idx]) buttons[idx].classList.add('active');
+    const cat = document.getElementById('reverse-quiz-category');
+    if (cat) cat.textContent = `${t('category')}: ${categoryLabel(reverseActiveCategory)}`;
+    updateReverseScore();
+}
+
+function updateReverseScore() {
+    const score = document.getElementById('reverse-quiz-score');
+    const streakEl = document.getElementById('reverse-quiz-streak');
+    if (score) score.textContent = `${t('correct')}: ${reverseCorrectCount} / 10`;
+    if (streakEl) streakEl.textContent = `⭐ ${reverseStreak}`;
+}
+
+function startReverseRecognizeGame(resetOnly = false) {
+    reverseCorrectCount = 0;
+    reverseStreak = 0;
+    reverseLockedAnswer = false;
+    buildReverseCategoryButtons();
+    showScreen('reverse-recognize-game');
+    nextReverseQuestion();
+    if (!resetOnly) speak(t('startReverseSpeak'));
+}
+
+function nextReverseQuestion() {
+    reverseLockedAnswer = false;
+    updateReverseCategoryActive();
+    const pool = categories[reverseActiveCategory].items;
+    const answer = pool[Math.floor(Math.random() * pool.length)];
+    reverseCurrentQuestion = { emoji: answer[0], answerKey: answer[1], options: [] };
+
+    const uniqueEmojis = [...new Set(categories.all.items.map(item => item[0]))].filter(emoji => emoji !== reverseCurrentQuestion.emoji);
+    shuffle(uniqueEmojis);
+    reverseCurrentQuestion.options = [reverseCurrentQuestion.emoji, ...uniqueEmojis.slice(0, 3)];
+    shuffle(reverseCurrentQuestion.options);
+    renderReverseQuestion();
+}
+
+function renderReverseQuestion() {
+    if (!reverseCurrentQuestion) return;
+    const title = document.getElementById('reverse-quiz-title');
+    const word = document.getElementById('reverse-quiz-word');
+    if (title) title.textContent = t('reverseQuestionTitle');
+    if (word) word.textContent = itemLabel(reverseCurrentQuestion.answerKey);
+
+    const answers = document.getElementById('reverse-answers');
+    answers.innerHTML = '';
+    reverseCurrentQuestion.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.style.fontSize = 'clamp(2.2rem, 6vw, 4rem)';
+        btn.dataset.answerEmoji = option;
+        btn.textContent = option;
+        btn.onclick = () => answerReverseQuestion(btn, option);
+        answers.appendChild(btn);
+    });
+}
+
+function answerReverseQuestion(btn, option) {
+    if (reverseLockedAnswer) return;
+    reverseLockedAnswer = true;
+
+    if (option === reverseCurrentQuestion.emoji) {
+        btn.classList.add('correct');
+        reverseCorrectCount++;
+        reverseStreak++;
+        updateReverseScore();
+        speak(t('correctSpeak', { word: itemLabel(reverseCurrentQuestion.answerKey) }));
+        praise(randomItem(praiseWords));
+        createExplosion(window.innerWidth / 2, window.innerHeight / 2, 34);
+        playDing();
+
+        if (reverseCorrectCount >= 10) {
+            setTimeout(winGame, 650);
+        } else {
+            setTimeout(nextReverseQuestion, 900);
+        }
+    } else {
+        btn.classList.add('wrong');
+        reverseStreak = 0;
+        updateReverseScore();
+        speak(t('tryAgainShort', { word: itemLabel(reverseCurrentQuestion.answerKey) }));
+        document.querySelectorAll('#reverse-answers .answer-btn').forEach(b => {
+            if (b.dataset.answerEmoji === reverseCurrentQuestion.emoji) b.classList.add('correct');
+        });
+        playSoftWrong();
+        setTimeout(nextReverseQuestion, 1500);
+    }
+}
+
+
+const PATTERN_QUESTIONS = [
+    { seq: ['🔴','🟡','🔴','🟡'], answer: '🔴', options: ['🔴','🟡','🔵','🟢'] },
+    { seq: ['🐶','🐱','🐶','🐱'], answer: '🐶', options: ['🐶','🐱','🐰','🐸'] },
+    { seq: ['⭐','🌙','☀️','⭐','🌙'], answer: '☀️', options: ['⭐','🌙','☀️','🌈'] },
+    { seq: ['🍎','🍎','🍌','🍎','🍎'], answer: '🍌', options: ['🍎','🍌','🍇','🍕'] },
+    { seq: ['🚗','🚂','✈️','🚗','🚂'], answer: '✈️', options: ['🚗','🚂','✈️','🚀'] },
+    { seq: ['🟦','🟦','🔺','🟦','🟦'], answer: '🔺', options: ['🟦','🔺','🔴','⭐'] },
+    { seq: ['🌸','🌿','🌸','🌿'], answer: '🌸', options: ['🌸','🌿','🌻','🍄'] },
+    { seq: ['1️⃣','2️⃣','1️⃣','2️⃣'], answer: '1️⃣', options: ['1️⃣','2️⃣','3️⃣','4️⃣'] }
+];
+const NUMBER_KEYS = ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine'];
+const COUNT_EMOJIS = ['⭐','🍎','🎈','🐟','🌸','🚗','🧁','⚽','🦋','🍌'];
+const ODD_CATEGORY_KEYS = ['food','animals','pets','vehicles','sports','music','shapes','weather','space','ocean'];
+
+function countNumberLabel(n) {
+    return itemLabel(NUMBER_KEYS[n] || String(n));
+}
+
+function updatePatternScore() {
+    const score = document.getElementById('pattern-score');
+    if (score) score.textContent = `${t('correct')}: ${patternCorrect} / 10`;
+}
+
+function startPatternGame(resetOnly = false) {
+    patternCorrect = 0;
+    patternLocked = false;
+    showScreen('pattern-game');
+    nextPatternQuestion();
+    if (!resetOnly) speak(t('startPatternSpeak'));
+}
+
+function nextPatternQuestion() {
+    patternLocked = false;
+    const base = randomItem(PATTERN_QUESTIONS);
+    patternQuestion = {
+        seq: [...base.seq],
+        answer: base.answer,
+        options: shuffle([...new Set([...base.options, base.answer])]).slice(0, 4)
+    };
+    if (!patternQuestion.options.includes(patternQuestion.answer)) patternQuestion.options[0] = patternQuestion.answer;
+    shuffle(patternQuestion.options);
+    renderPatternQuestion();
+}
+
+function renderPatternQuestion() {
+    if (!patternQuestion) return;
+    updatePatternScore();
+    const prompt = document.getElementById('pattern-prompt');
+    const seq = document.getElementById('pattern-sequence');
+    const options = document.getElementById('pattern-options');
+    if (prompt) prompt.textContent = t('patternPrompt');
+    if (seq) {
+        seq.innerHTML = '';
+        [...patternQuestion.seq, '?'].forEach(symbol => {
+            const tile = document.createElement('div');
+            tile.className = 'symbol-tile' + (symbol === '?' ? ' question' : '');
+            tile.textContent = symbol;
+            seq.appendChild(tile);
+        });
+    }
+    if (options) {
+        options.innerHTML = '';
+        patternQuestion.options.forEach(symbol => {
+            const btn = document.createElement('button');
+            btn.className = 'answer-btn';
+            btn.style.fontSize = 'clamp(2.8rem, 8vw, 5rem)';
+            btn.textContent = symbol;
+            btn.onclick = () => answerPattern(btn, symbol);
+            options.appendChild(btn);
+        });
+    }
+}
+
+function answerPattern(btn, symbol) {
+    if (patternLocked || !patternQuestion) return;
+    patternLocked = true;
+    if (symbol === patternQuestion.answer) {
+        btn.classList.add('correct');
+        patternCorrect++;
+        updatePatternScore();
+        speak(t('patternCorrectSpeak', { item: symbol }));
+        praise(randomItem(praiseWords));
+        playDing();
+        createExplosion(window.innerWidth / 2, window.innerHeight / 2, 34);
+        if (patternCorrect >= 10) {
+            setTimeout(() => winGame('brainBoostWinMessage'), 650);
+        } else {
+            setTimeout(nextPatternQuestion, 900);
+        }
+    } else {
+        btn.classList.add('wrong');
+        document.querySelectorAll('#pattern-options .answer-btn').forEach(b => {
+            if (b.textContent === patternQuestion.answer) b.classList.add('correct');
+        });
+        speak(t('tryAgainShort', { word: patternQuestion.answer }));
+        playSoftWrong();
+        setTimeout(nextPatternQuestion, 1350);
+    }
+}
+
+function updateMemoryHud() {
+    const pairs = document.getElementById('memory-pairs');
+    const moves = document.getElementById('memory-moves');
+    if (pairs) pairs.textContent = `${t('pairs')}: ${memoryMatched} / 4`;
+    if (moves) moves.textContent = `${t('moves')}: ${memoryMoves}`;
+}
+
+function startMemoryGame(resetOnly = false) {
+    showScreen('memory-game');
+    setupMemoryBoard();
+    if (!resetOnly) speak(t('startMemorySpeak'));
+}
+
+function setupMemoryBoard() {
+    memoryMatched = 0;
+    memoryMoves = 0;
+    memoryFlipped = [];
+    memoryLocked = false;
+    const pool = shuffle([...categories.animals.items, ...categories.food.items, ...categories.pets.items, ...categories.vehicles.items]).slice(0, 4);
+    memoryCards = shuffle(pool.flatMap((item, id) => ([
+        { id, emoji: item[0], wordKey: item[1], flipped: false, matched: false },
+        { id, emoji: item[0], wordKey: item[1], flipped: false, matched: false }
+    ])));
+    renderMemoryBoard();
+    updateMemoryHud();
+}
+
+function renderMemoryBoard() {
+    const grid = document.getElementById('memory-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    memoryCards.forEach((card, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'memory-card' + (card.flipped ? ' flipped' : '') + (card.matched ? ' matched' : '');
+        if (card.flipped || card.matched) {
+            btn.innerHTML = `<span><span class="memory-emoji">${card.emoji}</span><span class="memory-word">${itemLabel(card.wordKey)}</span></span>`;
+        } else {
+            btn.innerHTML = '<span class="memory-back">?</span>';
+        }
+        btn.onclick = () => flipMemoryCard(index);
+        grid.appendChild(btn);
+    });
+    updateMemoryHud();
+}
+
+function flipMemoryCard(index) {
+    if (memoryLocked) return;
+    const card = memoryCards[index];
+    if (!card || card.flipped || card.matched) return;
+    card.flipped = true;
+    memoryFlipped.push(index);
+    renderMemoryBoard();
+    if (memoryFlipped.length < 2) return;
+
+    memoryMoves++;
+    updateMemoryHud();
+    const [aIndex, bIndex] = memoryFlipped;
+    const a = memoryCards[aIndex];
+    const b = memoryCards[bIndex];
+    if (a.id === b.id) {
+        a.matched = true;
+        b.matched = true;
+        memoryMatched++;
+        memoryFlipped = [];
+        speak(t('memoryMatchedSpeak', { word: itemLabel(a.wordKey) }));
+        praise(randomItem(praiseWords));
+        playDing();
+        createExplosion(window.innerWidth / 2, window.innerHeight / 2, 26);
+        renderMemoryBoard();
+        if (memoryMatched >= 4) setTimeout(() => winGame('memoryWinMessage'), 700);
+    } else {
+        memoryLocked = true;
+        speak(t('memoryTryAgain'));
+        playSoftWrong();
+        setTimeout(() => {
+            a.flipped = false;
+            b.flipped = false;
+            memoryFlipped = [];
+            memoryLocked = false;
+            renderMemoryBoard();
+        }, 850);
+    }
+}
+
+function updateCountScore() {
+    const score = document.getElementById('count-score');
+    if (score) score.textContent = `${t('correct')}: ${countCorrect} / 10`;
+}
+
+function startCountGame(resetOnly = false) {
+    countCorrect = 0;
+    countLocked = false;
+    showScreen('count-game');
+    nextCountQuestion();
+    if (!resetOnly) speak(t('startCountSpeak'));
+}
+
+function nextCountQuestion() {
+    countLocked = false;
+    const number = 1 + Math.floor(Math.random() * 5);
+    const emoji = randomItem(COUNT_EMOJIS);
+    const options = new Set([number]);
+    while (options.size < 4) options.add(1 + Math.floor(Math.random() * 5));
+    countQuestion = { number, emoji, options: shuffle([...options]) };
+    renderCountQuestion();
+}
+
+function renderCountQuestion() {
+    if (!countQuestion) return;
+    updateCountScore();
+    const prompt = document.getElementById('count-prompt');
+    const display = document.getElementById('count-display');
+    const options = document.getElementById('count-options');
+    if (prompt) prompt.textContent = t('countPrompt');
+    if (display) {
+        display.innerHTML = '';
+        for (let i = 0; i < countQuestion.number; i++) {
+            const tile = document.createElement('div');
+            tile.className = 'symbol-tile';
+            tile.textContent = countQuestion.emoji;
+            display.appendChild(tile);
+        }
+    }
+    if (options) {
+        options.innerHTML = '';
+        countQuestion.options.forEach(n => {
+            const btn = document.createElement('button');
+            btn.className = 'answer-btn';
+            btn.innerHTML = `<span class="option-number">${n}</span><span class="option-word">${countNumberLabel(n)}</span>`;
+            btn.onclick = () => answerCount(btn, n);
+            options.appendChild(btn);
+        });
+    }
+}
+
+function answerCountByNumber(number) {
+    if (currentScreen !== 'count-game' || !countQuestion) return;
+    const btn = [...document.querySelectorAll('#count-options .answer-btn')].find(b => b.querySelector('.option-number')?.textContent === String(number));
+    if (btn) answerCount(btn, number);
+}
+
+function answerCount(btn, number) {
+    if (countLocked || !countQuestion) return;
+    countLocked = true;
+    if (number === countQuestion.number) {
+        btn.classList.add('correct');
+        countCorrect++;
+        updateCountScore();
+        speak(t('countCorrectSpeak', { number: countNumberLabel(number) }));
+        praise(randomItem(praiseWords));
+        playDing();
+        createExplosion(window.innerWidth / 2, window.innerHeight / 2, 34);
+        if (countCorrect >= 10) {
+            setTimeout(() => winGame('countWinMessage'), 650);
+        } else {
+            setTimeout(nextCountQuestion, 900);
+        }
+    } else {
+        btn.classList.add('wrong');
+        document.querySelectorAll('#count-options .answer-btn').forEach(b => {
+            if (b.querySelector('.option-number')?.textContent === String(countQuestion.number)) b.classList.add('correct');
+        });
+        speak(t('tryAgainShort', { word: countNumberLabel(countQuestion.number) }));
+        playSoftWrong();
+        setTimeout(nextCountQuestion, 1350);
+    }
+}
+
+function updateOddScore() {
+    const score = document.getElementById('odd-score');
+    if (score) score.textContent = `${t('correct')}: ${oddCorrect} / 10`;
+}
+
+function startOddGame(resetOnly = false) {
+    oddCorrect = 0;
+    oddLocked = false;
+    showScreen('odd-game');
+    nextOddQuestion();
+    if (!resetOnly) speak(t('startOddSpeak'));
+}
+
+function nextOddQuestion() {
+    oddLocked = false;
+    const mainKey = randomItem(ODD_CATEGORY_KEYS);
+    let oddKey = randomItem(ODD_CATEGORY_KEYS.filter(key => key !== mainKey));
+    const mainItems = shuffle([...categories[mainKey].items]).slice(0, 3).map(item => ({ emoji: item[0], wordKey: item[1], isOdd: false }));
+    const oddItem = randomItem(categories[oddKey].items);
+    oddQuestion = {
+        mainKey,
+        options: shuffle([...mainItems, { emoji: oddItem[0], wordKey: oddItem[1], isOdd: true }])
+    };
+    renderOddQuestion();
+}
+
+function renderOddQuestion() {
+    if (!oddQuestion) return;
+    updateOddScore();
+    const prompt = document.getElementById('odd-prompt');
+    const set = document.getElementById('odd-set');
+    const options = document.getElementById('odd-options');
+    if (prompt) prompt.textContent = t('oddPrompt');
+    if (set) {
+        set.innerHTML = '';
+        oddQuestion.options.forEach(option => {
+            const tile = document.createElement('div');
+            tile.className = 'symbol-tile';
+            tile.textContent = option.emoji;
+            set.appendChild(tile);
+        });
+    }
+    if (options) {
+        options.innerHTML = '';
+        oddQuestion.options.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'answer-btn';
+            btn.innerHTML = `<span class="memory-emoji">${option.emoji}</span><span class="option-word">${itemLabel(option.wordKey)}</span>`;
+            btn.onclick = () => answerOdd(btn, option);
+            options.appendChild(btn);
+        });
+    }
+}
+
+function answerOdd(btn, option) {
+    if (oddLocked || !oddQuestion) return;
+    oddLocked = true;
+    if (option.isOdd) {
+        btn.classList.add('correct');
+        oddCorrect++;
+        updateOddScore();
+        speak(t('oddCorrectSpeak', { word: itemLabel(option.wordKey) }));
+        praise(randomItem(praiseWords));
+        playDing();
+        createExplosion(window.innerWidth / 2, window.innerHeight / 2, 34);
+        if (oddCorrect >= 10) {
+            setTimeout(() => winGame('oddWinMessage'), 650);
+        } else {
+            setTimeout(nextOddQuestion, 900);
+        }
+    } else {
+        btn.classList.add('wrong');
+        document.querySelectorAll('#odd-options .answer-btn').forEach((b, i) => {
+            if (oddQuestion.options[i] && oddQuestion.options[i].isOdd) b.classList.add('correct');
+        });
+        const correct = oddQuestion.options.find(item => item.isOdd);
+        speak(t('tryAgainShort', { word: correct ? itemLabel(correct.wordKey) : '' }));
+        playSoftWrong();
+        setTimeout(nextOddQuestion, 1500);
+    }
+}
+
+function handleLetterGameKey(char) {
+    if (!/[a-zA-Z0-9]/.test(char)) return;
+
+    if (firstLetterKey) {
+        document.getElementById('instructions').style.display = 'none';
+        firstLetterKey = false;
+    }
+
+    const lower = char.toLowerCase();
+    const main = document.getElementById('main-character');
+    const wordDisplay = document.getElementById('word-display');
+    let selected = {word: char.toUpperCase(), emoji: '✨'};
+
+    if (wordList[lower]) {
+        const choices = wordList[lower];
+        const available = choices.filter(item => item.word !== lastWords[lower]);
+        const pool = available.length ? available : choices;
+        selected = randomItem(pool);
+        lastWords[lower] = selected.word;
+    }
+
+    main.textContent = char.toUpperCase();
+    main.style.color = randomItem(colors);
+    main.style.animation = 'none';
+    setTimeout(() => main.style.animation = `${getAnimation(lower)} 0.7s ease`, 20);
+
+    const displayWord = itemLabel(selected.word);
+    const displayHTML = displayWord.toLocaleLowerCase().startsWith(lower)
+        ? `<span class="highlight-letter">${displayWord.charAt(0)}</span>${displayWord.slice(1)}`
+        : displayWord;
+
+    wordDisplay.innerHTML = `${selected.emoji} ${displayHTML}`;
+    wordDisplay.style.opacity = '1';
+    wordDisplay.style.animation = 'none';
+    setTimeout(() => wordDisplay.style.animation = 'wordFloat 1.8s ease-in-out infinite', 20);
+
+    speak(t('letterIntro', { letter: char.toUpperCase(), word: displayWord }));
+    addToScrabble(char);
+    createFlyingLetter(char);
+    createBalloon(char);
+
+    const rect = main.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    createExplosion(x, y, 30);
+    if ('aeiou'.includes(lower)) createStarburst(x, y);
+    if (Math.random() > 0.58) praise(randomItem(praiseWords));
+}
+
+function getAnimation(char) {
+    if ('0123456789'.includes(char)) return 'rainbowPulse';
+    if ('aeiou'.includes(char)) return 'bounceCenter';
+    if ('abcde'.includes(char)) return 'spinCenter';
+    if ('fghij'.includes(char)) return 'wiggleCenter';
+    if ('klmno'.includes(char)) return 'jumpCenter';
+    if ('pqrst'.includes(char)) return 'bounceCenter';
+    return 'spinCenter';
+}
+
+function addToScrabble(char) {
+    const area = document.getElementById('scrabble-area');
+    const tile = document.createElement('div');
+    tile.className = 'scrabble-letter';
+    tile.textContent = char.toUpperCase();
+    tile.style.background = `linear-gradient(145deg, ${randomItem(colors)}, ${randomItem(colors)})`;
+    area.appendChild(tile);
+    scrabbleLetters.push(tile);
+    if (scrabbleLetters.length > 12) {
+        const old = scrabbleLetters.shift();
+        old.style.animation = 'fadeOut 0.45s ease forwards';
+        setTimeout(() => old.remove(), 470);
+    }
+}
+
+function createFlyingLetter(char) {
+    const el = document.createElement('div');
+    el.className = 'fly-letter';
+    el.textContent = char.toUpperCase();
+    el.style.left = `${45 + Math.random() * 10}vw`;
+    el.style.top = `${43 + Math.random() * 16}vh`;
+    el.style.color = randomItem(colors);
+    document.body.appendChild(el);
+
+    const tx = (Math.random() - 0.5) * window.innerWidth * 0.9;
+    const ty = -window.innerHeight * (0.6 + Math.random() * 0.5);
+    const rot = (Math.random() > 0.5 ? 1 : -1) * (180 + Math.random() * 500);
+    const dur = 1500 + Math.random() * 1200;
+
+    el.animate([
+        { transform: 'translate(-50%, -50%) scale(0.5) rotate(0deg)', opacity: 0 },
+        { transform: 'translate(-50%, -50%) scale(1.25) rotate(8deg)', opacity: 1, offset: 0.18 },
+        { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0.15) rotate(${rot}deg)`, opacity: 0 }
+    ], { duration: dur, easing: 'cubic-bezier(.15,.85,.35,1)', fill: 'forwards' });
+
+    setTimeout(() => el.remove(), dur + 80);
+}
+
+function createBalloon(char) {
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon';
+    balloon.textContent = char.toUpperCase();
+    balloon.style.left = `${Math.random() * (window.innerWidth - 130) + 20}px`;
+    balloon.style.bottom = '-180px';
+    balloon.style.background = `linear-gradient(145deg, ${randomItem(colors)}, ${randomItem(colors)})`;
+    document.body.appendChild(balloon);
+    balloons.push(balloon);
+
+    const duration = 4800 + Math.random() * 4200;
+    balloon.animate([
+        { transform: 'translateY(0) rotate(-4deg)', opacity: 0.9 },
+        { transform: `translateY(-${window.innerHeight + 260}px) translateX(${(Math.random()-0.5)*220}px) rotate(${(Math.random()-0.5)*50}deg)`, opacity: 0 }
+    ], { duration, easing: 'ease-in', fill: 'forwards' });
+
+    balloon.onclick = e => {
+        e.stopPropagation();
+        const r = balloon.getBoundingClientRect();
+        createExplosion(r.left + r.width / 2, r.top + r.height / 2, 24);
+        balloon.remove();
+    };
+
+    setTimeout(() => balloon.remove(), duration + 120);
+    if (balloons.length > 16) {
+        const old = balloons.shift();
+        if (old && old.parentElement) old.remove();
+    }
+}
+
+
+const LETTER_SOUND_DATA = {
+    en: [
+        { letter: 'A', emoji: '🍎', wordKey: 'Apple' },
+        { letter: 'B', emoji: '🍌', wordKey: 'Banana' },
+        { letter: 'C', emoji: '🐱', wordKey: 'Cat' },
+        { letter: 'D', emoji: '🐶', wordKey: 'Dog' },
+        { letter: 'F', emoji: '🐟', wordKey: 'Fish' },
+        { letter: 'M', emoji: '🌙', wordKey: 'Moon' }
+    ],
+    nl: [
+        { letter: 'A', emoji: '🍎', wordKey: 'Apple' },
+        { letter: 'B', emoji: '🍌', wordKey: 'Banana' },
+        { letter: 'K', emoji: '🐱', wordKey: 'Cat' },
+        { letter: 'H', emoji: '🐶', wordKey: 'Dog' },
+        { letter: 'V', emoji: '🐟', wordKey: 'Fish' },
+        { letter: 'M', emoji: '🌙', wordKey: 'Moon' }
+    ],
+    ne: [
+        { letter: 'क', emoji: '🐜', wordKey: 'Ant' },
+        { letter: 'म', emoji: '🐟', wordKey: 'Fish' },
+        { letter: 'ब', emoji: '🐱', wordKey: 'Cat' },
+        { letter: 'ह', emoji: '🐘', wordKey: 'Elephant' },
+        { letter: 'घ', emoji: '🏠', wordKey: 'House' },
+        { letter: 'स', emoji: '🍎', wordKey: 'Apple' }
+    ]
+};
+
+const LETTER_MATCH_DATA = {
+    en: [['A','a'], ['B','b'], ['C','c'], ['D','d'], ['M','m'], ['S','s']],
+    nl: [['A','a'], ['B','b'], ['K','k'], ['H','h'], ['M','m'], ['V','v']],
+    ne: [['क','क'], ['म','म'], ['ब','ब'], ['ह','ह'], ['घ','घ'], ['स','स']]
+};
+
+const SMART_LISTEN_ITEMS = ['Apple', 'Cat', 'Dog', 'Fish', 'Moon', 'Sun', 'Ball', 'House'];
+const FEELING_ITEMS = [
+    { emoji: '😊', wordKey: 'Happy' }, { emoji: '😢', wordKey: 'Sad' }, { emoji: '😡', wordKey: 'Angry' },
+    { emoji: '😴', wordKey: 'Sleepy' }, { emoji: '😮', wordKey: 'Surprised' }, { emoji: '🤪', wordKey: 'Silly' }
+];
+const OPPOSITE_PAIRS = [
+    [{ emoji: '🔥', wordKey: 'Hot' }, { emoji: '❄️', wordKey: 'Cold' }],
+    [{ emoji: '🐘', wordKey: 'Big' }, { emoji: '🐭', wordKey: 'Small' }],
+    [{ emoji: '⬆️', wordKey: 'Up' }, { emoji: '⬇️', wordKey: 'Down' }],
+    [{ emoji: '☀️', wordKey: 'Day' }, { emoji: '🌙', wordKey: 'Night' }],
+    [{ emoji: '🪣', wordKey: 'Full' }, { emoji: '🫙', wordKey: 'Empty' }],
+    [{ emoji: '🐇', wordKey: 'Fast' }, { emoji: '🐢', wordKey: 'Slow' }]
+];
+const SIZE_SORT_ITEMS = [
+    { big: { emoji: '🐘', wordKey: 'Big' }, small: { emoji: '🐭', wordKey: 'Small' } },
+    { big: { emoji: '🦒', wordKey: 'Big' }, small: { emoji: '🐜', wordKey: 'Small' } },
+    { big: { emoji: '🏠', wordKey: 'Big' }, small: { emoji: '🧸', wordKey: 'Small' } },
+    { big: { emoji: '🌳', wordKey: 'Big' }, small: { emoji: '🌱', wordKey: 'Small' } }
+];
+const DAILY_ORDER_SEQUENCES = [
+    [{ emoji: '🛏️', wordKey: 'Wake up' }, { emoji: '🪥', wordKey: 'Brush teeth' }, { emoji: '🥣', wordKey: 'Breakfast' }],
+    [{ emoji: '☁️', wordKey: 'Cloud' }, { emoji: '🌧️', wordKey: 'Rain' }, { emoji: '🌈', wordKey: 'Rainbow' }],
+    [{ emoji: '🌱', wordKey: 'Seed' }, { emoji: '🌸', wordKey: 'Flower' }, { emoji: '🍎', wordKey: 'Fruit' }],
+    [{ emoji: '🥚', wordKey: 'Egg' }, { emoji: '🐣', wordKey: 'Chick' }, { emoji: '🐔', wordKey: 'Chicken' }],
+    [{ emoji: '📖', wordKey: 'Book' }, { emoji: '🌙', wordKey: 'Bedtime' }, { emoji: '😴', wordKey: 'Sleep' }]
+];
+const SMART_GAME_CONFIG = {
+    sound: { titleKey: 'soundDetectiveTitleCard', startKey: 'startSoundSpeak', winKey: 'smartWinMessage' },
+    letterMatch: { titleKey: 'letterMatchTitleCard', startKey: 'startLetterMatchSpeak', winKey: 'smartWinMessage' },
+    missingLetter: { titleKey: 'missingLetterTitleCard', startKey: 'startMissingLetterSpeak', winKey: 'smartWinMessage' },
+    listenPick: { titleKey: 'listenPickTitleCard', startKey: 'startListenPickSpeak', winKey: 'smartWinMessage' },
+    feelings: { titleKey: 'feelingsTitleCard', startKey: 'startFeelingsSpeak', winKey: 'smartWinMessage' },
+    opposites: { titleKey: 'oppositesTitleCard', startKey: 'startOppositesSpeak', winKey: 'smartWinMessage' },
+    sizeSort: { titleKey: 'sizeSortTitleCard', startKey: 'startSizeSortSpeak', winKey: 'smartWinMessage' },
+    dailyOrder: { titleKey: 'dailyOrderTitleCard', startKey: 'startDailyOrderSpeak', winKey: 'smartWinMessage' }
+};
+
+function localizedLetterItems() {
+    return LETTER_SOUND_DATA[currentLanguage] || LETTER_SOUND_DATA.en;
+}
+
+function makeEmojiOptions(answer, pool, count = 4) {
+    const others = shuffle(pool.filter(item => item.wordKey !== answer.wordKey));
+    return shuffle([answer, ...others.slice(0, count - 1)]).map(item => ({
+        value: item.wordKey,
+        emoji: item.emoji,
+        label: itemLabel(item.wordKey),
+        correct: item.wordKey === answer.wordKey
+    }));
+}
+
+function makeWordFromLabel(wordKey) {
+    const chars = Array.from(itemLabel(wordKey));
+    return chars.length > 1 ? '_' + chars.slice(1).join('') : '_';
+}
+
+function startSmartChoiceGame(type, resetOnly = false) {
+    smartGameType = SMART_GAME_CONFIG[type] ? type : 'sound';
+    smartCorrect = 0;
+    smartLocked = false;
+    showScreen('smart-choice-game');
+    nextSmartChoiceQuestion();
+    if (!resetOnly) speak(t(SMART_GAME_CONFIG[smartGameType].startKey));
+}
+
+function restartSmartChoiceGame(resetOnly = false) {
+    startSmartChoiceGame(smartGameType || 'sound', resetOnly);
+}
+
+function updateSmartScore() {
+    const score = document.getElementById('smart-score');
+    if (score) score.textContent = `${t('correct')}: ${smartCorrect} / 10`;
+}
+
+function nextSmartChoiceQuestion() {
+    smartLocked = false;
+    smartQuestion = buildSmartQuestion(smartGameType);
+    renderSmartChoiceQuestion();
+    if (smartGameType === 'listenPick' && smartQuestion) {
+        setTimeout(() => speak(smartQuestion.correctLabel), 220);
+    }
+}
+
+function buildSmartQuestion(type) {
+    const letters = localizedLetterItems();
+    if (type === 'sound') {
+        const answer = randomItem(letters);
+        return {
+            promptKey: 'soundDetectivePrompt', promptParams: { letter: answer.letter },
+            stimulus: [{ kind: 'letter', text: answer.letter }],
+            options: makeEmojiOptions(answer, letters),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'letterMatch') {
+        const pairs = LETTER_MATCH_DATA[currentLanguage] || LETTER_MATCH_DATA.en;
+        const pair = randomItem(pairs);
+        const others = shuffle(pairs.filter(p => p[1] !== pair[1])).slice(0, 3).map(p => p[1]);
+        return {
+            promptKey: 'letterMatchPrompt',
+            stimulus: [{ kind: 'letter', text: pair[0] }],
+            options: shuffle([pair[1], ...others]).map(letter => ({ value: letter, letter, label: letter, correct: letter === pair[1] })),
+            correctLabel: pair[1]
+        };
+    }
+    if (type === 'missingLetter') {
+        const answer = randomItem(letters);
+        const others = shuffle(letters.filter(item => item.letter !== answer.letter)).slice(0, 3).map(item => item.letter);
+        return {
+            promptKey: 'missingLetterPrompt',
+            stimulus: [{ kind: 'word', text: `${answer.emoji} ${makeWordFromLabel(answer.wordKey)}` }],
+            options: shuffle([answer.letter, ...others]).map(letter => ({ value: letter, letter, label: letter, correct: letter === answer.letter })),
+            correctLabel: answer.letter
+        };
+    }
+    if (type === 'listenPick') {
+        const pool = SMART_LISTEN_ITEMS.map(wordKey => {
+            const found = categories.all.items.find(item => item[1] === wordKey);
+            return { emoji: found ? found[0] : '✨', wordKey };
+        });
+        const answer = randomItem(pool);
+        return {
+            promptKey: 'listenPickPrompt',
+            helperKey: 'tapSpeakerPrompt',
+            stimulus: [{ kind: 'speaker', text: '🔊' }],
+            options: makeEmojiOptions(answer, pool),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'feelings') {
+        const answer = randomItem(FEELING_ITEMS);
+        return {
+            promptKey: 'feelingsPrompt',
+            stimulus: [{ kind: 'emoji', text: answer.emoji }],
+            options: makeEmojiOptions(answer, FEELING_ITEMS),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'opposites') {
+        const pair = randomItem(OPPOSITE_PAIRS);
+        const shownIndex = Math.random() > 0.5 ? 1 : 0;
+        const shown = pair[shownIndex];
+        const answer = pair[1 - shownIndex];
+        const pool = OPPOSITE_PAIRS.flat();
+        return {
+            promptKey: 'oppositesPrompt', promptParams: { word: itemLabel(shown.wordKey) },
+            stimulus: [{ kind: 'emojiWord', emoji: shown.emoji, word: itemLabel(shown.wordKey) }],
+            options: makeEmojiOptions(answer, pool),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'sizeSort') {
+        const pair = randomItem(SIZE_SORT_ITEMS);
+        const wantBig = Math.random() > 0.5;
+        const answerWord = wantBig ? 'Big' : 'Small';
+        return {
+            promptKey: 'sizeSortPrompt', promptParams: { word: itemLabel(answerWord) },
+            stimulus: [{ kind: 'emojiPair', items: [pair.big, pair.small] }],
+            optionClass: 'smart-options-2',
+            options: [
+                { value: 'Big', emoji: pair.big.emoji, label: itemLabel('Big'), correct: wantBig, sizeClass: 'size-big' },
+                { value: 'Small', emoji: pair.small.emoji, label: itemLabel('Small'), correct: !wantBig, sizeClass: 'size-small' }
+            ],
+            correctLabel: itemLabel(answerWord)
+        };
+    }
+    const sequence = randomItem(DAILY_ORDER_SEQUENCES);
+    const answer = sequence[2];
+    const decoys = shuffle(DAILY_ORDER_SEQUENCES.flat().filter(item => item.wordKey !== answer.wordKey)).slice(0, 3);
+    return {
+        promptKey: 'dailyOrderPrompt',
+        stimulus: [{ kind: 'sequence', items: [sequence[0], sequence[1], { emoji: '?', wordKey: '?' }] }],
+        options: makeEmojiOptions(answer, [answer, ...decoys]),
+        correctLabel: itemLabel(answer.wordKey)
+    };
+}
+
+function renderSmartChoiceQuestion() {
+    if (!smartQuestion) return;
+    const config = SMART_GAME_CONFIG[smartGameType] || SMART_GAME_CONFIG.sound;
+    const title = document.getElementById('smart-title');
+    const prompt = document.getElementById('smart-prompt');
+    const stimulus = document.getElementById('smart-stimulus');
+    const options = document.getElementById('smart-options');
+    if (title) title.textContent = t(config.titleKey);
+    if (prompt) {
+        const helper = smartQuestion.helperKey ? ` ${t(smartQuestion.helperKey)}` : '';
+        prompt.textContent = t(smartQuestion.promptKey, smartQuestion.promptParams || {}) + helper;
+    }
+    updateSmartScore();
+    if (stimulus) {
+        stimulus.className = 'learning-sequence smart-stimulus' + (smartGameType === 'listenPick' ? ' listen-mode' : '');
+        stimulus.innerHTML = '';
+        stimulus.onclick = smartGameType === 'listenPick' ? () => speak(smartQuestion.correctLabel) : null;
+        smartQuestion.stimulus.forEach(item => renderSmartStimulusItem(stimulus, item));
+    }
+    if (options) {
+        options.className = 'learning-options' + (smartQuestion.optionClass ? ` ${smartQuestion.optionClass}` : '');
+        options.innerHTML = '';
+        smartQuestion.options.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'answer-btn' + (option.sizeClass ? ` ${option.sizeClass}` : '');
+            if (option.letter) {
+                btn.innerHTML = `<span class="smart-letter-option">${option.letter}</span>`;
+            } else {
+                btn.innerHTML = `<span class="smart-emoji-option">${option.emoji}</span><span class="option-word">${option.label}</span>`;
+            }
+            btn.onclick = () => answerSmartChoice(btn, option);
+            options.appendChild(btn);
+        });
+    }
+}
+
+function renderSmartStimulusItem(parent, item) {
+    if (item.kind === 'letter') {
+        const tile = document.createElement('div');
+        tile.className = 'smart-big-letter';
+        tile.textContent = item.text;
+        parent.appendChild(tile);
+        return;
+    }
+    if (item.kind === 'word') {
+        const tile = document.createElement('div');
+        tile.className = 'smart-word-card';
+        tile.textContent = item.text;
+        parent.appendChild(tile);
+        return;
+    }
+    if (item.kind === 'speaker') {
+        const tile = document.createElement('div');
+        tile.className = 'smart-speaker';
+        tile.textContent = '🔊';
+        parent.appendChild(tile);
+        return;
+    }
+    if (item.kind === 'emoji') {
+        const tile = document.createElement('div');
+        tile.className = 'symbol-tile';
+        tile.textContent = item.text;
+        parent.appendChild(tile);
+        return;
+    }
+    if (item.kind === 'emojiWord') {
+        const tile = document.createElement('div');
+        tile.className = 'symbol-tile';
+        tile.innerHTML = `${item.emoji}<span class="smart-mini-label">${item.word}</span>`;
+        parent.appendChild(tile);
+        return;
+    }
+    if (item.kind === 'emojiPair') {
+        item.items.forEach((part, idx) => {
+            const tile = document.createElement('div');
+            tile.className = 'symbol-tile';
+            tile.style.fontSize = idx === 0 ? 'clamp(4.6rem, 11vw, 8rem)' : 'clamp(2.3rem, 5vw, 3.8rem)';
+            tile.textContent = part.emoji;
+            parent.appendChild(tile);
+        });
+        return;
+    }
+    if (item.kind === 'sequence') {
+        item.items.forEach((part, idx) => {
+            const tile = document.createElement('div');
+            tile.className = 'symbol-tile' + (part.emoji === '?' ? ' question' : '');
+            tile.textContent = part.emoji;
+            parent.appendChild(tile);
+            if (idx < item.items.length - 1) {
+                const arrow = document.createElement('div');
+                arrow.className = 'smart-big-arrow';
+                arrow.style.fontSize = 'clamp(2rem, 5vw, 4rem)';
+                arrow.style.fontWeight = '1000';
+                arrow.textContent = '➡️';
+                parent.appendChild(arrow);
+            }
+        });
+    }
+}
+
+function answerSmartChoice(btn, option) {
+    if (smartLocked || !smartQuestion) return;
+    smartLocked = true;
+    if (option.correct) {
+        btn.classList.add('correct');
+        smartCorrect++;
+        updateSmartScore();
+        speak(t('smartCorrectSpeak', { word: smartQuestion.correctLabel }));
+        praise(randomItem(praiseWords));
+        playDing();
+        createExplosion(window.innerWidth / 2, window.innerHeight / 2, 34);
+        if (smartCorrect >= 10) {
+            setTimeout(() => winGame(SMART_GAME_CONFIG[smartGameType].winKey), 650);
+        } else {
+            setTimeout(nextSmartChoiceQuestion, 900);
+        }
+    } else {
+        btn.classList.add('wrong');
+        document.querySelectorAll('#smart-options .answer-btn').forEach((b, i) => {
+            if (smartQuestion.options[i] && smartQuestion.options[i].correct) b.classList.add('correct');
+        });
+        speak(t('smartTryAgain', { word: smartQuestion.correctLabel }));
+        playSoftWrong();
+        setTimeout(nextSmartChoiceQuestion, 1450);
+    }
+}
+
+function createExplosion(x, y, count = 26) {
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.background = randomItem(colors);
+        p.style.left = `${x}px`;
+        p.style.top = `${y}px`;
+        document.body.appendChild(p);
+        const angle = Math.PI * 2 * (i / count);
+        const speed = 90 + Math.random() * 230;
+        const tx = Math.cos(angle) * speed;
+        const ty = Math.sin(angle) * speed;
+        p.animate([
+            { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+            { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`, opacity: 0 }
+        ], { duration: 720 + Math.random() * 520, easing: 'cubic-bezier(.1,.9,.25,1)', fill: 'forwards' });
+        setTimeout(() => p.remove(), 1300);
+    }
+}
+
+function createStarburst(x, y) {
+    const stars = ['⭐','✨','🌟','💫'];
+    for (let i = 0; i < 10; i++) {
+        const s = document.createElement('div');
+        s.className = 'star-pop';
+        s.textContent = randomItem(stars);
+        s.style.left = `${x}px`;
+        s.style.top = `${y}px`;
+        document.body.appendChild(s);
+        const angle = Math.PI * 2 * (i / 10);
+        const dist = 130 + Math.random() * 90;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist;
+        s.animate([
+            { transform: 'translate(-50%, -50%) scale(0) rotate(0deg)', opacity: 1 },
+            { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(1.1) rotate(360deg)`, opacity: 0 }
+        ], { duration: 1050, easing: 'ease-out', fill: 'forwards' });
+        setTimeout(() => s.remove(), 1100);
+    }
+}
+
+function praise(text) {
+    const p = document.createElement('div');
+    p.className = 'praise-bubble';
+    p.textContent = text;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1450);
+}
+
+function createFloatingPraise() {
+    const emojis = ['⭐','🌟','🎉','🏆','💖','🧁','🌈','🦄'];
+    const e = document.createElement('div');
+    e.className = 'floating-emoji';
+    e.textContent = randomItem(emojis);
+    e.style.left = `${Math.random() * 100}vw`;
+    e.style.animationDuration = `${5 + Math.random() * 4}s`;
+    e.style.fontSize = `${2.5 + Math.random() * 3}rem`;
+    document.body.appendChild(e);
+    setTimeout(() => e.remove(), 9000);
+}
+
+function localConfettiBurst(x, y, count = 44) {
+    for (let i = 0; i < count; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.background = randomItem(colors);
+        c.style.left = `${x}px`;
+        c.style.top = `${y}px`;
+        c.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(c);
+
+        const angle = Math.PI * 2 * Math.random();
+        const distance = 90 + Math.random() * 230;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance + 160;
+        const duration = 900 + Math.random() * 900;
+
+        c.animate([
+            { transform: 'translate(-50%, -50%) scale(1) rotate(0deg)', opacity: 1 },
+            { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0.7) rotate(${360 + Math.random() * 720}deg)`, opacity: 0 }
+        ], { duration, easing: 'cubic-bezier(.12,.72,.26,1)', fill: 'forwards' });
+
+        setTimeout(() => c.remove(), duration + 120);
+    }
+}
+
+function confettiShower(count = 180) {
+    for (let i = 0; i < count; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.background = randomItem(colors);
+        c.style.left = `${Math.random() * 100}vw`;
+        c.style.top = `${-20 - Math.random() * 240}px`;
+        c.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(c);
+        const duration = 2600 + Math.random() * 3600;
+        c.animate([
+            { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+            { transform: `translateY(${window.innerHeight + 280}px) translateX(${(Math.random() - 0.5) * 260}px) rotate(${540 + Math.random() * 900}deg)`, opacity: 0.9 }
+        ], { duration, easing: 'cubic-bezier(.12,.72,.26,1)', fill: 'forwards' });
+        setTimeout(() => c.remove(), duration + 200);
+    }
+}
+
+function handleEasterEgg(char) {
+    if (!/[a-zA-Z]/.test(char)) return;
+    typedBuffer = (typedBuffer + char.toUpperCase()).slice(-20);
+    const eggs = {
+        YARA: 'Yara',
+        DEEP: 'Deep',
+        SWORNIMA: 'Swornima',
+        PAPA: 'Papa',
+        MAMA: 'Mama',
+        KHADKA: 'Khadka family',
+        AMA: 'Ama',
+        BUBA: 'Buba',
+        JAY: 'Jay',
+        FUPU: 'Fupu',
+        AASU: 'Aasu',
+        ANJU: 'Anju',
+        SUNIL: 'Sunil'
+    };
+    for (const [code, displayName] of Object.entries(eggs)) {
+        if (typedBuffer.endsWith(code)) {
+            triggerEasterEgg(displayName, t('eggGeneric', { name: displayName }));
+            typedBuffer = '';
+            break;
+        }
+    }
+}
+
+function triggerEasterEgg(name, phrase) {
+    const banner = document.createElement('div');
+    banner.className = 'egg-banner';
+    banner.innerHTML = `<div class="egg-title">🎊 ${name} 🎊</div><div class="egg-sub">${phrase}</div>`;
+    document.body.appendChild(banner);
+    speak(phrase);
+    confettiShower(150);
+    createExplosion(window.innerWidth / 2, window.innerHeight / 2, 60);
+    playCelebrationMusic(true);
+    setTimeout(() => banner.remove(), 2400);
+}
+
+function speak(text) {
+    if (!('speechSynthesis' in window)) return;
+    synth.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = VOICE_LANGS[currentLanguage] || 'en-US';
+    const voices = synth.getVoices ? synth.getVoices() : [];
+    const exactVoice = voices.find(v => v.lang && v.lang.toLowerCase() === utter.lang.toLowerCase());
+    const languageVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith((HTML_LANGS[currentLanguage] || 'en').toLowerCase()));
+    utter.voice = exactVoice || languageVoice || null;
+    utter.rate = currentLanguage === 'ne' ? 0.78 : 0.86;
+    utter.pitch = 1.18;
+    utter.volume = 1;
+    synth.speak(utter);
+}
+
+function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+}
+
+function playTone(freq, start, duration, type = 'sine', gainValue = 0.08) {
+    const ctx = ensureAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime + start);
+    gain.gain.exponentialRampToValueAtTime(gainValue, ctx.currentTime + start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + start + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(ctx.currentTime + start);
+    osc.stop(ctx.currentTime + start + duration + 0.02);
+}
+
+function playDing() {
+    playTone(660, 0, 0.14, 'triangle', 0.06);
+    playTone(990, 0.10, 0.18, 'triangle', 0.05);
+}
+
+function playSoftWrong() {
+    playTone(220, 0, 0.16, 'sine', 0.045);
+    playTone(180, 0.12, 0.2, 'sine', 0.035);
+}
+
+function playCelebrationMusic(short = false) {
+    const notes = short
+        ? [523,659,784,1046,784,1046]
+        : [523,659,784,1046,784,1046,1174,1046,784,659,784,1046];
+    notes.forEach((n, i) => playTone(n, i * 0.16, 0.18, i % 2 ? 'triangle' : 'sine', 0.06));
+}
+
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function randomItem(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomBackground() {
+    const a = randomItem(colors);
+    const b = randomItem(colors);
+    document.body.style.background = `linear-gradient(135deg, ${a} 0%, ${b} 100%)`;
+}
+
+window.addEventListener('keydown', e => {
+    if (e.repeat) return;
+    const char = e.key;
+    handleEasterEgg(char);
+    if (currentScreen === 'letter-game') handleLetterGameKey(char);
+    if (currentScreen === 'balloon-game') handleBalloonGameKey(char);
+    if (currentScreen === 'count-game' && /^[1-5]$/.test(char)) answerCountByNumber(Number(char));
+});
+
+window.addEventListener('pointerdown', () => {
+    try { ensureAudio(); } catch (e) {}
+}, { once: true });
+
+document.body.addEventListener('click', e => {
+    if (!e.target.closest('.home-menu')) closeHomeMenu();
+    if (e.target.closest('button')) return;
+    createExplosion(e.clientX, e.clientY, 16);
+});
+
+setInterval(randomBackground, 7000);
+setInterval(() => {
+    if (currentScreen === 'home-screen') createFloatingPraise();
+}, 1700);
+
+applyLanguage();
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => {};
+}
+</script>
+</body>
+</html>
