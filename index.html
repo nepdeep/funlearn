@@ -70,7 +70,8 @@
         z-index: 100;
         height: 68px;
         padding: 0 clamp(16px, 3vw, 32px);
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
         gap: 8px;
         background: var(--card);
@@ -84,10 +85,8 @@
         font-size: 1.45rem;
         font-weight: 1000;
         color: var(--pri);
-        margin-right: 12px;
         white-space: nowrap;
-        flex-shrink: 0;
-        text-align: center;
+        grid-column: 2;
         justify-content: center;
     }
     .nav-logo .logo-star { font-size: 1.9rem; filter: drop-shadow(0 2px 4px rgba(108,92,231,0.25)); }
@@ -122,7 +121,8 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-left: auto;
+        grid-column: 3;
+        justify-self: end;
         flex-shrink: 0;
     }
     /* ---- BURGER BUTTON ---- */
@@ -961,6 +961,59 @@
         box-shadow: 0 24px 45px rgba(0,0,0,0.20), inset 0 4px 0 rgba(255,255,255,0.75);
         animation: pulseQuestion 1.45s ease-in-out infinite;
     }
+    .smart-speaker.speaking {
+        animation: speakerSpeaking 0.45s ease-in-out 3;
+    }
+    @keyframes speakerSpeaking {
+        0%, 100% { transform: scale(1) rotate(0deg); }
+        25%      { transform: scale(1.12) rotate(-4deg); }
+        75%      { transform: scale(1.12) rotate(4deg); }
+    }
+    /* Feelings game — audio-led with face peek */
+    .feeling-stage {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: min(290px, 64vw);
+        aspect-ratio: 1;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .feeling-stage .smart-speaker {
+        width: 100%;
+        height: 100%;
+        animation: pulseQuestion 1.6s ease-in-out infinite;
+    }
+    .feeling-peek {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: clamp(5rem, 18vw, 11rem);
+        line-height: 1;
+        opacity: 0;
+        pointer-events: none;
+        filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+    }
+    .feeling-peek.peek-active {
+        animation: peekFade 1.7s ease forwards;
+    }
+    @keyframes peekFade {
+        0%   { opacity: 0; transform: scale(0.45) rotate(-10deg); }
+        18%  { opacity: 1; transform: scale(1.15) rotate(3deg); }
+        30%  { opacity: 1; transform: scale(1.0)  rotate(0deg); }
+        70%  { opacity: 1; transform: scale(1.02) rotate(-1deg); }
+        100% { opacity: 0; transform: scale(0.9)  rotate(0deg); }
+    }
+    .feeling-hint {
+        position: absolute;
+        bottom: -30px;
+        font-size: clamp(0.85rem, 2vw, 1.05rem);
+        color: var(--txt2);
+        font-weight: 800;
+        opacity: 0.75;
+        pointer-events: none;
+    }
     .smart-mini-label { display: block; margin-top: 8px; font-size: clamp(1rem, 2.2vw, 1.55rem); font-weight: 1000; }
     .smart-options-2 { grid-template-columns: repeat(2, minmax(160px, 1fr)); max-width: 640px; }
     .answer-btn .smart-letter-option { display: block; font-size: clamp(3rem, 9vw, 6rem); line-height: 1; }
@@ -1021,6 +1074,72 @@
         background: #E0F2F1;
         box-shadow: 0 10px 16px rgba(0,0,0,0.13);
     }
+    /* Maze game */
+    .maze-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+    .maze-grid {
+        display: grid;
+        grid-template-columns: repeat(var(--maze-size, 5), 1fr);
+        width: min(380px, 78vw);
+        aspect-ratio: 1;
+        background: #faf7ff;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 0 0 4px var(--purple), 0 14px 28px rgba(0,0,0,0.18);
+        touch-action: none;
+    }
+    .maze-cell {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(1.3rem, 5.5vw, 2rem);
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .maze-cell.visited { background: rgba(155, 107, 255, 0.18); }
+    .maze-cell.target  { background: rgba(84, 214, 106, 0.22); }
+    .maze-cell.player  { animation: pulseQuestion 1.4s ease-in-out infinite; }
+    .maze-controls {
+        display: grid;
+        grid-template-columns: 68px 68px 68px;
+        grid-template-rows: 68px 68px;
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+        margin: 4px auto 0;
+    }
+    .maze-btn {
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        border: 0;
+        background: var(--pri);
+        color: white;
+        font-size: 1.8rem;
+        cursor: pointer;
+        box-shadow: 0 5px 0 var(--pri-dark), 0 10px 18px rgba(108,92,231,0.35);
+        transition: transform 0.08s, box-shadow 0.08s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .maze-btn:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 0 var(--pri-dark), 0 6px 12px rgba(108,92,231,0.3);
+    }
+    .maze-btn.dpad-up    { grid-column: 2; grid-row: 1; }
+    .maze-btn.dpad-left  { grid-column: 1; grid-row: 2; }
+    .maze-btn.dpad-down  { grid-column: 2; grid-row: 2; }
+    .maze-btn.dpad-right { grid-column: 3; grid-row: 2; }
     .creative-tools {
         justify-self: center;
         width: min(880px, 100%);
@@ -1464,13 +1583,6 @@
                 <span class="logo-star">⭐✨</span>
                 <span>Fun & Learn</span>
             </div>
-            <div class="nav-links">
-                <button class="nav-link active">🏠 Home</button>
-                <button class="nav-link" onclick="showScreen('letter-game')">🎮 Games</button>
-                <button class="nav-link">📈 Progress</button>
-                <button class="nav-link">🎁 Rewards</button>
-                <button class="nav-link">👨‍👩‍👧 Parents</button>
-            </div>
             <div class="nav-right">
                 <button class="burger-btn" onclick="openSidebar()" aria-label="Menu">
                     <span class="burger-line"></span>
@@ -1481,24 +1593,6 @@
         </nav>
 
         <div class="home-main">
-            <!-- HERO -->
-            <div class="hero">
-                <div class="hero-left">
-                    <h1 class="hero-title" data-i18n="homeTitle">TypeFun Kids</h1>
-                    <p class="hero-subtitle" data-i18n="homeSubtitle">Type, play, recognize, laugh, and learn!</p>
-                    <div class="hero-mascot">🧒🏽</div>
-                </div>
-                <div class="hero-right">
-                    <div class="featured-badge">⭐ Today's Adventure</div>
-                    <div class="featured-thumb">🎈🅰🅱🅲</div>
-                    <div class="featured-info">
-                        <h3>Balloon Letters</h3>
-                        <p>Pop the balloons with the correct letters!</p>
-                    </div>
-                    <button class="featured-play-btn" onclick="startBalloonGame()">▶ Play Now</button>
-                </div>
-            </div>
-
             <!-- PLAY & LEARN -->
             <div class="section-row">
                 <div class="section-label">
@@ -3208,7 +3302,7 @@ Object.assign(LOCALIZED_TEXT.en, {
     freeDrawTitleCard: "Free Drawing",
     traceShapeTitleCard: "Trace Shape",
     shapePuzzlePrompt: "Which piece completes the picture?",
-    mazePathPrompt: "Which way should the bunny go next?",
+    mazePathPrompt: "Help the bunny reach home!",
     shadowMatchPrompt: "Which picture matches the shadow?",
     picturePiecesPrompt: "Which piece is missing?",
     connectDotsPrompt: "Tap the dots in order.",
@@ -3238,7 +3332,7 @@ Object.assign(LOCALIZED_TEXT.nl, {
     freeDrawTitleCard: "Vrij tekenen",
     traceShapeTitleCard: "Vorm volgen",
     shapePuzzlePrompt: "Welk stuk maakt het plaatje af?",
-    mazePathPrompt: "Welke kant moet het konijn op?",
+    mazePathPrompt: "Help het konijn naar huis!",
     shadowMatchPrompt: "Welk plaatje past bij de schaduw?",
     picturePiecesPrompt: "Welk stukje mist?",
     connectDotsPrompt: "Tik de stippen op volgorde.",
@@ -3268,7 +3362,7 @@ Object.assign(LOCALIZED_TEXT.ne, {
     freeDrawTitleCard: "चित्र बनाउ",
     traceShapeTitleCard: "आकार पछ्याउ",
     shapePuzzlePrompt: "कुन टुक्राले चित्र पूरा गर्छ?",
-    mazePathPrompt: "खरायो अब कुन बाटो जान्छ?",
+    mazePathPrompt: "खरायोलाई घर पुर्‍याऊ!",
     shadowMatchPrompt: "छायाँसँग कुन चित्र मिल्छ?",
     picturePiecesPrompt: "कुन टुक्रा हराएको छ?",
     connectDotsPrompt: "नम्बर अनुसार डट थिच।",
@@ -3305,6 +3399,7 @@ function toggleHomeMenu(event) {
 function showScreen(id) {
     closeHomeMenu();
     if (currentScreen === 'balloon-game' && id !== 'balloon-game') stopBalloonGame();
+    if (currentScreen === 'smart-choice-game' && id !== 'smart-choice-game') stopSmartLoops();
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     currentScreen = id;
@@ -4369,12 +4464,83 @@ function updateSmartScore() {
     if (score) score.textContent = `${t('correct')}: ${smartCorrect} / 10`;
 }
 
+// --- Audio-led smart-choice helpers (Feelings peek + Listen auto-repeat) ---
+let feelingsTimer = null;
+let listenTimer = null;
+
+function pulseSpeaker(stim) {
+    if (!stim) return;
+    const speaker = stim.querySelector('.smart-speaker');
+    if (!speaker) return;
+    speaker.classList.remove('speaking');
+    void speaker.offsetWidth; // restart animation
+    speaker.classList.add('speaking');
+}
+
+function speakAndPeek(emoji, label) {
+    const stim = document.getElementById('smart-stimulus');
+    if (!stim) return;
+    speak(label);
+    pulseSpeaker(stim);
+    const peek = stim.querySelector('.feeling-peek');
+    if (peek) {
+        peek.textContent = emoji;
+        peek.classList.remove('peek-active');
+        void peek.offsetWidth;
+        peek.classList.add('peek-active');
+    }
+}
+
+function startFeelingsLoop(emoji, label) {
+    stopFeelingsLoop();
+    speakAndPeek(emoji, label);
+    feelingsTimer = setInterval(() => {
+        if (currentScreen !== 'smart-choice-game' || smartGameType !== 'feelings' || smartLocked) {
+            stopFeelingsLoop();
+            return;
+        }
+        speakAndPeek(emoji, label);
+    }, 5000);
+}
+
+function stopFeelingsLoop() {
+    if (feelingsTimer) { clearInterval(feelingsTimer); feelingsTimer = null; }
+}
+
+function startListenLoop(label) {
+    stopListenLoop();
+    const stim = document.getElementById('smart-stimulus');
+    speak(label);
+    pulseSpeaker(stim);
+    listenTimer = setInterval(() => {
+        if (currentScreen !== 'smart-choice-game' || smartGameType !== 'listenPick' || smartLocked) {
+            stopListenLoop();
+            return;
+        }
+        speak(label);
+        pulseSpeaker(document.getElementById('smart-stimulus'));
+    }, 5000);
+}
+
+function stopListenLoop() {
+    if (listenTimer) { clearInterval(listenTimer); listenTimer = null; }
+}
+
+function stopSmartLoops() {
+    stopFeelingsLoop();
+    stopListenLoop();
+}
+
 function nextSmartChoiceQuestion() {
+    stopSmartLoops();
     smartLocked = false;
     smartQuestion = buildSmartQuestion(smartGameType);
     renderSmartChoiceQuestion();
     if (smartGameType === 'listenPick' && smartQuestion) {
-        setTimeout(() => speak(smartQuestion.correctLabel), 220);
+        setTimeout(() => startListenLoop(smartQuestion.correctLabel), 240);
+    } else if (smartGameType === 'feelings' && smartQuestion) {
+        const item = smartQuestion.stimulus && smartQuestion.stimulus[0];
+        if (item) setTimeout(() => startFeelingsLoop(item.emoji, item.label), 240);
     }
 }
 
@@ -4428,7 +4594,8 @@ function buildSmartQuestion(type) {
         const answer = randomItem(FEELING_ITEMS);
         return {
             promptKey: 'feelingsPrompt',
-            stimulus: [{ kind: 'emoji', text: answer.emoji }],
+            helperKey: 'tapSpeakerPrompt',
+            stimulus: [{ kind: 'feelingPeek', emoji: answer.emoji, label: itemLabel(answer.wordKey) }],
             options: makeEmojiOptions(answer, FEELING_ITEMS),
             correctLabel: itemLabel(answer.wordKey)
         };
@@ -4486,9 +4653,19 @@ function renderSmartChoiceQuestion() {
     }
     updateSmartScore();
     if (stimulus) {
-        stimulus.className = 'learning-sequence smart-stimulus' + (smartGameType === 'listenPick' ? ' listen-mode' : '');
+        const audioLed = (smartGameType === 'listenPick' || smartGameType === 'feelings');
+        stimulus.className = 'learning-sequence smart-stimulus' + (audioLed ? ' listen-mode' : '');
         stimulus.innerHTML = '';
-        stimulus.onclick = smartGameType === 'listenPick' ? () => speak(smartQuestion.correctLabel) : null;
+        if (smartGameType === 'listenPick') {
+            stimulus.onclick = () => {
+                if (smartQuestion) {
+                    speak(smartQuestion.correctLabel);
+                    pulseSpeaker(stimulus);
+                }
+            };
+        } else {
+            stimulus.onclick = null;
+        }
         smartQuestion.stimulus.forEach(item => renderSmartStimulusItem(stimulus, item));
     }
     if (options) {
@@ -4528,6 +4705,17 @@ function renderSmartStimulusItem(parent, item) {
         tile.className = 'smart-speaker';
         tile.textContent = '🔊';
         parent.appendChild(tile);
+        return;
+    }
+    if (item.kind === 'feelingPeek') {
+        const stage = document.createElement('div');
+        stage.className = 'feeling-stage';
+        stage.innerHTML = `
+            <div class="smart-speaker">🔊</div>
+            <div class="feeling-peek">${item.emoji}</div>
+        `;
+        stage.onclick = () => speakAndPeek(item.emoji, item.label);
+        parent.appendChild(stage);
         return;
     }
     if (item.kind === 'emoji') {
@@ -4575,6 +4763,7 @@ function renderSmartStimulusItem(parent, item) {
 function answerSmartChoice(btn, option) {
     if (smartLocked || !smartQuestion) return;
     smartLocked = true;
+    stopSmartLoops();
     if (option.correct) {
         btn.classList.add('correct');
         smartCorrect++;
@@ -4891,6 +5080,136 @@ function nextPuzzleQuestion() {
     renderPuzzleQuestion();
 }
 
+// --- Maze game state & helpers ---
+let mazeGrid = null;
+let mazePlayerPos = { r: 0, c: 0 };
+let mazeTargetPos = { r: 4, c: 4 };
+let mazeSize = 5;
+let mazeVisited = new Set();
+let mazeWon = false;
+
+function generateMaze(size) {
+    const cells = [];
+    for (let r = 0; r < size; r++) {
+        const row = [];
+        for (let c = 0; c < size; c++) {
+            row.push({ top: true, right: true, bottom: true, left: true, visited: false });
+        }
+        cells.push(row);
+    }
+    // Recursive backtracker (iterative)
+    const stack = [{ r: 0, c: 0 }];
+    cells[0][0].visited = true;
+    while (stack.length > 0) {
+        const cur = stack[stack.length - 1];
+        const r = cur.r, c = cur.c;
+        const neighbors = [];
+        if (r > 0       && !cells[r-1][c].visited) neighbors.push({ r: r-1, c: c,   dir: 'top' });
+        if (c < size-1  && !cells[r][c+1].visited) neighbors.push({ r: r,   c: c+1, dir: 'right' });
+        if (r < size-1  && !cells[r+1][c].visited) neighbors.push({ r: r+1, c: c,   dir: 'bottom' });
+        if (c > 0       && !cells[r][c-1].visited) neighbors.push({ r: r,   c: c-1, dir: 'left' });
+        if (neighbors.length === 0) { stack.pop(); continue; }
+        const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+        if (next.dir === 'top')    { cells[r][c].top = false;    cells[next.r][next.c].bottom = false; }
+        if (next.dir === 'right')  { cells[r][c].right = false;  cells[next.r][next.c].left = false; }
+        if (next.dir === 'bottom') { cells[r][c].bottom = false; cells[next.r][next.c].top = false; }
+        if (next.dir === 'left')   { cells[r][c].left = false;   cells[next.r][next.c].right = false; }
+        cells[next.r][next.c].visited = true;
+        stack.push({ r: next.r, c: next.c });
+    }
+    return cells;
+}
+
+function setupMaze() {
+    mazeSize = 5;
+    mazeGrid = generateMaze(mazeSize);
+    mazePlayerPos = { r: 0, c: 0 };
+    mazeTargetPos = { r: mazeSize - 1, c: mazeSize - 1 };
+    mazeVisited = new Set(['0,0']);
+    mazeWon = false;
+}
+
+function wallShadow(cell) {
+    const parts = [];
+    if (cell.top)    parts.push('inset 0 4px 0 var(--purple)');
+    if (cell.right)  parts.push('inset -4px 0 0 var(--purple)');
+    if (cell.bottom) parts.push('inset 0 -4px 0 var(--purple)');
+    if (cell.left)   parts.push('inset 4px 0 0 var(--purple)');
+    return parts.join(', ');
+}
+
+function renderMaze() {
+    const board = document.getElementById('puzzle-board');
+    if (!board || !mazeGrid) return;
+    let html = `<div class="maze-wrap"><div class="maze-grid" style="--maze-size: ${mazeSize}">`;
+    for (let r = 0; r < mazeSize; r++) {
+        for (let c = 0; c < mazeSize; c++) {
+            const cell = mazeGrid[r][c];
+            const isPlayer = (r === mazePlayerPos.r && c === mazePlayerPos.c);
+            const isTarget = (r === mazeTargetPos.r && c === mazeTargetPos.c);
+            const classes = ['maze-cell'];
+            if (mazeVisited.has(r + ',' + c)) classes.push('visited');
+            if (isTarget) classes.push('target');
+            if (isPlayer) classes.push('player');
+            let content = '';
+            if (isPlayer) content = '🐰';
+            else if (isTarget) content = '🏠';
+            html += `<div class="${classes.join(' ')}" style="box-shadow: ${wallShadow(cell)}" onclick="mazeCellTap(${r},${c})">${content}</div>`;
+        }
+    }
+    html += `</div></div>`;
+    board.innerHTML = html;
+}
+
+function renderMazeControls() {
+    const options = document.getElementById('puzzle-options');
+    if (!options) return;
+    options.innerHTML = `
+        <div class="maze-controls">
+            <button class="maze-btn dpad-up"    onclick="moveMaze('up')"    aria-label="Up">⬆️</button>
+            <button class="maze-btn dpad-left"  onclick="moveMaze('left')"  aria-label="Left">⬅️</button>
+            <button class="maze-btn dpad-down"  onclick="moveMaze('down')"  aria-label="Down">⬇️</button>
+            <button class="maze-btn dpad-right" onclick="moveMaze('right')" aria-label="Right">➡️</button>
+        </div>
+    `;
+}
+
+function mazeCellTap(r, c) {
+    if (mazeWon || !mazeGrid) return;
+    const dr = r - mazePlayerPos.r;
+    const dc = c - mazePlayerPos.c;
+    if (dr === -1 && dc === 0) moveMaze('up');
+    else if (dr === 1  && dc === 0) moveMaze('down');
+    else if (dr === 0  && dc === -1) moveMaze('left');
+    else if (dr === 0  && dc === 1) moveMaze('right');
+}
+
+function moveMaze(dir) {
+    if (mazeWon || !mazeGrid) return;
+    const r = mazePlayerPos.r, c = mazePlayerPos.c;
+    const cell = mazeGrid[r][c];
+    let nr = r, nc = c, ok = false;
+    if      (dir === 'up'    && !cell.top)    { nr = r - 1; ok = true; }
+    else if (dir === 'down'  && !cell.bottom) { nr = r + 1; ok = true; }
+    else if (dir === 'left'  && !cell.left)   { nc = c - 1; ok = true; }
+    else if (dir === 'right' && !cell.right)  { nc = c + 1; ok = true; }
+    if (!ok) { playSoftWrong(); return; }
+    mazePlayerPos = { r: nr, c: nc };
+    mazeVisited.add(nr + ',' + nc);
+    renderMaze();
+    if (nr === mazeTargetPos.r && nc === mazeTargetPos.c) {
+        mazeWon = true;
+        puzzleCorrect++;
+        updatePuzzleScore();
+        speak(t('puzzleCorrectSpeak'));
+        praise(randomItem(praiseWords));
+        createExplosion(window.innerWidth / 2, window.innerHeight / 2, 32);
+        playDing();
+        if (puzzleCorrect >= 10) setTimeout(() => winGame('puzzleWinMessage'), 700);
+        else setTimeout(nextPuzzleQuestion, 1100);
+    }
+}
+
 function makePuzzleQuestion(type) {
     if (type === 'shapeMatch') {
         const answer = randomItem(['🔵','🔺','🟨','⭐','💜','🟢']);
@@ -4903,13 +5222,8 @@ function makePuzzleQuestion(type) {
         };
     }
     if (type === 'mazePath') {
-        const answer = randomItem(mazeArrows);
-        const route = shuffle(mazeArrows.slice()).slice(0, 3).concat(answer);
-        return {
-            answer,
-            options: mazeArrows.map(v => ({ value: v, label: v })),
-            boardHTML: `<div class="pa-board-title">🐰 ➜ 🏠</div><div class="pa-path">${route.slice(0, 3).map(a => `<div class="pa-arrow-step">${a}</div>`).join('')}<div class="pa-arrow-step blank">?</div></div>`
-        };
+        setupMaze();
+        return { type: 'maze' };
     }
     if (type === 'shadowMatch') {
         const answer = randomItem(puzzleEmojiPool);
@@ -4939,6 +5253,12 @@ function renderPuzzleQuestion() {
     if (!puzzleQuestion) puzzleQuestion = makePuzzleQuestion(puzzleGameType);
     if (title) title.textContent = t(info.titleKey);
     if (prompt) prompt.textContent = t(info.promptKey);
+    if (puzzleGameType === 'mazePath') {
+        renderMaze();
+        renderMazeControls();
+        updatePuzzleScore();
+        return;
+    }
     if (board) board.innerHTML = puzzleQuestion.boardHTML;
     if (options) {
         options.innerHTML = '';
@@ -5176,6 +5496,12 @@ window.addEventListener('keydown', e => {
     if (currentScreen === 'letter-game') handleLetterGameKey(char);
     if (currentScreen === 'balloon-game') handleBalloonGameKey(char);
     if (currentScreen === 'count-game' && /^[1-5]$/.test(char)) answerCountByNumber(Number(char));
+    if (currentScreen === 'puzzle-game' && puzzleGameType === 'mazePath') {
+        if (char === 'ArrowUp')         { e.preventDefault(); moveMaze('up'); }
+        else if (char === 'ArrowDown')  { e.preventDefault(); moveMaze('down'); }
+        else if (char === 'ArrowLeft')  { e.preventDefault(); moveMaze('left'); }
+        else if (char === 'ArrowRight') { e.preventDefault(); moveMaze('right'); }
+    }
 });
 
 window.addEventListener('pointerdown', () => {
