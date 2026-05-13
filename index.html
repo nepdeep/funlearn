@@ -969,6 +969,30 @@
         25%      { transform: scale(1.12) rotate(-4deg); }
         75%      { transform: scale(1.12) rotate(4deg); }
     }
+    /* Generic audio pulse for non-speaker stimuli (letter card, word card, emoji pair) */
+    .audio-pulse > .smart-big-letter,
+    .audio-pulse > .smart-word-card,
+    .audio-pulse > .symbol-tile {
+        animation: audioPulse 0.55s ease-in-out;
+    }
+    @keyframes audioPulse {
+        0%, 100% { filter: drop-shadow(0 0 0 rgba(108,92,231,0)); transform: scale(1); }
+        50%      { filter: drop-shadow(0 0 18px rgba(108,92,231,0.55)); transform: scale(1.06); }
+    }
+    #reverse-quiz-word.audio-pulse {
+        animation: audioPulse 0.55s ease-in-out;
+    }
+    #reverse-quiz-word {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .reverse-word-speaker {
+        display: inline-block;
+        margin-left: 10px;
+        font-size: 0.55em;
+        vertical-align: middle;
+        opacity: 0.75;
+    }
     /* Feelings game — audio-led with face peek */
     .feeling-stage {
         position: relative;
@@ -1838,6 +1862,211 @@
                     </button>
                 </div>
             </div>
+
+            <!-- CHARACTER FRIENDS -->
+            <div class="section-row">
+                <div class="section-label">
+                    <div class="section-icon purple">🧑‍🚀</div>
+                    <div class="section-label-text">
+                        <h2 class="c-purple" data-i18n="characterWorldTitle">Character Friends</h2>
+                        <p data-i18n="characterWorldHint">Recognize helpers, faces, body clues, and friendly characters.</p>
+                    </div>
+                </div>
+                <div class="section-games">
+                    <button class="gcard" onclick="startSmartChoiceGame('characterNames')">
+                        <div class="gcard-thumb t-violet">👩‍🚒👨‍⚕️👩‍🏫</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="characterNamesTitleCard">Who Am I?</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('helperTools')">
+                        <div class="gcard-thumb t-blue">🩺📚🍳</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="helperToolsTitleCard">Helper Tools</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('feelingsStory')">
+                        <div class="gcard-thumb t-yellow">😊😢😮</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="feelingsStoryTitleCard">Face Feelings</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('bodyClues')">
+                        <div class="gcard-thumb t-green">👂👁️👃</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="bodyCluesTitleCard">Body Clues</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- MATH GARDEN -->
+            <div class="section-row">
+                <div class="section-label">
+                    <div class="section-icon green">🔢</div>
+                    <div class="section-label-text">
+                        <h2 class="c-green" data-i18n="mathGardenTitle">Math Garden</h2>
+                        <p data-i18n="mathGardenHint">Count, compare, order numbers, and count shapes.</p>
+                    </div>
+                </div>
+                <div class="section-games">
+                    <button class="gcard" onclick="startSmartChoiceGame('numberHunt')">
+                        <div class="gcard-thumb t-lime">🐝🐝🐝</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="numberHuntTitleCard">Number Hunt</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('moreLess')">
+                        <div class="gcard-thumb t-orange">🍎🍎 vs 🍎</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="moreLessTitleCard">More or Less</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('numberOrder')">
+                        <div class="gcard-thumb t-blue">1️⃣2️⃣❓</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="numberOrderTitleCard">Number Train</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('shapeCount')">
+                        <div class="gcard-thumb t-purple">🔺🔺🔺</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="shapeCountTitleCard">Shape Count</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- LOGIC LAB -->
+            <div class="section-row">
+                <div class="section-label">
+                    <div class="section-icon blue">🧠</div>
+                    <div class="section-label-text">
+                        <h2 class="c-blue" data-i18n="logicLabTitle">Logic Lab</h2>
+                        <p data-i18n="logicLabHint">Spot same, different, missing objects, and category matches.</p>
+                    </div>
+                </div>
+                <div class="section-games">
+                    <button class="gcard" onclick="startSmartChoiceGame('sameMatch')">
+                        <div class="gcard-thumb t-teal">🐶 = ?</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="sameMatchTitleCard">Same Match</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('differentOne')">
+                        <div class="gcard-thumb t-coral">🐱🐱🐶🐱</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="differentOneTitleCard">Spot Different</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('categorySort')">
+                        <div class="gcard-thumb t-yellow">🍎🐶🚗</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="categorySortTitleCard">Sort It</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('missingObject')">
+                        <div class="gcard-thumb t-violet">⭐💜⭐❓</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="missingObjectTitleCard">Missing Object</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- WORLD EXPLORER -->
+            <div class="section-row">
+                <div class="section-label">
+                    <div class="section-icon coral">🌍</div>
+                    <div class="section-label-text">
+                        <h2 class="c-coral" data-i18n="worldExplorerTitle">World Explorer</h2>
+                        <p data-i18n="worldExplorerHint">Animal homes, weather choices, vehicles, and animal sounds.</p>
+                    </div>
+                </div>
+                <div class="section-games">
+                    <button class="gcard" onclick="startSmartChoiceGame('animalHomes')">
+                        <div class="gcard-thumb t-green">🪹➡️🐦</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="animalHomesTitleCard">Animal Homes</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('weatherWear')">
+                        <div class="gcard-thumb t-blue">🌧️☂️</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="weatherWearTitleCard">Weather Wear</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('vehiclePlaces')">
+                        <div class="gcard-thumb t-orange">✈️🚗⛵</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="vehiclePlacesTitleCard">Where It Goes</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('animalSounds')">
+                        <div class="gcard-thumb t-pink">🐮 moo</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="animalSoundsTitleCard">Animal Sounds</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TINY HANDS PLAY -->
+            <div class="section-row">
+                <div class="section-label">
+                    <div class="section-icon pink">🤲</div>
+                    <div class="section-label-text">
+                        <h2 class="c-pink" data-i18n="tinyHandsTitle">Tiny Hands Play</h2>
+                        <p data-i18n="tinyHandsHint">Tap colors, shapes, patterns, and scene stickers.</p>
+                    </div>
+                </div>
+                <div class="section-games">
+                    <button class="gcard" onclick="startSmartChoiceGame('colorPick')">
+                        <div class="gcard-thumb t-pink">🔴🟡🔵</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="colorPickTitleCard">Color Pick</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('shapePick')">
+                        <div class="gcard-thumb t-violet">🔵🔺⭐</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="shapePickTitleCard">Shape Tap</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('copyPattern')">
+                        <div class="gcard-thumb t-green">🌙⭐🌙❓</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="copyPatternTitleCard">Copy Pattern</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                    <button class="gcard" onclick="startSmartChoiceGame('sceneSticker')">
+                        <div class="gcard-thumb t-yellow">🏖️🐚🌊</div>
+                        <div class="gcard-footer">
+                            <h3 data-i18n="sceneStickerTitleCard">Sticker Scene</h3>
+                            <span class="gcard-arrow">➜</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -2192,7 +2421,7 @@ const LOCALIZED_TEXT = {
         "tryAgainShort": "Try again. {word}",
         "wonSpeak": "You won! Celebration time!",
         "tryAnotherLetter": "Try another letter!",
-        "letterForWord": "{letter} for {word}. Pop!",
+        "letterForWord": "{letter} for {word}.",
         "letterForWordShort": "{letter} for {word}!",
         "letterIntro": "{letter} ... {word}",
         "eggGeneric": "{name}! Magic sparkle unlocked!",
@@ -2322,7 +2551,7 @@ const LOCALIZED_TEXT = {
         "tryAgainShort": "Probeer opnieuw. {word}",
         "wonSpeak": "Je hebt gewonnen! Tijd voor feest!",
         "tryAnotherLetter": "Probeer een andere letter!",
-        "letterForWord": "{letter} van {word}. Pop!",
+        "letterForWord": "{letter} van {word}.",
         "letterForWordShort": "{letter} van {word}!",
         "letterIntro": "{letter} ... {word}",
         "eggGeneric": "{name}! Magische sprankel vrijgespeeld!",
@@ -2452,7 +2681,7 @@ const LOCALIZED_TEXT = {
         "tryAgainShort": "फेरि प्रयास गर। {word}",
         "wonSpeak": "तिमीले जित्यौ! अब उत्सव!",
         "tryAnotherLetter": "अर्को अक्षर प्रयास गर!",
-        "letterForWord": "{word} का लागि {letter}. पप!",
+        "letterForWord": "{word} का लागि {letter}.",
         "letterForWordShort": "{word} का लागि {letter}!",
         "letterIntro": "{letter} ... {word}",
         "eggGeneric": "{name}! जादुई चमक खुल्यो!",
@@ -2588,6 +2817,7 @@ const WORD_TRANSLATIONS = {
         "Hat": "Hoed",
         "Hippo": "Nijlpaard",
         "Ice Cream": "IJsje",
+        "Ice": "IJs",
         "Igloo": "Iglo",
         "Island": "Eiland",
         "Insect": "Insect",
@@ -2632,6 +2862,7 @@ const WORD_TRANSLATIONS = {
         "Quiet": "Stil",
         "Quack": "Kwak",
         "Quilt": "Dekbed",
+        "Quarter": "Kwartje",
         "Rabbit": "Konijn",
         "Rainbow": "Regenboog",
         "Rocket": "Raket",
@@ -2668,6 +2899,7 @@ const WORD_TRANSLATIONS = {
         "Six": "Zes",
         "Yo-yo": "Jojo",
         "Yellow": "Geel",
+        "Yawn": "Geeuw",
         "Yak": "Jak",
         "Yacht": "Jacht",
         "Yogurt": "Yoghurt",
@@ -2843,6 +3075,7 @@ const WORD_TRANSLATIONS = {
         "Hat": "टोपी",
         "Hippo": "दरियाई घोडा",
         "Ice Cream": "आइसक्रिम",
+        "Ice": "बरफ",
         "Igloo": "इग्लु",
         "Island": "टापु",
         "Insect": "किरा",
@@ -2887,6 +3120,7 @@ const WORD_TRANSLATIONS = {
         "Quiet": "शान्त",
         "Quack": "क्वाक",
         "Quilt": "सिरक",
+        "Quarter": "पाव",
         "Rabbit": "खरायो",
         "Rainbow": "इन्द्रेणी",
         "Rocket": "रकेट",
@@ -2923,6 +3157,7 @@ const WORD_TRANSLATIONS = {
         "Six": "छ",
         "Yo-yo": "यो-यो",
         "Yellow": "पहेंलो",
+        "Yawn": "हाई",
         "Yak": "चौंरी",
         "Yacht": "याट",
         "Yogurt": "दही",
@@ -3071,6 +3306,35 @@ const EXTRA_WORD_TRANSLATIONS = {
     }
 };
 
+
+
+Object.assign(EXTRA_WORD_TRANSLATIONS.nl, {
+    "Firefighter": "Brandweer", "Doctor": "Dokter", "Teacher": "Juf", "Chef": "Kok", "Farmer": "Boer",
+    "Pilot": "Piloot", "Builder": "Bouwer", "Dentist": "Tandarts",
+    "Hear": "horen", "See": "zien", "Smell": "ruiken", "Taste": "proeven", "Touch": "voelen", "Walk": "lopen",
+    "More": "meer", "Less": "minder", "Fruit": "Fruit", "Animal": "Dier", "Vehicle": "Voertuig", "Shape": "Vorm",
+    "Bird": "Vogel", "Bee": "Bij", "Cow": "Koe", "Rabbit": "Konijn", "Sheep": "Schaap",
+    "Umbrella": "Paraplu", "Sunglasses": "Zonnebril", "Boots": "Laarzen", "Scarf": "Sjaal",
+    "Sky": "lucht", "Road": "weg", "Water": "water", "Track": "spoor", "Snow": "Sneeuw",
+    "Moo": "boe", "Woof": "woef", "Meow": "miauw", "Quack": "kwak", "Baa": "bè",
+    "Blueberries": "Bosbessen", "Lemon": "Citroen", "Leaf": "Blad", "Carrot": "Wortel",
+    "Diamond": "Diamant", "Star": "Ster", "Shell": "Schelp", "Tractor": "Tractor", "Tree": "Boom",
+    "Farm": "Boerderij", "Sky Scene": "Lucht", "Beach Scene": "Strand", "Forest Scene": "Bos"
+});
+Object.assign(EXTRA_WORD_TRANSLATIONS.ne, {
+    "Firefighter": "दमकलकर्मी", "Doctor": "डाक्टर", "Teacher": "शिक्षक", "Chef": "भान्से", "Farmer": "किसान",
+    "Pilot": "पाइलट", "Builder": "निर्माणकर्मी", "Dentist": "दन्त चिकित्सक",
+    "Hear": "सुन्न", "See": "हेर्न", "Smell": "सुँघ्न", "Taste": "चाख्न", "Touch": "छुन", "Walk": "हिँड्न",
+    "More": "धेरै", "Less": "थोरै", "Fruit": "फल", "Animal": "जनावर", "Vehicle": "सवारी", "Shape": "आकार",
+    "Bird": "चरा", "Bee": "मौरी", "Cow": "गाई", "Rabbit": "खरायो", "Sheep": "भेडा",
+    "Umbrella": "छाता", "Sunglasses": "घाम चस्मा", "Boots": "बुट", "Scarf": "मफलर",
+    "Sky": "आकाश", "Road": "बाटो", "Water": "पानी", "Track": "रेलमार्ग", "Snow": "हिउँ",
+    "Moo": "मू", "Woof": "भौ", "Meow": "म्याउँ", "Quack": "क्वाक", "Baa": "ब्या",
+    "Blueberries": "ब्लुबेरी", "Lemon": "कागती", "Leaf": "पात", "Carrot": "गाजर",
+    "Diamond": "हीरा", "Star": "तारा", "Shell": "शंख", "Tractor": "ट्र्याक्टर", "Tree": "रूख",
+    "Farm": "फार्म", "Sky Scene": "आकाश", "Beach Scene": "समुद्री किनार", "Forest Scene": "जंगल"
+});
+
 function getSavedLanguage() {
     try {
         const saved = localStorage.getItem('typefun-language');
@@ -3185,7 +3449,7 @@ const wordList = {
     f: [{word:'Fish',emoji:'🐟'}, {word:'Flower',emoji:'🌸'}, {word:'Frog',emoji:'🐸'}, {word:'Fire',emoji:'🔥'}, {word:'Fox',emoji:'🦊'}],
     g: [{word:'Giraffe',emoji:'🦒'}, {word:'Grape',emoji:'🍇'}, {word:'Goat',emoji:'🐐'}, {word:'Guitar',emoji:'🎸'}, {word:'Gift',emoji:'🎁'}],
     h: [{word:'House',emoji:'🏠'}, {word:'Horse',emoji:'🐴'}, {word:'Heart',emoji:'❤️'}, {word:'Hat',emoji:'🎩'}, {word:'Hippo',emoji:'🦛'}],
-    i: [{word:'Ice Cream',emoji:'🍦'}, {word:'Igloo',emoji:'🏔️'}, {word:'Island',emoji:'🏝️'}, {word:'Insect',emoji:'🐞'}, {word:'Idea',emoji:'💡'}],
+    i: [{word:'Ice Cream',emoji:'🍦'}, {word:'Ice',emoji:'🧊'}, {word:'Island',emoji:'🏝️'}, {word:'Insect',emoji:'🐞'}, {word:'Idea',emoji:'💡'}],
     j: [{word:'Juice',emoji:'🧃'}, {word:'Jellyfish',emoji:'🪼'}, {word:'Jet',emoji:'🛩️'}, {word:'Jacket',emoji:'🧥'}, {word:'Joy',emoji:'😊'}],
     k: [{word:'Kite',emoji:'🪁'}, {word:'Kangaroo',emoji:'🦘'}, {word:'Key',emoji:'🔑'}, {word:'King',emoji:'🤴'}, {word:'Koala',emoji:'🐨'}],
     l: [{word:'Lion',emoji:'🦁'}, {word:'Leaf',emoji:'🍃'}, {word:'Lemon',emoji:'🍋'}, {word:'Lamp',emoji:'💡'}, {word:'Ladybug',emoji:'🐞'}],
@@ -3193,15 +3457,15 @@ const wordList = {
     n: [{word:'Nest',emoji:'🪹'}, {word:'Nose',emoji:'👃'}, {word:'Night',emoji:'🌃'}, {word:'Nine',emoji:'9️⃣'}, {word:'Nut',emoji:'🥜'}],
     o: [{word:'Orange',emoji:'🍊'}, {word:'Octopus',emoji:'🐙'}, {word:'Owl',emoji:'🦉'}, {word:'Ocean',emoji:'🌊'}, {word:'Onion',emoji:'🧅'}],
     p: [{word:'Pizza',emoji:'🍕'}, {word:'Penguin',emoji:'🐧'}, {word:'Panda',emoji:'🐼'}, {word:'Princess',emoji:'👸'}, {word:'Piano',emoji:'🎹'}],
-    q: [{word:'Queen',emoji:'👸'}, {word:'Question',emoji:'❓'}, {word:'Quiet',emoji:'🤫'}, {word:'Quack',emoji:'🦆'}, {word:'Quilt',emoji:'🛌'}],
+    q: [{word:'Queen',emoji:'🫅'}, {word:'Question',emoji:'❓'}, {word:'Quiet',emoji:'🤫'}, {word:'Quack',emoji:'🦆'}, {word:'Quarter',emoji:'🪙'}],
     r: [{word:'Rabbit',emoji:'🐰'}, {word:'Rainbow',emoji:'🌈'}, {word:'Rocket',emoji:'🚀'}, {word:'Robot',emoji:'🤖'}, {word:'Rose',emoji:'🌹'}],
     s: [{word:'Sun',emoji:'☀️'}, {word:'Star',emoji:'⭐'}, {word:'Snake',emoji:'🐍'}, {word:'Snow',emoji:'❄️'}, {word:'Ship',emoji:'🚢'}],
     t: [{word:'Tiger',emoji:'🐯'}, {word:'Tree',emoji:'🌳'}, {word:'Train',emoji:'🚂'}, {word:'Turtle',emoji:'🐢'}, {word:'Tomato',emoji:'🍅'}],
-    u: [{word:'Umbrella',emoji:'☂️'}, {word:'Unicorn',emoji:'🦄'}, {word:'Up',emoji:'⬆️'}, {word:'Uniform',emoji:'👮'}, {word:'Ukulele',emoji:'🎸'}],
+    u: [{word:'Umbrella',emoji:'☂️'}, {word:'Unicorn',emoji:'🦄'}, {word:'Up',emoji:'⬆️'}, {word:'Uniform',emoji:'👮'}, {word:'UFO',emoji:'🛸'}],
     v: [{word:'Van',emoji:'🚐'}, {word:'Violin',emoji:'🎻'}, {word:'Volcano',emoji:'🌋'}, {word:'Vegetable',emoji:'🥦'}, {word:'Vase',emoji:'🏺'}],
     w: [{word:'Whale',emoji:'🐳'}, {word:'Water',emoji:'💧'}, {word:'Wolf',emoji:'🐺'}, {word:'Watch',emoji:'⌚'}, {word:'Worm',emoji:'🪱'}],
-    x: [{word:'X-ray',emoji:'🦴'}, {word:'Xylophone',emoji:'🎹'}, {word:'Box',emoji:'📦'}, {word:'Fox',emoji:'🦊'}, {word:'Six',emoji:'6️⃣'}],
-    y: [{word:'Yo-yo',emoji:'🪀'}, {word:'Yellow',emoji:'🟡'}, {word:'Yak',emoji:'🐂'}, {word:'Yacht',emoji:'🛥️'}, {word:'Yogurt',emoji:'🥣'}],
+    x: [{word:'X-ray',emoji:'🩻'}, {word:'Xylophone',emoji:'🎹'}, {word:'Box',emoji:'📦'}, {word:'Fox',emoji:'🦊'}, {word:'Six',emoji:'6️⃣'}],
+    y: [{word:'Yo-yo',emoji:'🪀'}, {word:'Yellow',emoji:'🟡'}, {word:'Yawn',emoji:'🥱'}, {word:'Yacht',emoji:'🛥️'}, {word:'Yogurt',emoji:'🥣'}],
     z: [{word:'Zebra',emoji:'🦓'}, {word:'Zoo',emoji:'🏞️'}, {word:'Zipper',emoji:'🤐'}, {word:'Zero',emoji:'0️⃣'}, {word:'Zigzag',emoji:'〰️'}]
 };
 
@@ -3380,6 +3644,167 @@ Object.assign(LOCALIZED_TEXT.ne, {
 });
 
 
+Object.assign(LOCALIZED_TEXT.en, {
+    characterWorldTitle: "Character Friends",
+    characterWorldHint: "Recognize helpers, faces, body clues, and friendly characters.",
+    mathGardenTitle: "Math Garden",
+    mathGardenHint: "Count, compare, order numbers, and count shapes.",
+    logicLabTitle: "Logic Lab",
+    logicLabHint: "Spot same, different, missing objects, and category matches.",
+    worldExplorerTitle: "World Explorer",
+    worldExplorerHint: "Animal homes, weather choices, vehicles, and animal sounds.",
+    tinyHandsTitle: "Tiny Hands Play",
+    tinyHandsHint: "Tap colors, shapes, patterns, and scene stickers.",
+    characterNamesTitleCard: "Who Am I?",
+    helperToolsTitleCard: "Helper Tools",
+    feelingsStoryTitleCard: "Face Feelings",
+    bodyCluesTitleCard: "Body Clues",
+    numberHuntTitleCard: "Number Hunt",
+    moreLessTitleCard: "More or Less",
+    numberOrderTitleCard: "Number Train",
+    shapeCountTitleCard: "Shape Count",
+    sameMatchTitleCard: "Same Match",
+    differentOneTitleCard: "Spot Different",
+    categorySortTitleCard: "Sort It",
+    missingObjectTitleCard: "Missing Object",
+    animalHomesTitleCard: "Animal Homes",
+    weatherWearTitleCard: "Weather Wear",
+    vehiclePlacesTitleCard: "Where It Goes",
+    animalSoundsTitleCard: "Animal Sounds",
+    colorPickTitleCard: "Color Pick",
+    shapePickTitleCard: "Shape Tap",
+    copyPatternTitleCard: "Copy Pattern",
+    sceneStickerTitleCard: "Sticker Scene",
+    startSmartSpeak: "Choose the best answer and collect stars!",
+    characterNamesPrompt: "Who is this character?",
+    helperToolsPrompt: "Who uses this tool?",
+    feelingsStoryPrompt: "Which face feels {word}?",
+    bodyCluesPrompt: "What do we use to {word}?",
+    numberHuntPrompt: "How many do you see?",
+    moreLessPrompt: "Which group has {word}?",
+    numberOrderPrompt: "What number comes next?",
+    shapeCountPrompt: "How many shapes?",
+    sameMatchPrompt: "Find the same picture.",
+    differentOnePrompt: "Which one is different?",
+    categorySortPrompt: "Which one belongs with {word}?",
+    missingObjectPrompt: "What is missing?",
+    animalHomesPrompt: "Who lives here?",
+    weatherWearPrompt: "What helps in {word}?",
+    vehiclePlacesPrompt: "Which vehicle goes in the {word}?",
+    animalSoundsPrompt: "Who says {sound}?",
+    colorPickPrompt: "Pick something {word}.",
+    shapePickPrompt: "Pick the {word}.",
+    copyPatternPrompt: "Copy the pattern. What comes next?",
+    sceneStickerPrompt: "Which sticker goes in the {word} scene?"
+});
+Object.assign(LOCALIZED_TEXT.nl, {
+    characterWorldTitle: "Vriendjes & helpers",
+    characterWorldHint: "Herken helpers, gezichten, lichaamsraadsels en leuke figuren.",
+    mathGardenTitle: "Rekentuin",
+    mathGardenHint: "Tellen, vergelijken, getallen ordenen en vormen tellen.",
+    logicLabTitle: "Denklab",
+    logicLabHint: "Zoek hetzelfde, anders, ontbrekend en wat erbij hoort.",
+    worldExplorerTitle: "Wereld ontdekker",
+    worldExplorerHint: "Dierenhuizen, weerkeuzes, voertuigen en dierengeluiden.",
+    tinyHandsTitle: "Kleine handjes",
+    tinyHandsHint: "Tik kleuren, vormen, patronen en stickers.",
+    characterNamesTitleCard: "Wie ben ik?",
+    helperToolsTitleCard: "Helper spullen",
+    feelingsStoryTitleCard: "Gezichtsgevoel",
+    bodyCluesTitleCard: "Lichaamsraadsel",
+    numberHuntTitleCard: "Getallenjacht",
+    moreLessTitleCard: "Meer of minder",
+    numberOrderTitleCard: "Getallentrein",
+    shapeCountTitleCard: "Vormen tellen",
+    sameMatchTitleCard: "Hetzelfde",
+    differentOneTitleCard: "Anders zoeken",
+    categorySortTitleCard: "Sorteer het",
+    missingObjectTitleCard: "Wat mist?",
+    animalHomesTitleCard: "Dierenhuizen",
+    weatherWearTitleCard: "Weerkleding",
+    vehiclePlacesTitleCard: "Waar gaat het?",
+    animalSoundsTitleCard: "Dierengeluid",
+    colorPickTitleCard: "Kleur kiezen",
+    shapePickTitleCard: "Vorm tikken",
+    copyPatternTitleCard: "Patroon kopiëren",
+    sceneStickerTitleCard: "Sticker scène",
+    startSmartSpeak: "Kies het beste antwoord en verzamel sterren!",
+    characterNamesPrompt: "Wie is dit figuur?",
+    helperToolsPrompt: "Wie gebruikt dit?",
+    feelingsStoryPrompt: "Welk gezicht voelt {word}?",
+    bodyCluesPrompt: "Wat gebruiken we om te {word}?",
+    numberHuntPrompt: "Hoeveel zie je?",
+    moreLessPrompt: "Welke groep heeft {word}?",
+    numberOrderPrompt: "Welk getal komt hierna?",
+    shapeCountPrompt: "Hoeveel vormen?",
+    sameMatchPrompt: "Zoek hetzelfde plaatje.",
+    differentOnePrompt: "Welke is anders?",
+    categorySortPrompt: "Welke hoort bij {word}?",
+    missingObjectPrompt: "Wat mist er?",
+    animalHomesPrompt: "Wie woont hier?",
+    weatherWearPrompt: "Wat helpt bij {word}?",
+    vehiclePlacesPrompt: "Welk voertuig gaat op de {word}?",
+    animalSoundsPrompt: "Wie zegt {sound}?",
+    colorPickPrompt: "Kies iets {word}.",
+    shapePickPrompt: "Kies de {word}.",
+    copyPatternPrompt: "Kopieer het patroon. Wat komt hierna?",
+    sceneStickerPrompt: "Welke sticker hoort in de {word} scène?"
+});
+Object.assign(LOCALIZED_TEXT.ne, {
+    characterWorldTitle: "चरित्र साथीहरू",
+    characterWorldHint: "सहयोगी, अनुहार, शरीरका संकेत र रमाइला पात्र चिन।",
+    mathGardenTitle: "गणित बगैंचा",
+    mathGardenHint: "गन्ने, तुलना गर्ने, नम्बर मिलाउने र आकार गन्ने।",
+    logicLabTitle: "सोच्ने प्रयोगशाला",
+    logicLabHint: "उस्तै, फरक, छुटेको र समूह मिलाउने खेल।",
+    worldExplorerTitle: "विश्व अन्वेषक",
+    worldExplorerHint: "जनावरका घर, मौसम, सवारी र जनावरको आवाज।",
+    tinyHandsTitle: "सानो हात खेल",
+    tinyHandsHint: "रङ, आकार, ढाँचा र स्टिकर थिच।",
+    characterNamesTitleCard: "म को हुँ?",
+    helperToolsTitleCard: "सहयोगी सामान",
+    feelingsStoryTitleCard: "अनुहार भावना",
+    bodyCluesTitleCard: "शरीर संकेत",
+    numberHuntTitleCard: "नम्बर खोज",
+    moreLessTitleCard: "धेरै वा थोरै",
+    numberOrderTitleCard: "नम्बर रेल",
+    shapeCountTitleCard: "आकार गन",
+    sameMatchTitleCard: "उस्तै मिलाऊ",
+    differentOneTitleCard: "फरक खोज",
+    categorySortTitleCard: "समूह मिलाऊ",
+    missingObjectTitleCard: "के छुट्यो?",
+    animalHomesTitleCard: "जनावरका घर",
+    weatherWearTitleCard: "मौसम कपडा",
+    vehiclePlacesTitleCard: "कहाँ जान्छ?",
+    animalSoundsTitleCard: "जनावर आवाज",
+    colorPickTitleCard: "रङ छान",
+    shapePickTitleCard: "आकार थिच",
+    copyPatternTitleCard: "ढाँचा नक्कल",
+    sceneStickerTitleCard: "स्टिकर दृश्य",
+    startSmartSpeak: "सबैभन्दा राम्रो उत्तर छान र तारा बटुल!",
+    characterNamesPrompt: "यो पात्र को हो?",
+    helperToolsPrompt: "यो सामान कसले प्रयोग गर्छ?",
+    feelingsStoryPrompt: "कुन अनुहार {word} छ?",
+    bodyCluesPrompt: "{word} हामी के प्रयोग गर्छौं?",
+    numberHuntPrompt: "कति देख्यौ?",
+    moreLessPrompt: "कुन समूहमा {word} छ?",
+    numberOrderPrompt: "अब कुन नम्बर आउँछ?",
+    shapeCountPrompt: "कति आकार छन्?",
+    sameMatchPrompt: "उस्तै चित्र खोज।",
+    differentOnePrompt: "कुन फरक छ?",
+    categorySortPrompt: "{word} सँग कुन मिल्छ?",
+    missingObjectPrompt: "के छुटेको छ?",
+    animalHomesPrompt: "यहाँ को बस्छ?",
+    weatherWearPrompt: "{word} मा के मद्दत गर्छ?",
+    vehiclePlacesPrompt: "{word} मा कुन सवारी जान्छ?",
+    animalSoundsPrompt: "{sound} कसले भन्छ?",
+    colorPickPrompt: "{word} कुरा छान।",
+    shapePickPrompt: "{word} छान।",
+    copyPatternPrompt: "ढाँचा नक्कल गर। अब के आउँछ?",
+    sceneStickerPrompt: "{word} दृश्यमा कुन स्टिकर मिल्छ?"
+});
+
+
 function closeHomeMenu() {
     const panel = document.getElementById('home-menu-panel');
     const btn = document.getElementById('home-menu-btn');
@@ -3400,6 +3825,7 @@ function showScreen(id) {
     closeHomeMenu();
     if (currentScreen === 'balloon-game' && id !== 'balloon-game') stopBalloonGame();
     if (currentScreen === 'smart-choice-game' && id !== 'smart-choice-game') stopSmartLoops();
+    if (currentScreen === 'reverse-recognize-game' && id !== 'reverse-recognize-game') stopReverseAudioLoop();
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     currentScreen = id;
@@ -3813,6 +4239,7 @@ function startReverseRecognizeGame(resetOnly = false) {
 }
 
 function nextReverseQuestion() {
+    stopReverseAudioLoop();
     reverseLockedAnswer = false;
     updateReverseCategoryActive();
     const pool = categories[reverseActiveCategory].items;
@@ -3824,6 +4251,7 @@ function nextReverseQuestion() {
     reverseCurrentQuestion.options = [reverseCurrentQuestion.emoji, ...uniqueEmojis.slice(0, 3)];
     shuffle(reverseCurrentQuestion.options);
     renderReverseQuestion();
+    setTimeout(() => startReverseAudioLoop(itemLabel(reverseCurrentQuestion.answerKey)), 240);
 }
 
 function renderReverseQuestion() {
@@ -3831,7 +4259,14 @@ function renderReverseQuestion() {
     const title = document.getElementById('reverse-quiz-title');
     const word = document.getElementById('reverse-quiz-word');
     if (title) title.textContent = t('reverseQuestionTitle');
-    if (word) word.textContent = itemLabel(reverseCurrentQuestion.answerKey);
+    if (word) {
+        const label = itemLabel(reverseCurrentQuestion.answerKey);
+        word.innerHTML = `<span class="reverse-word-text">${label}</span><span class="reverse-word-speaker">🔊</span>`;
+        word.onclick = () => {
+            speak(label);
+            pulseStimulus(word);
+        };
+    }
 
     const answers = document.getElementById('reverse-answers');
     answers.innerHTML = '';
@@ -3849,6 +4284,7 @@ function renderReverseQuestion() {
 function answerReverseQuestion(btn, option) {
     if (reverseLockedAnswer) return;
     reverseLockedAnswer = true;
+    stopReverseAudioLoop();
 
     if (option === reverseCurrentQuestion.emoji) {
         btn.classList.add('correct');
@@ -4079,7 +4515,7 @@ function startCountGame(resetOnly = false) {
 function nextCountQuestion() {
     countLocked = false;
     const number = 1 + Math.floor(Math.random() * 5);
-    const emoji = randomItem(COUNT_EMOJIS);
+    const emoji = randomItem(TINY_COUNT_EMOJIS);
     const options = new Set([number]);
     while (options.size < 4) options.add(1 + Math.floor(Math.random() * 5));
     countQuestion = { number, emoji, options: shuffle([...options]) };
@@ -4427,6 +4863,400 @@ const SMART_GAME_CONFIG = {
     dailyOrder: { titleKey: 'dailyOrderTitleCard', startKey: 'startDailyOrderSpeak', winKey: 'smartWinMessage' }
 };
 
+
+Object.assign(SMART_GAME_CONFIG, {
+    characterNames: { titleKey: 'characterNamesTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    helperTools: { titleKey: 'helperToolsTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    feelingsStory: { titleKey: 'feelingsStoryTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    bodyClues: { titleKey: 'bodyCluesTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    numberHunt: { titleKey: 'numberHuntTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    moreLess: { titleKey: 'moreLessTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    numberOrder: { titleKey: 'numberOrderTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    shapeCount: { titleKey: 'shapeCountTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    sameMatch: { titleKey: 'sameMatchTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    differentOne: { titleKey: 'differentOneTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    categorySort: { titleKey: 'categorySortTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    missingObject: { titleKey: 'missingObjectTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    animalHomes: { titleKey: 'animalHomesTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    weatherWear: { titleKey: 'weatherWearTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    vehiclePlaces: { titleKey: 'vehiclePlacesTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    animalSounds: { titleKey: 'animalSoundsTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    colorPick: { titleKey: 'colorPickTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    shapePick: { titleKey: 'shapePickTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    copyPattern: { titleKey: 'copyPatternTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' },
+    sceneSticker: { titleKey: 'sceneStickerTitleCard', startKey: 'startSmartSpeak', winKey: 'smartWinMessage' }
+});
+
+const CHARACTER_ROLE_ITEMS = [
+    { emoji: '👩‍🚒', wordKey: 'Firefighter', tool: '🧯' },
+    { emoji: '👨‍⚕️', wordKey: 'Doctor', tool: '🩺' },
+    { emoji: '👩‍🏫', wordKey: 'Teacher', tool: '📚' },
+    { emoji: '👨‍🍳', wordKey: 'Chef', tool: '🍳' },
+    { emoji: '👩‍🌾', wordKey: 'Farmer', tool: '🌽' },
+    { emoji: '👨‍✈️', wordKey: 'Pilot', tool: '✈️' },
+    { emoji: '👷', wordKey: 'Builder', tool: '🧱' },
+    { emoji: '🦷', wordKey: 'Dentist', tool: '🪥' }
+];
+
+const BODY_CLUE_ITEMS = [
+    { actionKey: 'Hear', answer: { emoji: '👂', wordKey: 'Ear' } },
+    { actionKey: 'See', answer: { emoji: '👁️', wordKey: 'Eye' } },
+    { actionKey: 'Smell', answer: { emoji: '👃', wordKey: 'Nose' } },
+    { actionKey: 'Taste', answer: { emoji: '👄', wordKey: 'Mouth' } },
+    { actionKey: 'Touch', answer: { emoji: '✋', wordKey: 'Hand' } },
+    { actionKey: 'Walk', answer: { emoji: '🦶', wordKey: 'Foot' } }
+];
+const BODY_OPTION_POOL = BODY_CLUE_ITEMS.map(item => item.answer);
+
+const NUMBER_EMOJIS = { 1: '1️⃣', 2: '2️⃣', 3: '3️⃣', 4: '4️⃣', 5: '5️⃣' };
+const TINY_COUNT_EMOJIS = ['🐝', '⭐', '🌸', '🍎', '🦋', '🚗'];
+const TINY_COUNT_SHAPES = ['🔵', '🔺', '🟨', '⭐', '💜', '🟢'];
+
+const LOGIC_ITEMS = [
+    { emoji: '🐶', wordKey: 'Dog' }, { emoji: '🐱', wordKey: 'Cat' }, { emoji: '🐰', wordKey: 'Rabbit' },
+    { emoji: '🐸', wordKey: 'Frog' }, { emoji: '🚗', wordKey: 'Car' }, { emoji: '✈️', wordKey: 'Airplane' },
+    { emoji: '🍎', wordKey: 'Apple' }, { emoji: '🍌', wordKey: 'Banana' }, { emoji: '⭐', wordKey: 'Star' },
+    { emoji: '💜', wordKey: 'Heart' }, { emoji: '🌙', wordKey: 'Moon' }, { emoji: '☀️', wordKey: 'Sun' }
+];
+
+const CATEGORY_SORT_SETS = [
+    {
+        categoryKey: 'Fruit', emoji: '🍎',
+        items: [{ emoji: '🍎', wordKey: 'Apple' }, { emoji: '🍌', wordKey: 'Banana' }, { emoji: '🍇', wordKey: 'Grapes' }],
+        decoys: [{ emoji: '🐶', wordKey: 'Dog' }, { emoji: '🚗', wordKey: 'Car' }, { emoji: '🔺', wordKey: 'Triangle' }]
+    },
+    {
+        categoryKey: 'Animal', emoji: '🐶',
+        items: [{ emoji: '🐶', wordKey: 'Dog' }, { emoji: '🐱', wordKey: 'Cat' }, { emoji: '🐰', wordKey: 'Rabbit' }],
+        decoys: [{ emoji: '🍎', wordKey: 'Apple' }, { emoji: '🚌', wordKey: 'Bus' }, { emoji: '🔵', wordKey: 'Circle' }]
+    },
+    {
+        categoryKey: 'Vehicle', emoji: '🚗',
+        items: [{ emoji: '🚗', wordKey: 'Car' }, { emoji: '🚌', wordKey: 'Bus' }, { emoji: '🚲', wordKey: 'Bicycle' }],
+        decoys: [{ emoji: '🐶', wordKey: 'Dog' }, { emoji: '🍌', wordKey: 'Banana' }, { emoji: '⭐', wordKey: 'Star' }]
+    },
+    {
+        categoryKey: 'Shape', emoji: '🔺',
+        items: [{ emoji: '🔵', wordKey: 'Circle' }, { emoji: '🔺', wordKey: 'Triangle' }, { emoji: '⭐', wordKey: 'Star' }],
+        decoys: [{ emoji: '🐱', wordKey: 'Cat' }, { emoji: '🚗', wordKey: 'Car' }, { emoji: '🍎', wordKey: 'Apple' }]
+    }
+];
+
+const MISSING_PATTERNS = [
+    [{ emoji: '⭐', wordKey: 'Star' }, { emoji: '💜', wordKey: 'Heart' }],
+    [{ emoji: '🌙', wordKey: 'Moon' }, { emoji: '☀️', wordKey: 'Sun' }],
+    [{ emoji: '🐶', wordKey: 'Dog' }, { emoji: '🐱', wordKey: 'Cat' }],
+    [{ emoji: '🍎', wordKey: 'Apple' }, { emoji: '🍌', wordKey: 'Banana' }]
+];
+
+const ANIMAL_HOME_ITEMS = [
+    { home: '🪹', answer: { emoji: '🐦', wordKey: 'Bird' } },
+    { home: '🏠', answer: { emoji: '🐶', wordKey: 'Dog' } },
+    { home: '🏚️', answer: { emoji: '🐱', wordKey: 'Cat' } },
+    { home: '🐝', answer: { emoji: '🐝', wordKey: 'Bee' } },
+    { home: '🌊', answer: { emoji: '🐟', wordKey: 'Fish' } },
+    { home: '🌾', answer: { emoji: '🐮', wordKey: 'Cow' } }
+];
+
+const WEATHER_WEAR_ITEMS = [
+    { weatherEmoji: '🌧️', weatherKey: 'Rain', answer: { emoji: '☂️', wordKey: 'Umbrella' } },
+    { weatherEmoji: '☀️', weatherKey: 'Sun', answer: { emoji: '🕶️', wordKey: 'Sunglasses' } },
+    { weatherEmoji: '❄️', weatherKey: 'Snow', answer: { emoji: '🧥', wordKey: 'Coat' } },
+    { weatherEmoji: '💨', weatherKey: 'Wind', answer: { emoji: '🧣', wordKey: 'Scarf' } },
+    { weatherEmoji: '🌧️', weatherKey: 'Rain', answer: { emoji: '🥾', wordKey: 'Boots' } }
+];
+
+const VEHICLE_PLACE_ITEMS = [
+    { placeEmoji: '☁️', placeKey: 'Sky', answer: { emoji: '✈️', wordKey: 'Airplane' } },
+    { placeEmoji: '🛣️', placeKey: 'Road', answer: { emoji: '🚗', wordKey: 'Car' } },
+    { placeEmoji: '🌊', placeKey: 'Water', answer: { emoji: '⛵', wordKey: 'Boat' } },
+    { placeEmoji: '🛤️', placeKey: 'Track', answer: { emoji: '🚂', wordKey: 'Train' } },
+    { placeEmoji: '🛣️', placeKey: 'Road', answer: { emoji: '🚲', wordKey: 'Bicycle' } }
+];
+
+const ANIMAL_SOUND_ITEMS = [
+    { soundKey: 'Moo', answer: { emoji: '🐮', wordKey: 'Cow' } },
+    { soundKey: 'Woof', answer: { emoji: '🐶', wordKey: 'Dog' } },
+    { soundKey: 'Meow', answer: { emoji: '🐱', wordKey: 'Cat' } },
+    { soundKey: 'Quack', answer: { emoji: '🦆', wordKey: 'Duck' } },
+    { soundKey: 'Baa', answer: { emoji: '🐑', wordKey: 'Sheep' } }
+];
+
+const COLOR_PICK_ITEMS = [
+    { colorEmoji: '🔴', colorKey: 'Red', answer: { emoji: '🍎', wordKey: 'Apple' } },
+    { colorEmoji: '🔵', colorKey: 'Blue', answer: { emoji: '🫐', wordKey: 'Blueberries' } },
+    { colorEmoji: '🟡', colorKey: 'Yellow', answer: { emoji: '🍋', wordKey: 'Lemon' } },
+    { colorEmoji: '🟢', colorKey: 'Green', answer: { emoji: '🍃', wordKey: 'Leaf' } },
+    { colorEmoji: '🟣', colorKey: 'Purple', answer: { emoji: '🍇', wordKey: 'Grapes' } },
+    { colorEmoji: '🟠', colorKey: 'Orange', answer: { emoji: '🥕', wordKey: 'Carrot' } }
+];
+
+const SHAPE_PICK_ITEMS = [
+    { emoji: '🔵', wordKey: 'Circle' }, { emoji: '🟨', wordKey: 'Square' }, { emoji: '🔺', wordKey: 'Triangle' },
+    { emoji: '⭐', wordKey: 'Star' }, { emoji: '💜', wordKey: 'Heart' }, { emoji: '🔶', wordKey: 'Diamond' }
+];
+
+const SCENE_STICKER_ITEMS = [
+    { sceneEmoji: '🏖️', sceneKey: 'Beach', answer: { emoji: '🐚', wordKey: 'Shell' }, decoys: [{ emoji: '🚜', wordKey: 'Tractor' }, { emoji: '⭐', wordKey: 'Star' }, { emoji: '🏠', wordKey: 'House' }] },
+    { sceneEmoji: '🌾', sceneKey: 'Farm', answer: { emoji: '🚜', wordKey: 'Tractor' }, decoys: [{ emoji: '🐚', wordKey: 'Shell' }, { emoji: '✈️', wordKey: 'Airplane' }, { emoji: '🌙', wordKey: 'Moon' }] },
+    { sceneEmoji: '☁️', sceneKey: 'Sky', answer: { emoji: '☀️', wordKey: 'Sun' }, decoys: [{ emoji: '🐟', wordKey: 'Fish' }, { emoji: '🚗', wordKey: 'Car' }, { emoji: '🍎', wordKey: 'Apple' }] },
+    { sceneEmoji: '🌲', sceneKey: 'Forest', answer: { emoji: '🌳', wordKey: 'Tree' }, decoys: [{ emoji: '⛵', wordKey: 'Boat' }, { emoji: '🩺', wordKey: 'Doctor' }, { emoji: '🍰', wordKey: 'Cake' }] }
+];
+
+function repeatEmoji(emoji, count) {
+    return Array.from({ length: count }, () => emoji).join('');
+}
+
+function numberChoiceOptions(answer, min = 1, max = 5) {
+    const nums = [];
+    for (let n = min; n <= max; n++) nums.push(n);
+    const others = shuffle(nums.filter(n => n !== answer)).slice(0, 3);
+    return shuffle([answer, ...others]).map(n => ({
+        value: String(n),
+        letter: String(n),
+        label: String(n),
+        correct: n === answer
+    }));
+}
+
+function buildCustomSmartQuestion(type) {
+    if (type === 'characterNames') {
+        const answer = randomItem(CHARACTER_ROLE_ITEMS);
+        return {
+            promptKey: 'characterNamesPrompt',
+            stimulus: [{ kind: 'emoji', text: answer.emoji }],
+            options: makeEmojiOptions(answer, CHARACTER_ROLE_ITEMS),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'helperTools') {
+        const answer = randomItem(CHARACTER_ROLE_ITEMS);
+        return {
+            promptKey: 'helperToolsPrompt',
+            stimulus: [{ kind: 'emoji', text: answer.tool }],
+            options: makeEmojiOptions(answer, CHARACTER_ROLE_ITEMS),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'feelingsStory') {
+        const answer = randomItem(FEELING_ITEMS);
+        return {
+            promptKey: 'feelingsStoryPrompt',
+            promptParams: { word: itemLabel(answer.wordKey) },
+            helperKey: 'tapSpeakerPrompt',
+            stimulus: [{ kind: 'speaker', text: '🔊' }],
+            options: makeEmojiOptions(answer, FEELING_ITEMS),
+            correctLabel: itemLabel(answer.wordKey),
+            autoSpeak: itemLabel(answer.wordKey),
+            intervalMs: 5000
+        };
+    }
+    if (type === 'bodyClues') {
+        const clue = randomItem(BODY_CLUE_ITEMS);
+        return {
+            promptKey: 'bodyCluesPrompt',
+            promptParams: { word: itemLabel(clue.actionKey) },
+            stimulus: [{ kind: 'word', text: itemLabel(clue.actionKey) }],
+            options: makeEmojiOptions(clue.answer, BODY_OPTION_POOL),
+            correctLabel: itemLabel(clue.answer.wordKey),
+            autoSpeak: itemLabel(clue.actionKey),
+            intervalMs: 6000
+        };
+    }
+    if (type === 'numberHunt') {
+        const count = 1 + Math.floor(Math.random() * 5);
+        const emoji = randomItem(TINY_COUNT_EMOJIS);
+        return {
+            promptKey: 'numberHuntPrompt',
+            stimulus: [{ kind: 'word', text: repeatEmoji(emoji, count) }],
+            options: numberChoiceOptions(count),
+            correctLabel: String(count)
+        };
+    }
+    if (type === 'moreLess') {
+        const emoji = randomItem(['🍎', '⭐', '🐝', '🌸']);
+        let left = 1 + Math.floor(Math.random() * 5);
+        let right = 1 + Math.floor(Math.random() * 5);
+        if (left === right) right = right === 5 ? 1 : right + 1;
+        const wantMore = Math.random() > 0.5;
+        const targetKey = wantMore ? 'More' : 'Less';
+        const leftCorrect = wantMore ? left > right : left < right;
+        return {
+            promptKey: 'moreLessPrompt',
+            promptParams: { word: itemLabel(targetKey) },
+            stimulus: [{ kind: 'word', text: itemLabel(targetKey) }],
+            optionClass: 'smart-options-2',
+            options: [
+                { value: 'left', emoji: repeatEmoji(emoji, left), label: String(left), correct: leftCorrect },
+                { value: 'right', emoji: repeatEmoji(emoji, right), label: String(right), correct: !leftCorrect }
+            ],
+            correctLabel: itemLabel(targetKey),
+            autoSpeak: itemLabel(targetKey),
+            intervalMs: 6000
+        };
+    }
+    if (type === 'numberOrder') {
+        const start = 1 + Math.floor(Math.random() * 3);
+        const answer = start + 2;
+        return {
+            promptKey: 'numberOrderPrompt',
+            stimulus: [{ kind: 'sequence', items: [
+                { emoji: NUMBER_EMOJIS[start], wordKey: String(start) },
+                { emoji: NUMBER_EMOJIS[start + 1], wordKey: String(start + 1) },
+                { emoji: '?', wordKey: '?' }
+            ] }],
+            options: numberChoiceOptions(answer),
+            correctLabel: String(answer)
+        };
+    }
+    if (type === 'shapeCount') {
+        const count = 1 + Math.floor(Math.random() * 5);
+        const shape = randomItem(TINY_COUNT_SHAPES);
+        return {
+            promptKey: 'shapeCountPrompt',
+            stimulus: [{ kind: 'word', text: repeatEmoji(shape, count) }],
+            options: numberChoiceOptions(count),
+            correctLabel: String(count)
+        };
+    }
+    if (type === 'sameMatch') {
+        const answer = randomItem(LOGIC_ITEMS);
+        return {
+            promptKey: 'sameMatchPrompt',
+            stimulus: [{ kind: 'emoji', text: answer.emoji }],
+            options: makeEmojiOptions(answer, LOGIC_ITEMS),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'differentOne') {
+        const base = randomItem(LOGIC_ITEMS);
+        const odd = randomItem(LOGIC_ITEMS.filter(item => item.wordKey !== base.wordKey));
+        const group = shuffle([base, base, base, odd]);
+        const decoys = shuffle(LOGIC_ITEMS.filter(item => ![base.wordKey, odd.wordKey].includes(item.wordKey))).slice(0, 2);
+        return {
+            promptKey: 'differentOnePrompt',
+            stimulus: group.map(item => ({ kind: 'emoji', text: item.emoji })),
+            options: makeEmojiOptions(odd, [base, odd, ...decoys]),
+            correctLabel: itemLabel(odd.wordKey)
+        };
+    }
+    if (type === 'categorySort') {
+        const set = randomItem(CATEGORY_SORT_SETS);
+        const answer = randomItem(set.items);
+        const pool = shuffle([answer, ...set.decoys]).slice(0, 4);
+        return {
+            promptKey: 'categorySortPrompt',
+            promptParams: { word: itemLabel(set.categoryKey) },
+            stimulus: [{ kind: 'emojiWord', emoji: set.emoji, word: itemLabel(set.categoryKey) }],
+            options: makeEmojiOptions(answer, pool),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'missingObject') {
+        const pair = randomItem(MISSING_PATTERNS);
+        const pattern = [pair[0], pair[1], pair[0], pair[1]];
+        const missingIndex = Math.floor(Math.random() * pattern.length);
+        const answer = pattern[missingIndex];
+        const shown = pattern.map((item, idx) => idx === missingIndex ? { emoji: '?', wordKey: '?' } : item);
+        const decoys = shuffle(LOGIC_ITEMS.filter(item => !pair.some(p => p.wordKey === item.wordKey))).slice(0, 2);
+        return {
+            promptKey: 'missingObjectPrompt',
+            stimulus: [{ kind: 'sequence', items: shown }],
+            options: makeEmojiOptions(answer, [pair[0], pair[1], ...decoys]),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'animalHomes') {
+        const item = randomItem(ANIMAL_HOME_ITEMS);
+        const pool = ANIMAL_HOME_ITEMS.map(home => home.answer);
+        return {
+            promptKey: 'animalHomesPrompt',
+            stimulus: [{ kind: 'emoji', text: item.home }],
+            options: makeEmojiOptions(item.answer, pool),
+            correctLabel: itemLabel(item.answer.wordKey)
+        };
+    }
+    if (type === 'weatherWear') {
+        const item = randomItem(WEATHER_WEAR_ITEMS);
+        const pool = WEATHER_WEAR_ITEMS.map(w => w.answer);
+        return {
+            promptKey: 'weatherWearPrompt',
+            promptParams: { word: itemLabel(item.weatherKey) },
+            stimulus: [{ kind: 'emojiWord', emoji: item.weatherEmoji, word: itemLabel(item.weatherKey) }],
+            options: makeEmojiOptions(item.answer, pool),
+            correctLabel: itemLabel(item.answer.wordKey)
+        };
+    }
+    if (type === 'vehiclePlaces') {
+        const item = randomItem(VEHICLE_PLACE_ITEMS);
+        const pool = VEHICLE_PLACE_ITEMS.map(place => place.answer);
+        return {
+            promptKey: 'vehiclePlacesPrompt',
+            promptParams: { word: itemLabel(item.placeKey) },
+            stimulus: [{ kind: 'emojiWord', emoji: item.placeEmoji, word: itemLabel(item.placeKey) }],
+            options: makeEmojiOptions(item.answer, pool),
+            correctLabel: itemLabel(item.answer.wordKey)
+        };
+    }
+    if (type === 'animalSounds') {
+        const item = randomItem(ANIMAL_SOUND_ITEMS);
+        const pool = ANIMAL_SOUND_ITEMS.map(sound => sound.answer);
+        return {
+            promptKey: 'animalSoundsPrompt',
+            promptParams: { sound: itemLabel(item.soundKey) },
+            helperKey: 'tapSpeakerPrompt',
+            stimulus: [{ kind: 'speaker', text: '🔊' }],
+            options: makeEmojiOptions(item.answer, pool),
+            correctLabel: itemLabel(item.answer.wordKey),
+            autoSpeak: itemLabel(item.soundKey),
+            intervalMs: 5000
+        };
+    }
+    if (type === 'colorPick') {
+        const item = randomItem(COLOR_PICK_ITEMS);
+        const pool = COLOR_PICK_ITEMS.map(color => color.answer);
+        return {
+            promptKey: 'colorPickPrompt',
+            promptParams: { word: itemLabel(item.colorKey) },
+            stimulus: [{ kind: 'emoji', text: item.colorEmoji }],
+            options: makeEmojiOptions(item.answer, pool),
+            correctLabel: itemLabel(item.answer.wordKey)
+        };
+    }
+    if (type === 'shapePick') {
+        const answer = randomItem(SHAPE_PICK_ITEMS);
+        return {
+            promptKey: 'shapePickPrompt',
+            promptParams: { word: itemLabel(answer.wordKey) },
+            stimulus: [{ kind: 'word', text: itemLabel(answer.wordKey) }],
+            options: makeEmojiOptions(answer, SHAPE_PICK_ITEMS),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'copyPattern') {
+        const pair = randomItem(MISSING_PATTERNS);
+        const answer = pair[1];
+        const decoys = shuffle(LOGIC_ITEMS.filter(item => !pair.some(p => p.wordKey === item.wordKey))).slice(0, 2);
+        return {
+            promptKey: 'copyPatternPrompt',
+            stimulus: [{ kind: 'sequence', items: [pair[0], pair[1], pair[0], { emoji: '?', wordKey: '?' }] }],
+            options: makeEmojiOptions(answer, [pair[0], pair[1], ...decoys]),
+            correctLabel: itemLabel(answer.wordKey)
+        };
+    }
+    if (type === 'sceneSticker') {
+        const scene = randomItem(SCENE_STICKER_ITEMS);
+        return {
+            promptKey: 'sceneStickerPrompt',
+            promptParams: { word: itemLabel(scene.sceneKey) },
+            stimulus: [{ kind: 'emojiWord', emoji: scene.sceneEmoji, word: itemLabel(scene.sceneKey) }],
+            options: makeEmojiOptions(scene.answer, [scene.answer, ...scene.decoys]),
+            correctLabel: itemLabel(scene.answer.wordKey)
+        };
+    }
+    return null;
+}
+
 function localizedLetterItems() {
     return LETTER_SOUND_DATA[currentLanguage] || LETTER_SOUND_DATA.en;
 }
@@ -4464,71 +5294,92 @@ function updateSmartScore() {
     if (score) score.textContent = `${t('correct')}: ${smartCorrect} / 10`;
 }
 
-// --- Audio-led smart-choice helpers (Feelings peek + Listen auto-repeat) ---
-let feelingsTimer = null;
-let listenTimer = null;
+// --- Audio-led smart-choice helpers (one generic loop for all stimuli) ---
+let smartAudioTimer = null;
+let reverseAudioTimer = null;
 
 function pulseSpeaker(stim) {
     if (!stim) return;
     const speaker = stim.querySelector('.smart-speaker');
     if (!speaker) return;
     speaker.classList.remove('speaking');
-    void speaker.offsetWidth; // restart animation
+    void speaker.offsetWidth;
     speaker.classList.add('speaking');
 }
 
-function speakAndPeek(emoji, label) {
+function pulseStimulus(stim) {
+    if (!stim) return;
+    stim.classList.remove('audio-pulse');
+    void stim.offsetWidth;
+    stim.classList.add('audio-pulse');
+}
+
+function triggerFeelingPeek(emoji) {
     const stim = document.getElementById('smart-stimulus');
     if (!stim) return;
-    speak(label);
-    pulseSpeaker(stim);
     const peek = stim.querySelector('.feeling-peek');
-    if (peek) {
-        peek.textContent = emoji;
-        peek.classList.remove('peek-active');
-        void peek.offsetWidth;
-        peek.classList.add('peek-active');
-    }
+    if (!peek) return;
+    peek.textContent = emoji;
+    peek.classList.remove('peek-active');
+    void peek.offsetWidth;
+    peek.classList.add('peek-active');
 }
 
-function startFeelingsLoop(emoji, label) {
-    stopFeelingsLoop();
-    speakAndPeek(emoji, label);
-    feelingsTimer = setInterval(() => {
-        if (currentScreen !== 'smart-choice-game' || smartGameType !== 'feelings' || smartLocked) {
-            stopFeelingsLoop();
-            return;
-        }
-        speakAndPeek(emoji, label);
-    }, 5000);
-}
-
-function stopFeelingsLoop() {
-    if (feelingsTimer) { clearInterval(feelingsTimer); feelingsTimer = null; }
-}
-
-function startListenLoop(label) {
-    stopListenLoop();
-    const stim = document.getElementById('smart-stimulus');
+function speakAndPeek(emoji, label) {
     speak(label);
+    const stim = document.getElementById('smart-stimulus');
     pulseSpeaker(stim);
-    listenTimer = setInterval(() => {
-        if (currentScreen !== 'smart-choice-game' || smartGameType !== 'listenPick' || smartLocked) {
-            stopListenLoop();
-            return;
-        }
-        speak(label);
-        pulseSpeaker(document.getElementById('smart-stimulus'));
-    }, 5000);
+    triggerFeelingPeek(emoji);
 }
 
-function stopListenLoop() {
-    if (listenTimer) { clearInterval(listenTimer); listenTimer = null; }
+function startSmartAudioLoop(phrase, opts) {
+    stopSmartAudioLoop();
+    opts = opts || {};
+    const intervalMs = opts.intervalMs || 6000;
+    const peekFn = opts.peekFn || null;
+    const tick = () => {
+        speak(phrase);
+        const stim = document.getElementById('smart-stimulus');
+        if (stim && stim.querySelector('.smart-speaker')) pulseSpeaker(stim);
+        else pulseStimulus(stim);
+        if (peekFn) peekFn();
+    };
+    tick();
+    smartAudioTimer = setInterval(() => {
+        if (currentScreen !== 'smart-choice-game' || smartLocked) {
+            stopSmartAudioLoop();
+            return;
+        }
+        tick();
+    }, intervalMs);
+}
+
+function stopSmartAudioLoop() {
+    if (smartAudioTimer) { clearInterval(smartAudioTimer); smartAudioTimer = null; }
 }
 
 function stopSmartLoops() {
-    stopFeelingsLoop();
-    stopListenLoop();
+    stopSmartAudioLoop();
+}
+
+function startReverseAudioLoop(phrase) {
+    stopReverseAudioLoop();
+    const tick = () => {
+        speak(phrase);
+        pulseStimulus(document.getElementById('reverse-quiz-word'));
+    };
+    tick();
+    reverseAudioTimer = setInterval(() => {
+        if (currentScreen !== 'reverse-recognize-game' || reverseLockedAnswer) {
+            stopReverseAudioLoop();
+            return;
+        }
+        tick();
+    }, 6000);
+}
+
+function stopReverseAudioLoop() {
+    if (reverseAudioTimer) { clearInterval(reverseAudioTimer); reverseAudioTimer = null; }
 }
 
 function nextSmartChoiceQuestion() {
@@ -4536,15 +5387,37 @@ function nextSmartChoiceQuestion() {
     smartLocked = false;
     smartQuestion = buildSmartQuestion(smartGameType);
     renderSmartChoiceQuestion();
-    if (smartGameType === 'listenPick' && smartQuestion) {
-        setTimeout(() => startListenLoop(smartQuestion.correctLabel), 240);
-    } else if (smartGameType === 'feelings' && smartQuestion) {
-        const item = smartQuestion.stimulus && smartQuestion.stimulus[0];
-        if (item) setTimeout(() => startFeelingsLoop(item.emoji, item.label), 240);
+    if (!smartQuestion) return;
+    const item = smartQuestion.stimulus && smartQuestion.stimulus[0];
+    let phrase = null;
+    const opts = {};
+    if (smartGameType === 'sound' && item) {
+        phrase = item.text;
+        opts.intervalMs = 6000;
+    } else if (smartGameType === 'listenPick') {
+        phrase = smartQuestion.correctLabel;
+        opts.intervalMs = 5000;
+    } else if (smartGameType === 'feelings' && item) {
+        phrase = item.label;
+        opts.intervalMs = 5000;
+        opts.peekFn = () => triggerFeelingPeek(item.emoji);
+    } else if (smartGameType === 'sizeSort') {
+        phrase = smartQuestion.correctLabel;
+        opts.intervalMs = 6000;
+    } else if (smartGameType === 'opposites' && item) {
+        phrase = item.word;
+        opts.intervalMs = 6000;
     }
+    if (!phrase && smartQuestion.autoSpeak) {
+        phrase = smartQuestion.autoSpeak;
+        opts.intervalMs = smartQuestion.intervalMs || 6000;
+    }
+    if (phrase) setTimeout(() => startSmartAudioLoop(phrase, opts), 240);
 }
 
 function buildSmartQuestion(type) {
+    const customQuestion = buildCustomSmartQuestion(type);
+    if (customQuestion) return customQuestion;
     const letters = localizedLetterItems();
     if (type === 'sound') {
         const answer = randomItem(letters);
@@ -4653,9 +5526,13 @@ function renderSmartChoiceQuestion() {
     }
     updateSmartScore();
     if (stimulus) {
-        const audioLed = (smartGameType === 'listenPick' || smartGameType === 'feelings');
+        const audioLed = Boolean(smartQuestion.autoSpeak) ||
+                          (smartGameType === 'listenPick' || smartGameType === 'feelings' ||
+                           smartGameType === 'sound' || smartGameType === 'sizeSort' ||
+                           smartGameType === 'opposites');
         stimulus.className = 'learning-sequence smart-stimulus' + (audioLed ? ' listen-mode' : '');
         stimulus.innerHTML = '';
+        stimulus.onclick = null;
         if (smartGameType === 'listenPick') {
             stimulus.onclick = () => {
                 if (smartQuestion) {
@@ -4663,8 +5540,26 @@ function renderSmartChoiceQuestion() {
                     pulseSpeaker(stimulus);
                 }
             };
-        } else {
-            stimulus.onclick = null;
+        } else if (smartGameType === 'sound') {
+            stimulus.onclick = () => {
+                const item = smartQuestion && smartQuestion.stimulus && smartQuestion.stimulus[0];
+                if (item) { speak(item.text); pulseStimulus(stimulus); }
+            };
+        } else if (smartGameType === 'sizeSort') {
+            stimulus.onclick = () => {
+                if (smartQuestion) { speak(smartQuestion.correctLabel); pulseStimulus(stimulus); }
+            };
+        } else if (smartGameType === 'opposites') {
+            stimulus.onclick = () => {
+                const item = smartQuestion && smartQuestion.stimulus && smartQuestion.stimulus[0];
+                if (item) { speak(item.word); pulseStimulus(stimulus); }
+            };
+        } else if (smartQuestion.autoSpeak) {
+            stimulus.onclick = () => {
+                speak(smartQuestion.autoSpeak);
+                if (stimulus.querySelector('.smart-speaker')) pulseSpeaker(stimulus);
+                else pulseStimulus(stimulus);
+            };
         }
         smartQuestion.stimulus.forEach(item => renderSmartStimulusItem(stimulus, item));
     }
@@ -5153,7 +6048,7 @@ function renderMaze() {
             if (isPlayer) classes.push('player');
             let content = '';
             if (isPlayer) content = '🐰';
-            else if (isTarget) content = '🏠';
+            else if (isTarget) content = '🏡';
             html += `<div class="${classes.join(' ')}" style="box-shadow: ${wallShadow(cell)}" onclick="mazeCellTap(${r},${c})">${content}</div>`;
         }
     }
