@@ -1058,8 +1058,7 @@
     }
 
 
-    /* ===================== HOME CARD POLISH — larger icons, centered titles, no category header ===================== */
-    .cat-rail-wrap { display: none !important; }
+    /* ===================== HOME CARD POLISH — larger icons, centered titles ===================== */
 
     .home-main {
         padding-top: clamp(14px, 2.2vw, 24px);
@@ -1327,6 +1326,74 @@
         .start-card, .start-badge, .start-play-btn, .start-play-ring, .start-hint, .start-float { animation: none; }
     }
 
+    /* ===================== HOME TOOLS: search + quick jump ===================== */
+    .home-tools { display: flex; flex-direction: column; gap: 10px; }
+    .search-wrap { position: relative; display: flex; align-items: center; }
+    .search-ico { position: absolute; left: 15px; font-size: 1rem; pointer-events: none; }
+    .search-input {
+        width: 100%; padding: 13px 44px 13px 44px; border-radius: var(--r-pill);
+        background: var(--surface); border: 1px solid var(--border); box-shadow: var(--e1);
+        font: inherit; font-weight: 700; font-size: .95rem; color: var(--ink); outline: none;
+        transition: border-color var(--t-fast), box-shadow var(--t-fast);
+    }
+    .search-input:focus { border-color: var(--primary); box-shadow: var(--e-pri); }
+    .search-input::placeholder { color: var(--ink-3); font-weight: 600; }
+    .search-input::-webkit-search-cancel-button { display: none; }
+    .search-clear {
+        position: absolute; right: 8px; width: 30px; height: 30px; border-radius: 50%;
+        background: var(--surface); border: 1px solid var(--border);
+        color: var(--ink-2); font-weight: 900; font-size: .8rem;
+        display: none; align-items: center; justify-content: center;
+    }
+    .search-clear.show { display: inline-flex; }
+    .search-clear:hover { background: var(--danger); color: #fff; }
+    .search-empty { text-align: center; padding: 36px 12px; font-weight: 800; color: var(--ink-3); }
+
+    /* ===================== RECENT: jump back in ===================== */
+    .recent-head h2 { font-family: "Fredoka", sans-serif; font-size: 1.05rem; color: var(--ink); margin-bottom: 9px; }
+    .recent-list { display: flex; gap: 9px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; -ms-overflow-style: none; }
+    .recent-list::-webkit-scrollbar { display: none; }
+    .recent-card {
+        flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px;
+        padding: 8px 15px 8px 9px; border-radius: var(--r-pill);
+        background: var(--surface); border: 1px solid var(--border); box-shadow: var(--e1);
+        font-weight: 800; font-size: .88rem; color: var(--ink); white-space: nowrap;
+        transition: transform var(--t-fast) var(--ease), border-color var(--t-fast);
+    }
+    .recent-card:hover { transform: translateY(-2px); border-color: var(--primary-300); }
+    .recent-card .rc-emoji { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-size: 1.05rem; background: var(--primary-50); }
+
+    /* ===================== PROFILES: who is playing? ===================== */
+    .nav-chip.profile #profile-chip-name { max-width: 84px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    @media (max-width: 760px) { .nav-chip.profile #profile-chip-name { display: none; } }
+    .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(122px, 1fr)); gap: 10px; margin-top: 14px; }
+    .profile-card {
+        position: relative; display: flex; flex-direction: column; align-items: center; gap: 7px;
+        padding: 18px 10px 13px; border-radius: var(--r-lg); cursor: pointer;
+        background: var(--surface); border: 2px solid var(--border); box-shadow: var(--e1);
+        transition: transform var(--t-fast) var(--ease), border-color var(--t-fast);
+    }
+    .profile-card:hover { transform: translateY(-2px); border-color: var(--primary-300); }
+    .profile-card.active { border-color: var(--primary); box-shadow: var(--e-pri); }
+    .profile-card .pc-emoji { font-size: 2.1rem; line-height: 1; }
+    .profile-card .pc-name { font-weight: 800; font-size: .92rem; color: var(--ink); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .profile-card .pc-meta { font-size: .72rem; font-weight: 700; color: var(--ink-3); }
+    .profile-card .pc-edit, .profile-card .pc-del {
+        position: absolute; top: 6px; width: 26px; height: 26px; border-radius: 50%;
+        display: grid; place-items: center; font-size: .68rem;
+        background: var(--surface); border: 1px solid var(--border); color: var(--ink-2);
+    }
+    .profile-card .pc-edit { left: 6px; }
+    .profile-card .pc-del { right: 6px; }
+    .profile-card .pc-del:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .profile-add {
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+        padding: 18px 10px; border-radius: var(--r-lg); cursor: pointer;
+        border: 2px dashed var(--border); color: var(--ink-3); font-weight: 800; font-size: .9rem;
+        transition: color var(--t-fast), border-color var(--t-fast);
+    }
+    .profile-add:hover { border-color: var(--primary-300); color: var(--primary); }
+
 </style>
 </head>
 <body>
@@ -1378,6 +1445,15 @@
                 <button class="seg-btn" data-theme-val="light" onclick="flSetTheme('light')">☀️ <span data-i18n="themeLight">Light</span></button>
                 <button class="seg-btn" data-theme-val="dark" onclick="flSetTheme('dark')">🌙 <span data-i18n="themeDark">Dark</span></button>
                 <button class="seg-btn" data-theme-val="auto" onclick="flSetTheme('auto')"><span data-i18n="themeAuto">Auto</span></button>
+            </div>
+        </div>
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">🏁 <span data-i18n="finishedLabel">Finished Games</span></div>
+            <div class="seg" id="hide-seg">
+                <button class="seg-btn" data-hide-val="0" onclick="flSetHideMastered(0)">👀 <span data-i18n="finishedShow">Show</span></button>
+                <button class="seg-btn" data-hide-val="1" onclick="flSetHideMastered(1)">🙈 <span data-i18n="finishedHide">Hide</span></button>
             </div>
         </div>
         <div class="sidebar-divider"></div>
@@ -1438,6 +1514,16 @@
         </div>
     </div>
 
+    <!-- ===== PROFILES SHEET ===== -->
+    <div class="sheet-overlay" id="profile-overlay" onclick="flCloseProfiles(event)">
+        <div class="sheet" id="profile-sheet" role="dialog" aria-modal="true" aria-label="Profiles">
+            <div class="sheet-grab"></div>
+            <h2>👨‍👩‍👧‍👦 <span data-i18n="profilesTitle">Who is playing?</span></h2>
+            <p class="sheet-sub" data-i18n="profilesSub">Each explorer keeps their own stars, stickers and progress.</p>
+            <div class="profile-grid" id="profile-grid"></div>
+        </div>
+    </div>
+
     <section id="home-screen" class="screen active">
         <nav class="navbar">
             <div class="nav-logo">
@@ -1446,6 +1532,9 @@
                 <span><b>Fun</b> <span class="brand-acc">&amp; Learn</span></span>
             </div>
             <div class="nav-spacer"></div>
+            <button class="nav-chip profile" id="profile-chip" onclick="flOpenProfiles()" aria-label="Switch profile">
+                <span class="chip-emoji" id="profile-chip-emoji">🦊</span><span id="profile-chip-name">Explorer</span>
+            </button>
             <button class="nav-chip stars" onclick="flOpenProgress()" aria-label="Stars earned">
                 <span class="chip-emoji">⭐</span><span id="nav-stars-val">0</span>
             </button>
@@ -1466,7 +1555,18 @@
 
         <div class="home-main">
 
-            <!-- HERO: welcome, stats, daily quest -->
+            <!-- TOOLS: search + quick category jump -->
+            <div class="home-tools">
+                <div class="search-wrap">
+                    <span class="search-ico">🔍</span>
+                    <input type="search" class="search-input" id="game-search" placeholder="Find a game…" autocomplete="off" oninput="flSearch(this.value)">
+                    <button class="search-clear" id="search-clear" onclick="flSearchClear()" aria-label="Clear search">✕</button>
+                </div>
+            </div>
+
+            <!-- RECENT: jump back in -->
+
+            <div class="search-empty" id="search-empty" style="display:none">🔎 <span data-i18n="searchEmpty">No games found. Try another word!</span></div>
 
             <!-- PLAY & LEARN -->
             <section class="section-row" id="sec-core" data-sec="core">
@@ -9047,7 +9147,13 @@ if ('speechSynthesis' in window) {
             newStickerLabel: "New sticker unlocked!", collectionDone: "Collection complete! Bonus stars!",
             rarity1: "Common", rarity2: "Rare", rarity3: "Legendary",
             questLabel: "Today's quest", questGoal: "win 3 games",
-            questDoneSpeak: "Amazing! You finished today's quest! Twenty bonus stars!"
+            questDoneSpeak: "Amazing! You finished today's quest! Twenty bonus stars!",
+            recentTitle: "Jump back in", searchPh: "Find a game…",
+            searchEmpty: "No games found. Try another word!",
+            profilesTitle: "Who is playing?", profilesSub: "Each explorer keeps their own stars, stickers and progress.",
+            addProfile: "Add child", namePrompt: "What's the name?", renamePrompt: "New name?",
+            deleteConfirm: "Remove this profile and all its progress?",
+            finishedLabel: "Finished Games", finishedShow: "Show", finishedHide: "Hide"
         },
         nl: {
             documentTitle: "Fun & Learn",
@@ -9066,7 +9172,13 @@ if ('speechSynthesis' in window) {
             newStickerLabel: "Nieuwe sticker!", collectionDone: "Verzameling compleet! Bonussterren!",
             rarity1: "Gewoon", rarity2: "Zeldzaam", rarity3: "Legendarisch",
             questLabel: "Missie van vandaag", questGoal: "win 3 spelletjes",
-            questDoneSpeak: "Geweldig! Je hebt de missie van vandaag gehaald! Twintig bonussterren!"
+            questDoneSpeak: "Geweldig! Je hebt de missie van vandaag gehaald! Twintig bonussterren!",
+            recentTitle: "Ga verder", searchPh: "Zoek een spel…",
+            searchEmpty: "Geen spellen gevonden. Probeer een ander woord!",
+            profilesTitle: "Wie speelt er?", profilesSub: "Elke ontdekker houdt eigen sterren, stickers en voortgang bij.",
+            addProfile: "Kind toevoegen", namePrompt: "Hoe heet je?", renamePrompt: "Nieuwe naam?",
+            deleteConfirm: "Dit profiel en alle voortgang verwijderen?",
+            finishedLabel: "Voltooide spellen", finishedShow: "Toon", finishedHide: "Verberg"
         },
         ne: {
             documentTitle: "Fun & Learn",
@@ -9085,7 +9197,13 @@ if ('speechSynthesis' in window) {
             newStickerLabel: "नयाँ स्टिकर खुल्यो!", collectionDone: "संग्रह पूरा! बोनस ताराहरू!",
             rarity1: "सामान्य", rarity2: "दुर्लभ", rarity3: "पौराणिक",
             questLabel: "आजको मिसन", questGoal: "३ खेल जित्नुहोस्",
-            questDoneSpeak: "उत्कृष्ट! आजको मिसन पूरा गर्नुभयो! बीस बोनस ताराहरू!"
+            questDoneSpeak: "उत्कृष्ट! आजको मिसन पूरा गर्नुभयो! बीस बोनस ताराहरू!",
+            recentTitle: "फेरि सुरु गर्नुहोस्", searchPh: "खेल खोज्नुहोस्…",
+            searchEmpty: "कुनै खेल भेटिएन। अर्को शब्द प्रयास गर्नुहोस्!",
+            profilesTitle: "को खेल्दैछ?", profilesSub: "हरेक बच्चाको आफ्नै तारा, स्टिकर र प्रगति रहन्छ।",
+            addProfile: "बच्चा थप्नुहोस्", namePrompt: "नाम के हो?", renamePrompt: "नयाँ नाम?",
+            deleteConfirm: "यो प्रोफाइल र सबै प्रगति हटाउने?",
+            finishedLabel: "सकिएका खेलहरू", finishedShow: "देखाऊ", finishedHide: "लुकाऊ"
         }
     };
     try {
@@ -9101,6 +9219,29 @@ if ('speechSynthesis' in window) {
     function $all(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
     function dayStr(offset) { var d = new Date(); d.setDate(d.getDate() + (offset || 0)); return d.toISOString().slice(0, 10); }
 
+    /* ---------- profiles: each child keeps their own progress ---------- */
+    var PROF_LIST_KEY = 'funlearn-profiles', PROF_ACTIVE_KEY = 'funlearn-active-profile';
+    var AVATARS = ['🦊', '🐼', '🦄', '🐯', '🐸', '🐙', '🦁', '🐰', '🐨', '🦖'];
+    var profiles = [], activeProfile = 'p1';
+    function loadProfiles() {
+        try { var raw = localStorage.getItem(PROF_LIST_KEY); if (raw) profiles = JSON.parse(raw) || []; } catch (e) { profiles = []; }
+        if (!Array.isArray(profiles) || !profiles.length) profiles = [{ id: 'p1', name: 'Explorer', emoji: '🦊' }];
+        var act = null;
+        try { act = localStorage.getItem(PROF_ACTIVE_KEY); } catch (e) {}
+        activeProfile = (act && profiles.some(function (p) { return p.id === act; })) ? act : profiles[0].id;
+        saveProfiles();
+    }
+    function saveProfiles() {
+        try { localStorage.setItem(PROF_LIST_KEY, JSON.stringify(profiles)); localStorage.setItem(PROF_ACTIVE_KEY, activeProfile); } catch (e) {}
+    }
+    function curProfile() {
+        for (var i = 0; i < profiles.length; i++) if (profiles[i].id === activeProfile) return profiles[i];
+        return profiles[0];
+    }
+    /* the first profile keeps the original storage keys so existing progress survives */
+    function progressKeyFor(id) { return id === 'p1' ? PKEY : PKEY + '::' + id; }
+    function ageKeyFor(id) { return id === 'p1' ? 'funlearn-age' : 'funlearn-age::' + id; }
+
     /* ---------- progress store ---------- */
     var PKEY = 'funlearn-progress-v1';
     var FL = {
@@ -9109,18 +9250,21 @@ if ('speechSynthesis' in window) {
         data: { games: {}, stars: 0, streak: 0, lastDay: '' }
     };
     function load() {
+        FL.data = { games: {}, stars: 0, streak: 0, lastDay: '', stickers: [], quest: null, recent: [] };
+        FL.age = '3-4';
         try {
-            var raw = localStorage.getItem(PKEY);
+            var raw = localStorage.getItem(progressKeyFor(activeProfile));
             if (raw) { var d = JSON.parse(raw); if (d && typeof d === 'object') FL.data = Object.assign(FL.data, d); }
         } catch (e) {}
         if (!FL.data.games) FL.data.games = {};
         if (!Array.isArray(FL.data.stickers)) FL.data.stickers = [];
+        if (!Array.isArray(FL.data.recent)) FL.data.recent = [];
         // break a stale streak (missed more than yesterday)
         var t = dayStr(0), y = dayStr(-1);
         if (FL.data.lastDay && FL.data.lastDay !== t && FL.data.lastDay !== y) FL.data.streak = 0;
-        try { var savedAge = localStorage.getItem('funlearn-age'); if (['5-6', '7-8', '9-10', '3-4'].indexOf(savedAge) >= 0) FL.age = savedAge; } catch (e) {}
+        try { var savedAge = localStorage.getItem(ageKeyFor(activeProfile)); if (['5-6', '7-8', '9-10', '3-4'].indexOf(savedAge) >= 0) FL.age = savedAge; } catch (e) {}
     }
-    function save() { try { localStorage.setItem(PKEY, JSON.stringify(FL.data)); } catch (e) {} }
+    function save() { try { localStorage.setItem(progressKeyFor(activeProfile), JSON.stringify(FL.data)); } catch (e) {} }
     function ensure(key) { if (!FL.data.games[key]) FL.data.games[key] = { plays: 0, mastered: false }; return FL.data.games[key]; }
     function masteredCount() { var n = 0, g = FL.data.games; for (var k in g) if (g[k] && g[k].mastered) n++; return n; }
 
@@ -9134,6 +9278,8 @@ if ('speechSynthesis' in window) {
     function markPlayed(key) {
         if (!key) return;
         var g = ensure(key); g.plays = (g.plays || 0) + 1;
+        var r = (FL.data.recent || []).filter(function (k) { return k !== key; });
+        r.unshift(key); FL.data.recent = r.slice(0, 10);
         bumpStreak(); save(); refreshHome();
     }
     function markWin(key) {
@@ -9259,16 +9405,213 @@ if ('speechSynthesis' in window) {
     function sectionAge(sec) { return sec.getAttribute('data-age') || '3-4'; }
     function applyAgeGroup() {
         var age = curAge();
-        $all('.section-row').forEach(function (sec) {
-            sec.style.display = (sectionAge(sec) === age) ? '' : 'none';
-        });
+        updateVisibility();
+        buildCatRail();
         $all('#age-seg .seg-btn').forEach(function (b) {
             b.classList.toggle('active', b.getAttribute('data-age-val') === age);
         });
     }
+
+    /* ---------- search + hide-finished: one place decides what is visible ---------- */
+    var searchQ = '';
+    var HIDE_KEY = 'funlearn-hide-mastered';
+    var hideMastered = false;
+    try { hideMastered = localStorage.getItem(HIDE_KEY) === '1'; } catch (e) {}
+    function updateVisibility() {
+        var age = curAge(), anyVisible = false;
+        $all('.section-row').forEach(function (sec) {
+            if (sectionAge(sec) !== age) { sec.style.display = 'none'; return; }
+            var any = false;
+            $all('.gcard[data-key]', sec).forEach(function (c) {
+                var ok = true;
+                if (searchQ) {
+                    var h = c.querySelector('h3');
+                    ok = ((h ? h.textContent : '').toLowerCase().indexOf(searchQ) >= 0);
+                }
+                if (ok && hideMastered && c.classList.contains('is-mastered')) ok = false;
+                c.style.display = ok ? '' : 'none';
+                if (ok) any = true;
+            });
+            sec.style.display = any ? '' : 'none';
+            if (any) anyVisible = true;
+        });
+        var rail = $('.cat-rail-wrap'); if (rail) rail.style.display = searchQ ? 'none' : '';
+        var empty = document.getElementById('search-empty'); if (empty) empty.style.display = anyVisible ? 'none' : '';
+        renderRecent();
+    }
+    window.flSearch = function (q) {
+        searchQ = (q || '').trim().toLowerCase();
+        var clr = document.getElementById('search-clear'); if (clr) clr.classList.toggle('show', !!searchQ);
+        updateVisibility();
+    };
+    window.flSearchClear = function () {
+        var inp = document.getElementById('game-search'); if (inp) { inp.value = ''; inp.focus(); }
+        window.flSearch('');
+    };
+    window.flSetHideMastered = function (v) {
+        hideMastered = !!+v;
+        try { localStorage.setItem(HIDE_KEY, hideMastered ? '1' : '0'); } catch (e) {}
+        applyHideSeg(); updateVisibility();
+    };
+    function applyHideSeg() {
+        $all('#hide-seg .seg-btn').forEach(function (b) {
+            b.classList.toggle('active', b.getAttribute('data-hide-val') === (hideMastered ? '1' : '0'));
+        });
+    }
+    function updateSearchPh() {
+        var i = document.getElementById('game-search');
+        if (i) i.placeholder = tr('searchPh', 'Find a game…');
+    }
+
+    /* ---------- recent: jump back in ---------- */
+    function cardForKey(key) {
+        var age = curAge(), found = null;
+        $all('.gcard[data-key]').forEach(function (c) {
+            if (found || c.getAttribute('data-key') !== key) return;
+            var sec = c.closest('.section-row');
+            if (sec && sectionAge(sec) === age) found = c;
+        });
+        return found;
+    }
+    function renderRecent() {
+        var row = document.getElementById('recent-row'), list = document.getElementById('recent-list');
+        if (!row || !list) return;
+        list.innerHTML = '';
+        var n = 0;
+        (FL.data.recent || []).forEach(function (key) {
+            if (n >= 6) return;
+            var card = cardForKey(key); if (!card) return;
+            var thumb = card.querySelector('.gcard-thumb'), h3 = card.querySelector('h3');
+            var b = document.createElement('button');
+            b.className = 'recent-card';
+            b.innerHTML = '<span class="rc-emoji"></span><span></span>';
+            b.children[0].textContent = (thumb ? thumb.textContent : '🎮').trim();
+            b.children[1].textContent = h3 ? h3.textContent : '';
+            b.addEventListener('click', function () { card.click(); });
+            list.appendChild(b); n++;
+        });
+        row.style.display = (n && !searchQ) ? '' : 'none';
+    }
+
+    /* ---------- category rail: quick jump pills built per age group ---------- */
+    function buildCatRail() {
+        var rail = document.getElementById('cat-rail'); if (!rail) return;
+        rail.innerHTML = '';
+        var age = curAge();
+        $all('.section-row').forEach(function (sec) {
+            if (sectionAge(sec) !== age) return;
+            var ico = sec.querySelector('.section-icon'), h2 = sec.querySelector('.section-label-text h2');
+            var b = document.createElement('button');
+            b.className = 'cat-pill';
+            b.setAttribute('onclick', "flJumpTo('" + sec.id + "', this)");
+            b.innerHTML = '<span></span><span></span>';
+            b.children[0].textContent = ico ? ico.textContent : '🎮';
+            b.children[1].textContent = h2 ? h2.textContent : '';
+            rail.appendChild(b);
+        });
+        initSpy();
+    }
+
+    /* ---------- profile UI ---------- */
+    function updateProfileChip() {
+        var p = curProfile();
+        var e = document.getElementById('profile-chip-emoji'), n = document.getElementById('profile-chip-name');
+        if (e) e.textContent = p.emoji;
+        if (n) n.textContent = p.name;
+    }
+    function renderProfiles() {
+        var grid = document.getElementById('profile-grid'); if (!grid) return;
+        grid.innerHTML = '';
+        profiles.forEach(function (p) {
+            var stars = 0, mastered = 0;
+            try {
+                if (p.id === activeProfile) { stars = FL.data.stars || 0; mastered = masteredCount(); }
+                else {
+                    var raw = localStorage.getItem(progressKeyFor(p.id));
+                    if (raw) {
+                        var d = JSON.parse(raw); stars = (d && d.stars) || 0;
+                        var g = (d && d.games) || {};
+                        for (var k in g) if (g[k] && g[k].mastered) mastered++;
+                    }
+                }
+            } catch (e) {}
+            var card = document.createElement('div');
+            card.className = 'profile-card' + (p.id === activeProfile ? ' active' : '');
+            card.setAttribute('role', 'button'); card.tabIndex = 0;
+            card.innerHTML =
+                '<button class="pc-edit" aria-label="Rename">✏️</button>' +
+                (profiles.length > 1 ? '<button class="pc-del" aria-label="Delete">✕</button>' : '') +
+                '<div class="pc-emoji">' + p.emoji + '</div>' +
+                '<div class="pc-name"></div>' +
+                '<div class="pc-meta">⭐ ' + stars + ' · 🏅 ' + mastered + '</div>';
+            card.querySelector('.pc-name').textContent = p.name;
+            card.addEventListener('click', function (ev) {
+                if (ev.target.closest('.pc-edit')) { flRenameProfile(p.id); return; }
+                if (ev.target.closest('.pc-del')) { flDeleteProfile(p.id); return; }
+                flSwitchProfile(p.id);
+            });
+            grid.appendChild(card);
+        });
+        var add = document.createElement('div');
+        add.className = 'profile-add'; add.setAttribute('role', 'button'); add.tabIndex = 0;
+        add.innerHTML = '<span style="font-size:1.5rem">➕</span><span></span>';
+        add.children[1].textContent = tr('addProfile', 'Add child');
+        add.addEventListener('click', flAddProfile);
+        grid.appendChild(add);
+    }
+    window.flOpenProfiles = function () {
+        renderProfiles();
+        var o = document.getElementById('profile-overlay'); if (o) o.classList.add('open');
+    };
+    window.flCloseProfiles = function (e) {
+        if (!e || e.target === document.getElementById('profile-overlay')) {
+            var o = document.getElementById('profile-overlay'); if (o) o.classList.remove('open');
+        }
+    };
+    function activateProfile() {
+        load(); applyAgeGroup(); refreshHome(); updateProfileChip();
+    }
+    function flSwitchProfile(id) {
+        if (id === activeProfile) { window.flCloseProfiles(); return; }
+        save();
+        activeProfile = id; saveProfiles();
+        activateProfile();
+        window.flCloseProfiles();
+        try { if (typeof confettiShower === 'function') confettiShower(40); } catch (e) {}
+        try { if (typeof speak === 'function') speak(curProfile().name); } catch (e) {}
+    }
+    function flAddProfile() {
+        var name = window.prompt(tr('namePrompt', "What's the name?"));
+        if (!name || !(name = name.trim())) return;
+        var used = profiles.map(function (p) { return p.emoji; });
+        var free = AVATARS.filter(function (a) { return used.indexOf(a) < 0; });
+        var emoji = free.length ? free[0] : AVATARS[profiles.length % AVATARS.length];
+        var id = 'p' + Date.now().toString(36);
+        profiles.push({ id: id, name: name.slice(0, 14), emoji: emoji });
+        saveProfiles();
+        flSwitchProfile(id);
+    }
+    function flRenameProfile(id) {
+        var p = null;
+        profiles.forEach(function (x) { if (x.id === id) p = x; });
+        if (!p) return;
+        var name = window.prompt(tr('renamePrompt', 'New name?'), p.name);
+        if (!name || !(name = name.trim())) return;
+        p.name = name.slice(0, 14);
+        saveProfiles(); renderProfiles(); updateProfileChip();
+    }
+    function flDeleteProfile(id) {
+        if (profiles.length < 2) return;
+        if (!window.confirm(tr('deleteConfirm', 'Remove this profile and all its progress?'))) return;
+        profiles = profiles.filter(function (p) { return p.id !== id; });
+        try { localStorage.removeItem(progressKeyFor(id)); localStorage.removeItem(ageKeyFor(id)); } catch (e) {}
+        if (activeProfile === id) { activeProfile = profiles[0].id; saveProfiles(); activateProfile(); }
+        else saveProfiles();
+        renderProfiles();
+    }
     window.flSetAge = function (age) {
         FL.age = ['5-6', '7-8', '9-10'].indexOf(age) >= 0 ? age : '3-4';
-        try { localStorage.setItem('funlearn-age', FL.age); } catch (e) {}
+        try { localStorage.setItem(ageKeyFor(activeProfile), FL.age); } catch (e) {}
         applyAgeGroup();
         refreshHome();
         if (typeof speak === 'function' && typeof t === 'function') {
@@ -9320,6 +9663,7 @@ if ('speechSynthesis' in window) {
             setText('nav-streak-val', FL.data.streak || 0);
             setText('nav-sticker-val', (FL.data.stickers || []).length);
             renderQuest();
+            updateVisibility();
         } catch (e) {}
     }
 
@@ -9396,22 +9740,24 @@ if ('speechSynthesis' in window) {
     window.flResetProgress = function () {
         var msg = (typeof t === 'function') ? 'Reset all progress?' : 'Reset all progress?';
         if (!window.confirm(msg)) return;
-        FL.data = { games: {}, stars: 0, streak: 0, lastDay: '', stickers: [], quest: null };
+        FL.data = { games: {}, stars: 0, streak: 0, lastDay: '', stickers: [], quest: null, recent: [] };
         save(); refreshHome();
         var o = document.getElementById('progress-overlay'); if (o) o.classList.remove('open');
         if (typeof closeSidebar === 'function') closeSidebar();
     };
 
     /* ---------- scrollspy: highlight category pill of section in view ---------- */
+    var spyIO = null;
     function initSpy() {
         try {
+            if (spyIO) { spyIO.disconnect(); spyIO = null; }
             var root = homeEl(); if (!root || !('IntersectionObserver' in window)) return;
             var pills = {};
             $all('.cat-pill').forEach(function (p) {
                 var m = (p.getAttribute('onclick') || '').match(/flJumpTo\('([^']+)'/);
                 if (m) pills[m[1]] = p;
             });
-            var io = new IntersectionObserver(function (entries) {
+            spyIO = new IntersectionObserver(function (entries) {
                 entries.forEach(function (en) {
                     if (en.isIntersecting) {
                         var p = pills[en.target.id];
@@ -9419,7 +9765,7 @@ if ('speechSynthesis' in window) {
                     }
                 });
             }, { root: root, rootMargin: '-45% 0px -50% 0px', threshold: 0 });
-            $all('.section-row').forEach(function (s) { io.observe(s); });
+            $all('.section-row').forEach(function (s) { spyIO.observe(s); });
         } catch (e) {}
     }
 
@@ -9431,6 +9777,15 @@ if ('speechSynthesis' in window) {
         window[name] = function () {
             try { before.apply(null, arguments); } catch (e) {}
             return orig.apply(this, arguments);
+        };
+    }
+    function wrapAfter(name, after) {
+        var orig = window[name];
+        if (typeof orig !== 'function') return;
+        window[name] = function () {
+            var r = orig.apply(this, arguments);
+            try { after.apply(null, arguments); } catch (e) {}
+            return r;
         };
     }
     function installWraps() {
@@ -9458,19 +9813,26 @@ if ('speechSynthesis' in window) {
             renderWinReveal(pick);
             save(); refreshHome();
         });
+        // JS-built home UI (rail, recent, placeholder) re-renders after a language switch
+        wrapAfter('applyLanguage', function () {
+            buildCatRail(); renderRecent(); updateSearchPh();
+        });
     }
 
     /* ---------- boot ---------- */
     function boot() {
+        loadProfiles();
         load();
         applyTheme();
+        applyHideSeg();
         installWraps();
         if (typeof applyLanguage === 'function') { try { applyLanguage(); } catch (e) {} }
         applyAgeGroup();
         refreshHome();
-        initSpy();
+        updateProfileChip();
+        updateSearchPh();
         // close sheets on Escape
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { window.flCloseProgress(); window.flCloseStickers(); } });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { window.flCloseProgress(); window.flCloseStickers(); window.flCloseProfiles(); } });
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
     else boot();
