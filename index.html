@@ -275,6 +275,7 @@
         background: rgba(255,255,255,.20); border: 1px solid rgba(255,255,255,.28);
         font-size: .84rem; font-weight: 900; color: #fff;
         -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+        align-self: center;
     }
     .hero-title {
         font-family: "Fredoka", sans-serif;
@@ -1020,6 +1021,7 @@
         .scrabble-letter { min-width: 44px; min-height: 44px; border-radius: 14px; font-size: clamp(1.5rem, 3.5vw, 2.4rem); }
     }
     @media (max-width: 480px) {
+        .nav-logo { display: none; }
         .screen:not(#home-screen) .topbar { padding: calc(var(--safe-t) + 8px) 10px 8px; }
         .back-btn, .round-btn, .menu-btn { padding: 10px 15px; font-size: .9rem; }
         .learning-panel { padding: 10px; gap: 10px; border-radius: var(--r-lg); }
@@ -1465,31 +1467,6 @@
         <div class="home-main">
 
             <!-- HERO: welcome, stats, daily quest -->
-            <section class="hero">
-                <div class="hero-left">
-                    <span class="hero-kicker">👋 <span data-i18n="heroKicker">Welcome back, explorer!</span></span>
-                    <h1 class="hero-title" data-i18n="heroTitle">Let's learn &amp; play today!</h1>
-                    <div class="hero-stats">
-                        <div class="stat-chip">
-                            <div class="stat-icon">⭐</div>
-                            <div class="stat-text"><span class="stat-val" id="hero-stars">0</span><span class="stat-label" data-i18n="statStars">Stars</span></div>
-                        </div>
-                        <div class="stat-chip">
-                            <div class="stat-icon">🏅</div>
-                            <div class="stat-text"><span class="stat-val" id="hero-mastered">0</span><span class="stat-label" data-i18n="statMastered">Mastered</span></div>
-                        </div>
-                        <div class="stat-chip">
-                            <div class="stat-icon">🔥</div>
-                            <div class="stat-text"><span class="stat-val" id="hero-streak">0</span><span class="stat-label" data-i18n="statStreak">Day streak</span></div>
-                        </div>
-                    </div>
-                    <div class="quest-chip" id="quest-chip">
-                        <span>🎯 <span data-i18n="questLabel">Today's quest</span>: <span data-i18n="questGoal">win 3 games</span></span>
-                        <span id="quest-pips"></span>
-                        <span class="q-bonus" id="quest-bonus" style="display:none">+20⭐</span>
-                    </div>
-                </div>
-            </section>
 
             <!-- PLAY & LEARN -->
             <section class="section-row" id="sec-core" data-sec="core">
