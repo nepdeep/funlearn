@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(node -e ' *)",
+      "Bash(npm ls *)",
+      "Bash(node -e \"try{require.resolve\\('playwright'\\);console.log\\('playwright local'\\)}catch\\(e\\){console.log\\('no local playwright'\\)}\")"
+    ]
+  }
+}

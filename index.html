@@ -838,6 +838,116 @@
         .stamp-item { width: 46px; height: 46px; font-size: 1.5rem; flex: 0 0 auto; }
     }
 
+    /* ---- Little Writers: guided finger tracing ---- */
+    #tracing-game {
+        background:
+            radial-gradient(70% 65% at 12% 12%, rgba(255,240,105,.34), transparent 62%),
+            radial-gradient(65% 70% at 92% 82%, rgba(41,194,240,.28), transparent 60%),
+            linear-gradient(145deg, #6f58e8 0%, #5b42c9 52%, #3b2b91 100%);
+    }
+    .tracing-panel {
+        min-height: 0; padding: 16px; gap: 10px;
+        grid-template-rows: auto auto auto 1fr auto;
+    }
+    .tracing-modebar {
+        width: min(920px, 100%); justify-self: center;
+        display: grid; grid-template-columns: minmax(150px, auto) 1fr auto;
+        align-items: center; gap: 12px;
+    }
+    .trace-example {
+        min-height: 64px; padding: 8px 16px; border-radius: var(--r-lg);
+        display: flex; align-items: center; gap: 12px;
+        background: rgba(255,255,255,.94); color: var(--stage-ink);
+        box-shadow: 0 10px 22px rgba(0,0,0,.14), inset 0 2px 0 rgba(255,255,255,.8);
+    }
+    .trace-example strong {
+        min-width: 46px; font-family: "Fredoka", sans-serif;
+        font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1; color: var(--primary-700);
+    }
+    .trace-example span { font-size: .95rem; font-weight: 900; color: var(--ink-2); }
+    .trace-colors { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .trace-color {
+        width: 44px; height: 44px; border: 0; border-radius: 50%;
+        box-shadow: 0 7px 15px rgba(0,0,0,.18), inset 0 2px 0 rgba(255,255,255,.48);
+        transition: transform .15s var(--spring), outline-color .15s;
+    }
+    .trace-color.active { outline: 4px solid #fff; outline-offset: 2px; transform: scale(1.08); }
+    .trace-reset {
+        min-height: 50px; padding: 0 16px; border: 0; border-radius: var(--r-md);
+        color: #fff; background: linear-gradient(145deg, var(--c-orange), var(--c-coral));
+        font-size: .95rem; font-weight: 900;
+        box-shadow: 0 8px 18px rgba(0,0,0,.18), inset 0 2px 0 rgba(255,255,255,.4);
+    }
+    .tracing-board {
+        justify-self: center; width: min(920px, 100%); min-height: 0;
+        display: grid; place-items: center;
+    }
+    .trace-paper {
+        position: relative; width: min(690px, 100%); height: min(440px, 45vh);
+        border-radius: var(--r-2xl); overflow: hidden;
+        background:
+            linear-gradient(rgba(77,163,255,.1) 2px, transparent 2px) 0 25% / 100% 25%,
+            linear-gradient(90deg, transparent 11%, rgba(255,95,162,.16) 11% 11.5%, transparent 11.5%),
+            #fffdf7;
+        box-shadow: 0 22px 48px rgba(26,18,79,.28), inset 0 0 0 5px rgba(255,255,255,.8);
+    }
+    .tracing-svg { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+    .trace-route, .trace-center, .trace-fill {
+        fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
+    }
+    .trace-route { stroke: #ded9ef; stroke-width: 76; }
+    .trace-center { stroke: rgba(108,92,231,.32); stroke-width: 4; stroke-dasharray: 3 16; }
+    .trace-fill {
+        stroke: var(--trace-color, #ff5fa2); stroke-width: 54;
+        filter: drop-shadow(0 4px 3px rgba(108,92,231,.15));
+    }
+    .trace-stroke.done .trace-route { stroke: rgba(37,193,107,.18); }
+    .trace-stroke.active .trace-route { animation: traceRouteGlow 1.2s ease-in-out infinite; }
+    .trace-target {
+        fill: #fff069; stroke: #fff; stroke-width: 7;
+        filter: drop-shadow(0 7px 7px rgba(74,59,196,.32));
+        pointer-events: none; animation: traceTargetPulse .8s ease-in-out infinite;
+    }
+    .trace-target-num {
+        fill: var(--primary-700); font-family: "Fredoka", sans-serif;
+        font-size: 27px; font-weight: 700; text-anchor: middle; dominant-baseline: central;
+        pointer-events: none;
+    }
+    .trace-finger {
+        font-size: 42px; text-anchor: middle; dominant-baseline: central;
+        pointer-events: none; filter: drop-shadow(0 5px 5px rgba(0,0,0,.2));
+        animation: traceFingerBob .85s ease-in-out infinite;
+    }
+    .trace-end { fill: #fff; stroke: var(--c-green); stroke-width: 7; pointer-events: none; }
+    .trace-end-star {
+        fill: var(--c-green); font-size: 25px; text-anchor: middle;
+        dominant-baseline: central; pointer-events: none;
+    }
+    .trace-paper.off-path { animation: traceNudge .26s ease; }
+    .trace-paper.complete { animation: tracePaperWin .65s var(--spring); }
+    .trace-hint {
+        justify-self: center; min-height: 28px; padding: 5px 14px;
+        border-radius: var(--r-pill); color: #fff; background: rgba(255,255,255,.15);
+        font-size: .92rem; font-weight: 900; text-align: center;
+    }
+    @keyframes traceRouteGlow { 50% { stroke: #c9c0ef; } }
+    @keyframes traceTargetPulse { 50% { transform: scale(1.13); transform-origin: center; } }
+    @keyframes traceFingerBob { 50% { transform: translateY(-8px) rotate(-7deg); } }
+    @keyframes traceNudge { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    @keyframes tracePaperWin { 45% { transform: scale(1.035) rotate(-1deg); } }
+
+    @media (max-width: 760px) {
+        .tracing-panel { padding: 12px; gap: 8px; grid-template-rows: auto auto auto auto auto; }
+        .tracing-modebar { grid-template-columns: 1fr auto; }
+        .trace-example { grid-column: 1 / -1; min-height: 52px; justify-content: center; }
+        .trace-colors { justify-content: flex-start; }
+        .trace-color { width: 36px; height: 36px; }
+        .trace-reset { min-height: 44px; padding: 0 12px; }
+        .trace-paper { width: 100%; min-height: 310px; aspect-ratio: auto; border-radius: var(--r-lg); }
+        .trace-route { stroke-width: 84; }
+        .trace-fill { stroke-width: 60; }
+    }
+
     /* ---- Shape Puzzle: 2x2 emoji collage with a missing quadrant ---- */
     .quad-grid { display: grid; grid-template-columns: repeat(2, var(--qs)); grid-template-rows: repeat(2, var(--qs)); gap: 5px; --qs: clamp(74px, 16vw, 110px); }
     .quad { position: relative; width: var(--qs, 74px); height: var(--qs, 74px); overflow: hidden; background: #fff; border-radius: 12px; box-shadow: inset 0 0 0 2px rgba(108,92,231,.16); }
@@ -1654,6 +1764,36 @@
                     <button class="gcard" data-key="smart:listenPick" onclick="startSmartChoiceGame('listenPick')">
                         <div class="gcard-thumb t-purple">🎧</div>
                         <div class="gcard-footer"><h3 data-i18n="listenPickTitleCard">Listen &amp; Pick</h3></div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- LITTLE WRITERS -->
+            <section class="section-row" id="sec-writing" data-sec="writing">
+                <div class="section-head">
+                    <div class="section-icon pink">✍️</div>
+                    <div class="section-label-text">
+                        <h2 class="c-pink" data-i18n="littleWritersTitle">Little Writers</h2>
+                        <p data-i18n="littleWritersHint">Follow the glowing path with a fingertip to form letters, numbers, lines, and shapes.</p>
+                    </div>
+                    <div class="section-progress"><div class="sp-bar"><div class="sp-fill"></div></div><span class="sp-count">0/4</span></div>
+                </div>
+                <div class="section-games">
+                    <button class="gcard" data-key="tracing:letters" onclick="startTracingGame('letters')">
+                        <div class="gcard-thumb t-pink">ABC</div>
+                        <div class="gcard-footer"><h3 data-i18n="traceLettersTitle">Trace Letters</h3></div>
+                    </button>
+                    <button class="gcard" data-key="tracing:numbers" onclick="startTracingGame('numbers')">
+                        <div class="gcard-thumb t-blue">123</div>
+                        <div class="gcard-footer"><h3 data-i18n="traceNumbersTitle">Trace Numbers</h3></div>
+                    </button>
+                    <button class="gcard" data-key="tracing:paths" onclick="startTracingGame('paths')">
+                        <div class="gcard-thumb t-yellow">〰️</div>
+                        <div class="gcard-footer"><h3 data-i18n="pencilPathsTitle">Pencil Paths</h3></div>
+                    </button>
+                    <button class="gcard" data-key="tracing:shapes" onclick="startTracingGame('shapes')">
+                        <div class="gcard-thumb t-green">△○□</div>
+                        <div class="gcard-footer"><h3 data-i18n="traceFormsTitle">Trace Shapes</h3></div>
                     </button>
                 </div>
             </section>
@@ -2674,6 +2814,31 @@
                 <div id="creative-prompt" class="learning-prompt">Draw, tap, and color.</div>
                 <div id="creative-tools" class="creative-tools"></div>
                 <div id="creative-board" class="pa-board creative-board"></div>
+            </main>
+        </div>
+    </section>
+
+    <section id="tracing-game" class="screen">
+        <div class="topbar">
+            <button class="back-btn" data-i18n="menuButton" onclick="showScreen('home-screen')">← Back</button>
+            <button class="round-btn" data-i18n="newGameButton" onclick="restartTracingGame(true)">🔄 New Game</button>
+        </div>
+        <div class="learning-layout">
+            <main class="learning-panel tracing-panel">
+                <div class="quiz-header">
+                    <div id="tracing-title" class="quiz-title">Little Writers</div>
+                    <div class="score-row">
+                        <div id="tracing-score" class="pill">Done: 0 / 4</div>
+                    </div>
+                </div>
+                <div id="tracing-prompt" class="learning-prompt">Start at 1 and follow the path.</div>
+                <div class="tracing-modebar">
+                    <div id="trace-example" class="trace-example"></div>
+                    <div id="trace-colors" class="trace-colors"></div>
+                    <button class="trace-reset" data-i18n="startOverLabel" onclick="resetTracingSheet()">↺ Start over</button>
+                </div>
+                <div id="tracing-board" class="tracing-board"></div>
+                <div id="tracing-hint" class="trace-hint">Touch the yellow circle and follow the dotted path.</div>
             </main>
         </div>
     </section>
@@ -4175,6 +4340,7 @@ function applyLanguage() {
     if (currentScreen === 'smart-choice-game' && smartQuestion) renderSmartChoiceQuestion();
     if (currentScreen === 'puzzle-game' && puzzleQuestion) renderPuzzleQuestion();
     if (currentScreen === 'creative-game') renderCreativeGame();
+    if (currentScreen === 'tracing-game') renderTracingSheet();
 }
 
 
@@ -4400,6 +4566,15 @@ let drawBrushSize = 12;
 let creativeDotIndex = 0;
 let creativeShape = null;
 let drawingActive = false;
+let tracingGameType = 'letters';
+let tracingCompleted = 0;
+let tracingItems = [];
+let tracingItemIndex = 0;
+let tracingColor = '#ff5fa2';
+let tracingState = null;
+let tracingDrawing = false;
+let tracingLastPointer = null;
+let tracingOffPathAt = 0;
 let audioCtx = null;
 let lastWords = {};
 let firstLetterKey = true;
@@ -4500,6 +4675,82 @@ Object.assign(LOCALIZED_TEXT.ne, {
     doneLabel: "सकियो"
 });
 
+
+Object.assign(LOCALIZED_TEXT.en, {
+    littleWritersTitle: "Little Writers",
+    littleWritersHint: "Follow the glowing path with a fingertip to form letters, numbers, lines, and shapes.",
+    traceLettersTitle: "Trace Letters",
+    traceNumbersTitle: "Trace Numbers",
+    pencilPathsTitle: "Pencil Paths",
+    traceFormsTitle: "Trace Shapes",
+    tracingLettersPrompt: "Trace the letter. Start at 1 and follow the dotted path.",
+    tracingNumbersPrompt: "Trace the number. Start at 1 and follow the dotted path.",
+    tracingPathsPrompt: "Warm up your writing hand. Follow the path from start to star.",
+    tracingShapesPrompt: "Trace around the shape. Keep your fingertip on the path.",
+    traceHintStart: "Touch the yellow circle and follow the dotted path.",
+    traceHintStay: "Keep your fingertip on the path.",
+    traceHintNextStroke: "Great! Now start at the next yellow circle.",
+    traceHintComplete: "Wonderful tracing!",
+    startOverLabel: "↺ Start over",
+    tracingDone: "Done",
+    tracingRoundSpeak: "Wonderful tracing!",
+    tracingWinMessage: "Amazing writing practice! You followed every path!",
+    traceAcross: "Across",
+    traceDown: "Down",
+    traceWave: "Wave",
+    traceZigzag: "Zigzag",
+    traceLoop: "Loop"
+});
+Object.assign(LOCALIZED_TEXT.nl, {
+    littleWritersTitle: "Kleine schrijvers",
+    littleWritersHint: "Volg het pad met je vinger en oefen letters, cijfers, lijnen en vormen.",
+    traceLettersTitle: "Letters volgen",
+    traceNumbersTitle: "Cijfers volgen",
+    pencilPathsTitle: "Schrijfpaden",
+    traceFormsTitle: "Vormen volgen",
+    tracingLettersPrompt: "Volg de letter. Begin bij 1 en volg de stippellijn.",
+    tracingNumbersPrompt: "Volg het cijfer. Begin bij 1 en volg de stippellijn.",
+    tracingPathsPrompt: "Maak je schrijfhand warm. Volg het pad tot de ster.",
+    tracingShapesPrompt: "Volg de vorm en blijf met je vinger op het pad.",
+    traceHintStart: "Tik op de gele cirkel en volg de stippellijn.",
+    traceHintStay: "Blijf met je vinger op het pad.",
+    traceHintNextStroke: "Goed! Begin nu bij de volgende gele cirkel.",
+    traceHintComplete: "Prachtig gevolgd!",
+    startOverLabel: "↺ Opnieuw",
+    tracingDone: "Klaar",
+    tracingRoundSpeak: "Prachtig gevolgd!",
+    tracingWinMessage: "Geweldig geoefend! Je hebt alle paden gevolgd!",
+    traceAcross: "Opzij",
+    traceDown: "Omlaag",
+    traceWave: "Golf",
+    traceZigzag: "Zigzag",
+    traceLoop: "Lus"
+});
+Object.assign(LOCALIZED_TEXT.ne, {
+    littleWritersTitle: "साना लेखक",
+    littleWritersHint: "औँलाले बाटो पछ्याएर अक्षर, अंक, रेखा र आकार लेख्न सिक।",
+    traceLettersTitle: "अक्षर कोर",
+    traceNumbersTitle: "अंक कोर",
+    pencilPathsTitle: "लेख्ने बाटो",
+    traceFormsTitle: "आकार कोर",
+    tracingLettersPrompt: "अक्षर कोर। १ बाट सुरु गरेर थोप्लाको बाटो पछ्याऊ।",
+    tracingNumbersPrompt: "अंक कोर। १ बाट सुरु गरेर थोप्लाको बाटो पछ्याऊ।",
+    tracingPathsPrompt: "लेख्ने हात तयार गर। सुरुबाट तारासम्म बाटो पछ्याऊ।",
+    tracingShapesPrompt: "आकारको वरिपरि औँला चलाऊ र बाटोमै बस।",
+    traceHintStart: "पहेंलो गोलो छोएर थोप्लाको बाटो पछ्याऊ।",
+    traceHintStay: "औँला बाटोमै राख।",
+    traceHintNextStroke: "राम्रो! अब अर्को पहेंलो गोलोबाट सुरु गर।",
+    traceHintComplete: "धेरै राम्रो लेखाइ!",
+    startOverLabel: "↺ फेरि सुरु",
+    tracingDone: "सकियो",
+    tracingRoundSpeak: "धेरै राम्रो लेखाइ!",
+    tracingWinMessage: "अद्भुत अभ्यास! तिमीले सबै बाटो पछ्यायौ!",
+    traceAcross: "तेर्सो",
+    traceDown: "तल",
+    traceWave: "लहर",
+    traceZigzag: "बाङ्गोटिङ्गो",
+    traceLoop: "घुमाउरो"
+});
 
 Object.assign(LOCALIZED_TEXT.en, {
     characterWorldTitle: "Character Friends",
@@ -4683,6 +4934,10 @@ function showScreen(id) {
     if (currentScreen === 'balloon-game' && id !== 'balloon-game') stopBalloonGame();
     if (currentScreen === 'smart-choice-game' && id !== 'smart-choice-game') stopSmartLoops();
     if (currentScreen === 'reverse-recognize-game' && id !== 'reverse-recognize-game') stopReverseAudioLoop();
+    if (currentScreen === 'tracing-game' && id !== 'tracing-game') {
+        tracingDrawing = false;
+        tracingLastPointer = null;
+    }
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     currentScreen = id;
@@ -5037,6 +5292,10 @@ function playAgain() {
     }
     if (currentScreen === 'creative-game') {
         restartCreativeGame(true);
+        return;
+    }
+    if (currentScreen === 'tracing-game') {
+        restartTracingGame(true);
         return;
     }
     correctCount = 0;
@@ -7949,6 +8208,8 @@ let bgmLastSong = '';
 let bgmGainNode = null; // master music bus: ducks under the narrator, silences instantly on stop
 let bgmMarker = null;   // silent end-of-song marker on the audio clock (immune to tab throttling)
 let bgmDuckTarget = 1;
+const BGM_LOOPS_PER_SONG = 4;
+const BGM_LOOP_GAP_SECONDS = 0.8;
 
 // Each note: [midi pitch (0 = rest), beats]
 const BGM_SONGS = {
@@ -8061,6 +8322,126 @@ const BGM_SONGS = {
         [60,1],[60,1],[60,1],[60,1],[62,1],[64,2],
         [65,1],[64,1],[62,2],
         [67,1],[64,1],[60,1],[62,1],[64,1],[62,1],[60,3]
+    ]},
+    sunbeams: { bpm: 112, notes: [
+        [60,1],[64,1],[67,1],[72,2],[71,1],[69,1],[67,2],
+        [64,1],[65,1],[67,1],[69,1],[67,1],[64,1],[60,3],
+        [62,1],[65,1],[69,1],[72,2],[69,1],[67,1],[65,2],
+        [64,1],[62,1],[60,1],[64,1],[67,1],[64,1],[60,3]
+    ]},
+    raindrops: { bpm: 116, notes: [
+        [72,.5],[69,.5],[67,1],[72,.5],[69,.5],[67,1],[65,1],[64,2],
+        [69,.5],[67,.5],[65,1],[69,.5],[67,.5],[65,1],[64,1],[62,2],
+        [67,1],[69,1],[72,1],[69,1],[67,1],[65,1],[64,2],
+        [62,1],[64,1],[65,1],[64,1],[62,1],[60,3]
+    ]},
+    tiptoe: { bpm: 104, notes: [
+        [60,.5],[62,.5],[64,1],[0,.5],[64,.5],[65,1],[67,2],
+        [67,.5],[65,.5],[64,1],[0,.5],[64,.5],[62,1],[60,2],
+        [64,.5],[65,.5],[67,1],[69,1],[67,1],[65,1],[64,2],
+        [62,.5],[64,.5],[62,1],[60,3]
+    ]},
+    butterfly: { bpm: 120, notes: [
+        [67,.5],[69,.5],[72,1],[71,.5],[69,.5],[67,1],[64,2],
+        [65,.5],[67,.5],[69,1],[67,.5],[65,.5],[64,1],[62,2],
+        [60,1],[64,1],[67,1],[72,1],[74,1],[72,1],[69,2],
+        [67,1],[65,1],[64,1],[62,1],[60,3]
+    ]},
+    moonboat: { bpm: 92, notes: [
+        [60,1.5],[64,.5],[67,2],[69,1],[67,1],[64,2],
+        [62,1.5],[65,.5],[69,2],[67,1],[65,1],[62,2],
+        [64,1],[67,1],[72,2],[71,1],[69,1],[67,2],
+        [65,1],[64,1],[62,1],[60,3]
+    ]},
+    hopscotch: { bpm: 132, notes: [
+        [60,.5],[64,.5],[67,1],[60,.5],[64,.5],[67,1],[69,1],[67,1],
+        [62,.5],[65,.5],[69,1],[62,.5],[65,.5],[69,1],[71,1],[69,1],
+        [64,1],[67,1],[72,1],[71,1],[69,1],[67,1],[65,1],[64,1],
+        [62,.5],[64,.5],[65,1],[62,1],[60,3]
+    ]},
+    cloudparade: { bpm: 108, notes: [
+        [60,1],[62,1],[64,2],[67,1],[64,1],[62,2],
+        [65,1],[67,1],[69,2],[72,1],[69,1],[67,2],
+        [64,1],[67,1],[71,1],[72,1],[71,1],[67,1],[64,2],
+        [65,1],[64,1],[62,1],[60,3]
+    ]},
+    tinytrain: { bpm: 126, notes: [
+        [60,.5],[60,.5],[64,.5],[64,.5],[67,1],[64,1],[60,1],
+        [62,.5],[62,.5],[65,.5],[65,.5],[69,1],[65,1],[62,1],
+        [64,.5],[64,.5],[67,.5],[67,.5],[72,1],[71,1],[69,1],
+        [67,1],[65,1],[64,1],[62,1],[60,3]
+    ]},
+    stargarden: { bpm: 100, notes: [
+        [60,1],[67,1],[69,1],[72,2],[69,1],[67,2],
+        [64,1],[71,1],[72,1],[76,2],[72,1],[71,2],
+        [69,1],[72,1],[77,1],[76,1],[72,1],[69,1],[67,2],
+        [65,1],[64,1],[62,1],[60,3]
+    ]},
+    bubblepop: { bpm: 136, notes: [
+        [60,.5],[64,.5],[67,.5],[72,.5],[67,1],[0,.5],[67,.5],[69,1],
+        [62,.5],[65,.5],[69,.5],[74,.5],[69,1],[0,.5],[69,.5],[71,1],
+        [64,.5],[67,.5],[72,1],[76,.5],[72,.5],[69,1],[67,1],
+        [65,.5],[64,.5],[62,1],[60,2]
+    ]},
+    sleepycat: { bpm: 84, notes: [
+        [67,1.5],[64,.5],[60,2],[62,1],[64,1],[65,2],
+        [64,1.5],[62,.5],[59,2],[60,1],[62,1],[64,2],
+        [67,1],[69,1],[67,1],[64,1],[62,1],[60,1],[59,2],
+        [60,1],[62,1],[60,4]
+    ]},
+    rainbowroad: { bpm: 118, notes: [
+        [60,1],[62,1],[64,1],[65,1],[67,1],[69,1],[71,1],[72,2],
+        [72,1],[71,1],[69,1],[67,1],[65,1],[64,1],[62,1],[60,2],
+        [64,1],[67,1],[72,1],[76,1],[74,1],[72,1],[69,2],
+        [67,1],[65,1],[64,1],[62,1],[60,3]
+    ]},
+    duckydance: { bpm: 124, notes: [
+        [60,1],[64,.5],[64,.5],[67,1],[64,1],[62,2],
+        [62,1],[65,.5],[65,.5],[69,1],[65,1],[64,2],
+        [64,1],[67,.5],[67,.5],[72,1],[71,1],[69,1],[67,1],
+        [65,1],[64,1],[62,1],[60,3]
+    ]},
+    kiteflight: { bpm: 114, notes: [
+        [60,1],[64,1],[69,1],[72,2],[74,1],[72,1],[69,2],
+        [62,1],[65,1],[71,1],[74,2],[76,1],[74,1],[71,2],
+        [72,1],[76,1],[79,2],[76,1],[74,1],[72,2],
+        [69,1],[67,1],[65,1],[64,1],[62,1],[60,3]
+    ]},
+    pebblepond: { bpm: 96, notes: [
+        [60,1],[64,1],[67,2],[64,1],[60,1],[62,2],
+        [62,1],[65,1],[69,2],[65,1],[62,1],[64,2],
+        [64,1],[67,1],[71,2],[72,1],[71,1],[67,2],
+        [65,1],[64,1],[62,1],[60,3]
+    ]},
+    cookieclock: { bpm: 128, notes: [
+        [60,.5],[67,.5],[60,.5],[67,.5],[64,1],[62,1],[60,1],
+        [62,.5],[69,.5],[62,.5],[69,.5],[65,1],[64,1],[62,1],
+        [64,.5],[71,.5],[64,.5],[71,.5],[67,1],[69,1],[71,1],
+        [72,1],[69,1],[67,1],[64,1],[60,3]
+    ]},
+    flowerwaltz: { bpm: 90, notes: [
+        [60,1],[64,1],[67,1],[69,1],[67,1],[64,1],
+        [62,1],[65,1],[69,1],[71,1],[69,1],[65,1],
+        [64,1],[67,1],[72,1],[74,1],[72,1],[67,1],
+        [69,1],[67,1],[65,1],[64,1],[62,1],[60,3]
+    ]},
+    rocketride: { bpm: 140, notes: [
+        [60,.5],[62,.5],[64,.5],[67,.5],[72,1],[67,1],[64,1],
+        [62,.5],[64,.5],[65,.5],[69,.5],[74,1],[69,1],[65,1],
+        [67,.5],[69,.5],[71,.5],[72,.5],[76,1],[74,1],[72,1],
+        [71,.5],[69,.5],[67,1],[64,1],[60,2]
+    ]},
+    cozycamp: { bpm: 88, notes: [
+        [60,1],[64,1],[67,2],[69,1],[67,1],[64,2],
+        [57,1],[60,1],[64,2],[65,1],[64,1],[60,2],
+        [62,1],[65,1],[69,2],[67,1],[65,1],[62,2],
+        [64,1],[62,1],[60,1],[57,1],[60,4]
+    ]},
+    morningmarch: { bpm: 122, notes: [
+        [60,1],[60,1],[64,1],[67,1],[72,2],[67,2],
+        [62,1],[62,1],[65,1],[69,1],[74,2],[69,2],
+        [64,1],[67,1],[72,1],[71,1],[69,1],[67,1],[65,1],[64,1],
+        [62,1],[64,1],[65,1],[62,1],[60,3]
     ]}
 };
 
@@ -8093,17 +8474,20 @@ function bgmPlayNext() {
     const beatSec = 60 / song.bpm;
     let ctx, bus;
     try { ctx = ensureAudio(); bus = bgmBus(); } catch (e) { return; }
-    // Schedule the WHOLE song on the audio clock up front: Web Audio keeps rendering
+    // Schedule four complete loops on the audio clock up front. Web Audio keeps rendering
     // in background tabs, while setTimeout chains get throttled and would stall the tune.
     let t = 0.06;
-    for (const note of song.notes) {
-        if (note[0] > 0) {
-            try { playTone(bgmFreq(note[0]), t, Math.min(note[1] * beatSec * 0.9, 1), 'sine', 0.056, bus); } catch (e) {}
+    for (let loop = 0; loop < BGM_LOOPS_PER_SONG; loop++) {
+        for (const note of song.notes) {
+            if (note[0] > 0) {
+                try { playTone(bgmFreq(note[0]), t, Math.min(note[1] * beatSec * 0.9, 1), 'sine', 0.056, bus); } catch (e) {}
+            }
+            t += note[1] * beatSec;
         }
-        t += note[1] * beatSec;
+        if (loop < BGM_LOOPS_PER_SONG - 1) t += BGM_LOOP_GAP_SECONDS;
     }
     // A silent marker node is our throttle-proof alarm clock: its onended fires on the
-    // audio clock at song end + a 3.2s breath, then a different rhyme begins.
+    // audio clock after loop four + a 3.2s breath, then a different tune begins.
     try {
         const marker = ctx.createConstantSource ? ctx.createConstantSource() : ctx.createOscillator();
         const mute = ctx.createGain();
@@ -8645,6 +9029,361 @@ function answerPuzzle(value, btn) {
         });
         afterSpeech(nextPuzzleQuestion, 1200);
     }
+}
+
+const tracingGameInfo = {
+    letters: {
+        titleKey: 'traceLettersTitle',
+        promptKey: 'tracingLettersPrompt',
+        items: [
+            { label: 'A', word: 'Apple', emoji: '🍎', strokes: ['M300 95 L165 500', 'M300 95 L435 500', 'M220 340 L380 340'] },
+            { label: 'B', word: 'Ball', emoji: '⚽', strokes: ['M185 95 L185 505', 'M185 100 C430 80 455 280 185 300', 'M185 300 C470 280 470 515 185 500'] },
+            { label: 'C', word: 'Cat', emoji: '🐱', strokes: ['M445 165 C390 85 205 85 155 300 C120 500 335 560 455 435'] },
+            { label: 'D', word: 'Dog', emoji: '🐶', strokes: ['M180 95 L180 505', 'M180 100 C455 80 500 500 180 500'] },
+            { label: 'E', word: 'Egg', emoji: '🥚', strokes: ['M190 95 L190 505', 'M190 105 L445 105', 'M190 300 L390 300', 'M190 495 L445 495'] },
+            { label: 'F', word: 'Fish', emoji: '🐟', strokes: ['M190 95 L190 505', 'M190 105 L445 105', 'M190 300 L390 300'] }
+        ]
+    },
+    numbers: {
+        titleKey: 'traceNumbersTitle',
+        promptKey: 'tracingNumbersPrompt',
+        items: [
+            { label: '1', word: 'One', emoji: '🍎', strokes: ['M235 185 L315 100 L315 500'] },
+            { label: '2', word: 'Two', emoji: '🐥🐥', strokes: ['M175 190 C205 70 420 75 435 195 C450 285 330 340 170 500 L445 500'] },
+            { label: '3', word: 'Three', emoji: '⭐⭐⭐', strokes: ['M180 145 C300 65 445 105 420 235 C405 290 350 300 300 300 C370 295 445 330 425 445 C400 565 220 550 170 465'] },
+            { label: '4', word: 'Four', emoji: '🍀', strokes: ['M390 500 L390 95 L155 365 L455 365'] },
+            { label: '5', word: 'Five', emoji: '🖐️', strokes: ['M430 105 L205 105 L185 300 C260 250 430 270 435 390 C440 535 220 565 165 455'] },
+            { label: '6', word: 'Six', emoji: '🎲', strokes: ['M420 145 C310 65 165 155 165 355 C165 535 430 555 445 385 C455 250 260 230 170 350'] }
+        ]
+    },
+    paths: {
+        titleKey: 'pencilPathsTitle',
+        promptKey: 'tracingPathsPrompt',
+        items: [
+            { label: '—', nameKey: 'traceAcross', emoji: '🚗', strokes: ['M85 300 L515 300'] },
+            { label: '↓', nameKey: 'traceDown', emoji: '🛝', strokes: ['M300 75 L300 525'] },
+            { label: '〰', nameKey: 'traceWave', emoji: '🌊', strokes: ['M65 310 C135 125 205 495 275 310 C345 125 415 495 535 280'] },
+            { label: '⚡', nameKey: 'traceZigzag', emoji: '⚡', strokes: ['M80 165 L185 435 L290 165 L395 435 L520 165'] },
+            { label: '○', nameKey: 'traceLoop', emoji: '🎈', strokes: ['M300 95 C475 95 510 265 435 390 C350 535 125 475 135 300 C145 150 390 145 410 300 C425 420 245 445 220 320'] }
+        ]
+    },
+    shapes: {
+        titleKey: 'traceFormsTitle',
+        promptKey: 'tracingShapesPrompt',
+        items: [
+            { label: '○', word: 'Circle', emoji: '🔵', strokes: ['M300 95 C485 95 510 500 300 500 C90 500 115 95 300 95'] },
+            { label: '□', word: 'Square', emoji: '🟦', strokes: ['M145 125 L455 125 L455 485 L145 485 L145 125'] },
+            { label: '△', word: 'Triangle', emoji: '🔺', strokes: ['M300 90 L485 490 L115 490 L300 90'] },
+            { label: '♡', word: 'Heart', emoji: '❤️', strokes: ['M300 500 C250 430 105 330 125 205 C145 80 275 105 300 190 C325 105 455 80 475 205 C495 330 350 430 300 500'] },
+            { label: '◇', word: 'Diamond', emoji: '💎', strokes: ['M300 80 L480 300 L300 520 L120 300 L300 80'] }
+        ]
+    }
+};
+
+const tracingPalette = ['#ff5fa2', '#4da3ff', '#54d66a', '#ff9b3d', '#9b6bff', '#00bfa5'];
+
+function startTracingGame(type = 'letters', resetOnly = false) {
+    tracingGameType = tracingGameInfo[type] ? type : 'letters';
+    tracingCompleted = 0;
+    tracingItemIndex = 0;
+    tracingColor = tracingPalette[0];
+    tracingItems = shuffle(tracingGameInfo[tracingGameType].items.slice()).slice(0, 4);
+    showScreen('tracing-game');
+    updateTracingScore();
+    renderTracingSheet();
+    if (!resetOnly) speak(t(tracingGameInfo[tracingGameType].promptKey));
+}
+
+function restartTracingGame(resetOnly = false) {
+    startTracingGame(tracingGameType || 'letters', resetOnly);
+}
+
+function updateTracingScore() {
+    const score = document.getElementById('tracing-score');
+    if (score) score.textContent = `${t('tracingDone')}: ${tracingCompleted} / 4`;
+}
+
+function tracingItemName(item) {
+    if (!item) return '';
+    if (item.nameKey) return t(item.nameKey);
+    return item.word ? itemLabel(item.word) : item.label;
+}
+
+function buildTracingColorTools() {
+    const tools = document.getElementById('trace-colors');
+    if (!tools) return;
+    tools.innerHTML = '';
+    tracingPalette.forEach(color => {
+        const btn = document.createElement('button');
+        btn.className = 'trace-color' + (tracingColor === color ? ' active' : '');
+        btn.style.background = color;
+        btn.setAttribute('aria-label', color);
+        btn.onclick = () => {
+            tracingColor = color;
+            const paper = document.querySelector('.trace-paper');
+            if (paper) paper.style.setProperty('--trace-color', tracingColor);
+            buildTracingColorTools();
+        };
+        tools.appendChild(btn);
+    });
+}
+
+function renderTracingSheet() {
+    const info = tracingGameInfo[tracingGameType] || tracingGameInfo.letters;
+    const item = tracingItems[tracingItemIndex] || info.items[0];
+    const title = document.getElementById('tracing-title');
+    const prompt = document.getElementById('tracing-prompt');
+    const example = document.getElementById('trace-example');
+    const board = document.getElementById('tracing-board');
+    const hint = document.getElementById('tracing-hint');
+    if (title) title.textContent = t(info.titleKey);
+    if (prompt) prompt.textContent = t(info.promptKey);
+    if (hint) hint.textContent = t('traceHintStart');
+    if (!example || !board || !item) return;
+
+    example.innerHTML = '';
+    const symbol = document.createElement('strong');
+    const label = document.createElement('span');
+    symbol.textContent = item.label;
+    label.textContent = `${item.emoji || ''} ${tracingItemName(item)}`.trim();
+    example.append(symbol, label);
+    buildTracingColorTools();
+
+    board.innerHTML = '';
+    const paper = document.createElement('div');
+    paper.className = 'trace-paper';
+    paper.style.setProperty('--trace-color', tracingColor);
+    const strokeMarkup = item.strokes.map((d, index) =>
+        `<g class="trace-stroke" data-stroke="${index}">
+            <path class="trace-route" d="${d}"></path>
+            <path class="trace-center" d="${d}"></path>
+            <path class="trace-fill" d="${d}"></path>
+        </g>`
+    ).join('');
+    paper.innerHTML = `<svg class="tracing-svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" aria-label="${item.label}">${strokeMarkup}<g class="trace-markers"></g></svg>`;
+    board.appendChild(paper);
+
+    const svg = paper.querySelector('.tracing-svg');
+    const strokeGroups = Array.from(svg.querySelectorAll('.trace-stroke'));
+    tracingState = {
+        item,
+        svg,
+        paper,
+        locked: false,
+        activeStroke: 0,
+        strokes: strokeGroups.map(group => {
+            const route = group.querySelector('.trace-route');
+            const fill = group.querySelector('.trace-fill');
+            const total = route.getTotalLength();
+            const sampleCount = Math.max(2, Math.ceil(total / 4));
+            const samples = [];
+            for (let i = 0; i <= sampleCount; i++) samples.push(route.getPointAtLength(total * i / sampleCount));
+            fill.style.strokeDasharray = String(total);
+            fill.style.strokeDashoffset = String(total);
+            return { group, route, fill, total, samples, progress: 0 };
+        })
+    };
+    setTracingActiveStroke(0);
+    svg.addEventListener('pointerdown', beginTracingPointer);
+    svg.addEventListener('pointermove', moveTracingPointer);
+    svg.addEventListener('pointerup', endTracingPointer);
+    svg.addEventListener('pointercancel', endTracingPointer);
+    updateTracingScore();
+}
+
+function tracingSvgPoint(ev) {
+    const svg = tracingState && tracingState.svg;
+    if (!svg) return { x: 0, y: 0 };
+    const point = svg.createSVGPoint();
+    point.x = ev.clientX;
+    point.y = ev.clientY;
+    const matrix = svg.getScreenCTM();
+    return matrix ? point.matrixTransform(matrix.inverse()) : point;
+}
+
+function pointDistance(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function setTracingActiveStroke(index) {
+    if (!tracingState) return;
+    tracingState.activeStroke = index;
+    tracingState.strokes.forEach((stroke, i) => {
+        stroke.group.classList.toggle('active', i === index);
+        stroke.group.classList.toggle('done', i < index);
+    });
+    renderTracingMarkers();
+}
+
+function renderTracingMarkers() {
+    if (!tracingState) return;
+    const markers = tracingState.svg.querySelector('.trace-markers');
+    if (!markers) return;
+    markers.innerHTML = '';
+    const stroke = tracingState.strokes[tracingState.activeStroke];
+    if (!stroke) return;
+    const current = stroke.samples[Math.min(stroke.progress, stroke.samples.length - 1)];
+    const end = stroke.samples[stroke.samples.length - 1];
+    const ns = 'http://www.w3.org/2000/svg';
+
+    const endCircle = document.createElementNS(ns, 'circle');
+    endCircle.setAttribute('class', 'trace-end');
+    endCircle.setAttribute('cx', end.x);
+    endCircle.setAttribute('cy', end.y);
+    endCircle.setAttribute('r', '23');
+    const endStar = document.createElementNS(ns, 'text');
+    endStar.setAttribute('class', 'trace-end-star');
+    endStar.setAttribute('x', end.x);
+    endStar.setAttribute('y', end.y + 1);
+    endStar.textContent = '★';
+
+    const target = document.createElementNS(ns, 'circle');
+    target.setAttribute('class', 'trace-target');
+    target.setAttribute('cx', current.x);
+    target.setAttribute('cy', current.y);
+    target.setAttribute('r', '29');
+    const number = document.createElementNS(ns, 'text');
+    number.setAttribute('class', 'trace-target-num');
+    number.setAttribute('x', current.x);
+    number.setAttribute('y', current.y + 1);
+    number.textContent = String(tracingState.activeStroke + 1);
+    const finger = document.createElementNS(ns, 'text');
+    finger.setAttribute('class', 'trace-finger');
+    finger.setAttribute('x', current.x);
+    finger.setAttribute('y', Math.max(44, current.y - 52));
+    finger.textContent = '☝️';
+    markers.append(endCircle, endStar, target, number, finger);
+}
+
+function beginTracingPointer(ev) {
+    if (!tracingState || tracingState.locked) return;
+    ev.preventDefault();
+    const stroke = tracingState.strokes[tracingState.activeStroke];
+    if (!stroke) return;
+    const point = tracingSvgPoint(ev);
+    const expected = stroke.samples[Math.min(stroke.progress, stroke.samples.length - 1)];
+    if (pointDistance(point, expected) > 82) {
+        showTracingOffPath();
+        return;
+    }
+    tracingDrawing = true;
+    tracingLastPointer = point;
+    try { tracingState.svg.setPointerCapture(ev.pointerId); } catch (e) {}
+    advanceTracingAt(point);
+}
+
+function moveTracingPointer(ev) {
+    if (!tracingDrawing || !tracingState || tracingState.locked) return;
+    ev.preventDefault();
+    const point = tracingSvgPoint(ev);
+    const last = tracingLastPointer || point;
+    const distance = pointDistance(last, point);
+    const steps = Math.max(1, Math.ceil(distance / 12));
+    for (let i = 1; i <= steps; i++) {
+        advanceTracingAt({
+            x: last.x + (point.x - last.x) * i / steps,
+            y: last.y + (point.y - last.y) * i / steps
+        });
+        if (!tracingDrawing) break;
+    }
+    tracingLastPointer = point;
+}
+
+function endTracingPointer(ev) {
+    if (tracingState && tracingState.svg) {
+        try { tracingState.svg.releasePointerCapture(ev.pointerId); } catch (e) {}
+    }
+    tracingDrawing = false;
+    tracingLastPointer = null;
+}
+
+function advanceTracingAt(point) {
+    const stroke = tracingState && tracingState.strokes[tracingState.activeStroke];
+    if (!stroke) return;
+    const from = Math.max(0, stroke.progress - 5);
+    const to = Math.min(stroke.samples.length - 1, stroke.progress + 28);
+    let best = stroke.progress;
+    let bestDistance = Infinity;
+    for (let i = from; i <= to; i++) {
+        const distance = pointDistance(point, stroke.samples[i]);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            best = i;
+        }
+    }
+    if (bestDistance > 72) {
+        showTracingOffPath();
+        return;
+    }
+    if (best >= stroke.progress - 2) stroke.progress = Math.max(stroke.progress, best);
+    const fraction = stroke.progress / Math.max(1, stroke.samples.length - 1);
+    stroke.fill.style.strokeDashoffset = String(stroke.total * (1 - fraction));
+    renderTracingMarkers();
+    if (fraction >= .97) finishTracingStroke();
+}
+
+function showTracingOffPath() {
+    if (!tracingState) return;
+    const now = Date.now();
+    if (now - tracingOffPathAt < 420) return;
+    tracingOffPathAt = now;
+    const hint = document.getElementById('tracing-hint');
+    if (hint) hint.textContent = t('traceHintStay');
+    tracingState.paper.classList.remove('off-path');
+    void tracingState.paper.offsetWidth;
+    tracingState.paper.classList.add('off-path');
+    try { if (navigator.vibrate) navigator.vibrate(18); } catch (e) {}
+}
+
+function finishTracingStroke() {
+    if (!tracingState) return;
+    const stroke = tracingState.strokes[tracingState.activeStroke];
+    stroke.progress = stroke.samples.length - 1;
+    stroke.fill.style.strokeDashoffset = '0';
+    stroke.group.classList.remove('active');
+    stroke.group.classList.add('done');
+    tracingDrawing = false;
+    tracingLastPointer = null;
+    playDing();
+    const next = tracingState.activeStroke + 1;
+    if (next < tracingState.strokes.length) {
+        const hint = document.getElementById('tracing-hint');
+        if (hint) hint.textContent = t('traceHintNextStroke');
+        setTracingActiveStroke(next);
+        return;
+    }
+    finishTracingRound();
+}
+
+function finishTracingRound() {
+    if (!tracingState || tracingState.locked) return;
+    tracingState.locked = true;
+    tracingCompleted++;
+    updateTracingScore();
+    tracingState.paper.classList.add('complete');
+    const hint = document.getElementById('tracing-hint');
+    if (hint) hint.textContent = t('traceHintComplete');
+    praise(randomItem(praiseWords));
+    confettiShower(80);
+    playCelebrationMusic(true);
+    speak(t('tracingRoundSpeak'));
+    if (tracingCompleted >= 4) {
+        afterSpeech(() => {
+            if (currentScreen === 'tracing-game') winGame('tracingWinMessage');
+        }, 950);
+    } else {
+        afterSpeech(() => {
+            if (currentScreen !== 'tracing-game') return;
+            tracingItemIndex++;
+            renderTracingSheet();
+        }, 950);
+    }
+}
+
+function resetTracingSheet() {
+    tracingDrawing = false;
+    tracingLastPointer = null;
+    renderTracingSheet();
 }
 
 function startCreativeGame(type = 'connectDots', resetOnly = false) {
@@ -9702,7 +10441,7 @@ if ('speechSynthesis' in window) {
     /* progress sheet */
     var SEC_COLOR = {
         core: 'var(--primary)', brain: 'var(--c-green)', language: 'var(--c-blue)',
-        explorer: 'var(--c-coral)', puzzle: 'var(--c-orange)', creative: 'var(--c-pink)',
+        writing: 'var(--c-pink)', explorer: 'var(--c-coral)', puzzle: 'var(--c-orange)', creative: 'var(--c-pink)',
         character: 'var(--c-violet)', math: 'var(--c-green)', logic: 'var(--c-blue)',
         world: 'var(--c-coral)', tiny: 'var(--c-pink)',
         reading: 'var(--c-blue)', wordwiz: 'var(--c-violet)', numlab: 'var(--c-green)',
@@ -9793,6 +10532,7 @@ if ('speechSynthesis' in window) {
         wrap('startSmartChoiceGame', function (type) { FL.currentKey = 'smart:' + type; markPlayed(FL.currentKey); });
         wrap('startPuzzleGame', function (type) { FL.currentKey = 'puzzle:' + type; markPlayed(FL.currentKey); });
         wrap('startCreativeGame', function (type) { FL.currentKey = 'creative:' + type; markPlayed(FL.currentKey); });
+        wrap('startTracingGame', function (type) { FL.currentKey = 'tracing:' + type; markPlayed(FL.currentKey); });
         // fixed 1:1 screen games + home reset handled via showScreen
         var origShow = window.showScreen;
         if (typeof origShow === 'function') {
