@@ -840,11 +840,17 @@
 
     /* ---- Little Writers: guided finger tracing ---- */
     #tracing-game {
+        /* Lock the whole tracing screen so a child's finger never scrolls/zooms
+           the page while writing (covers touches that start outside the SVG too). */
+        touch-action: none;
+        overscroll-behavior: none;
         background:
             radial-gradient(70% 65% at 12% 12%, rgba(255,240,105,.34), transparent 62%),
             radial-gradient(65% 70% at 92% 82%, rgba(41,194,240,.28), transparent 60%),
             linear-gradient(145deg, #6f58e8 0%, #5b42c9 52%, #3b2b91 100%);
     }
+    /* Belt-and-suspenders: kill iOS rubber-band bounce while a tracing game is open. */
+    body.tracing-lock { overflow: hidden; overscroll-behavior: none; }
     .tracing-panel {
         min-height: 0; padding: 16px; gap: 10px;
         grid-template-rows: auto auto auto 1fr auto;
@@ -913,10 +919,11 @@
         font-size: 27px; font-weight: 700; text-anchor: middle; dominant-baseline: central;
         pointer-events: none;
     }
-    .trace-finger {
-        font-size: 42px; text-anchor: middle; dominant-baseline: central;
-        pointer-events: none; filter: drop-shadow(0 5px 5px rgba(0,0,0,.2));
-        animation: traceFingerBob .85s ease-in-out infinite;
+    .trace-arrow { pointer-events: none; }
+    .trace-arrow-shape {
+        fill: #fff; stroke: var(--primary-700); stroke-width: 5; stroke-linejoin: round;
+        filter: drop-shadow(0 4px 4px rgba(74,59,196,.3));
+        animation: traceArrowNudge .85s ease-in-out infinite;
     }
     .trace-end { fill: #fff; stroke: var(--c-green); stroke-width: 7; pointer-events: none; }
     .trace-end-star {
@@ -932,7 +939,7 @@
     }
     @keyframes traceRouteGlow { 50% { stroke: #c9c0ef; } }
     @keyframes traceTargetPulse { 50% { transform: scale(1.13); transform-origin: center; } }
-    @keyframes traceFingerBob { 50% { transform: translateY(-8px) rotate(-7deg); } }
+    @keyframes traceArrowNudge { 50% { transform: translateX(8px); } }
     @keyframes traceNudge { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
     @keyframes tracePaperWin { 45% { transform: scale(1.035) rotate(-1deg); } }
 
@@ -2828,7 +2835,7 @@
                 <div class="quiz-header">
                     <div id="tracing-title" class="quiz-title">Little Writers</div>
                     <div class="score-row">
-                        <div id="tracing-score" class="pill">Done: 0 / 4</div>
+                        <div id="tracing-score" class="pill">Done: 0 / 10</div>
                     </div>
                 </div>
                 <div id="tracing-prompt" class="learning-prompt">Start at 1 and follow the path.</div>
@@ -4937,6 +4944,7 @@ function showScreen(id) {
     if (currentScreen === 'tracing-game' && id !== 'tracing-game') {
         tracingDrawing = false;
         tracingLastPointer = null;
+        unlockTracingScroll();
     }
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -9082,13 +9090,50 @@ const tracingGameInfo = {
 
 const tracingPalette = ['#ff5fa2', '#4da3ff', '#54d66a', '#ff9b3d', '#9b6bff', '#00bfa5'];
 
+// How many items a child traces per session. The pools are small (5–6 unique
+// shapes each), so we cycle reshuffled copies to fill the round, nudging the
+// batch boundary so the same item never appears twice in a row.
+const TRACING_ROUND = 10;
+function buildTracingItems(pool, count) {
+    const list = [];
+    while (list.length < count) {
+        const batch = shuffle(pool.slice());
+        if (list.length && batch.length > 1 && batch[0] === list[list.length - 1]) {
+            batch.push(batch.shift());
+        }
+        list.push(...batch);
+    }
+    return list.slice(0, count);
+}
+
+// While a tracing game is on screen, stop touch-dragging from scrolling/bouncing
+// the page (which made the cursor jump). touch-action:none handles modern browsers;
+// this non-passive touchmove guard is the reliable belt for iOS Safari.
+let tracingScrollGuard = null;
+function lockTracingScroll() {
+    const screen = document.getElementById('tracing-game');
+    if (!screen || tracingScrollGuard) return;
+    tracingScrollGuard = (ev) => { if (ev.cancelable) ev.preventDefault(); };
+    screen.addEventListener('touchmove', tracingScrollGuard, { passive: false });
+    document.body.classList.add('tracing-lock');
+}
+function unlockTracingScroll() {
+    const screen = document.getElementById('tracing-game');
+    if (screen && tracingScrollGuard) {
+        screen.removeEventListener('touchmove', tracingScrollGuard, { passive: false });
+    }
+    tracingScrollGuard = null;
+    document.body.classList.remove('tracing-lock');
+}
+
 function startTracingGame(type = 'letters', resetOnly = false) {
     tracingGameType = tracingGameInfo[type] ? type : 'letters';
     tracingCompleted = 0;
     tracingItemIndex = 0;
     tracingColor = tracingPalette[0];
-    tracingItems = shuffle(tracingGameInfo[tracingGameType].items.slice()).slice(0, 4);
+    tracingItems = buildTracingItems(tracingGameInfo[tracingGameType].items, TRACING_ROUND);
     showScreen('tracing-game');
+    lockTracingScroll();
     updateTracingScore();
     renderTracingSheet();
     if (!resetOnly) speak(t(tracingGameInfo[tracingGameType].promptKey));
@@ -9100,7 +9145,7 @@ function restartTracingGame(resetOnly = false) {
 
 function updateTracingScore() {
     const score = document.getElementById('tracing-score');
-    if (score) score.textContent = `${t('tracingDone')}: ${tracingCompleted} / 4`;
+    if (score) score.textContent = `${t('tracingDone')}: ${tracingCompleted} / ${TRACING_ROUND}`;
 }
 
 function tracingItemName(item) {
@@ -9247,12 +9292,30 @@ function renderTracingMarkers() {
     number.setAttribute('x', current.x);
     number.setAttribute('y', current.y + 1);
     number.textContent = String(tracingState.activeStroke + 1);
-    const finger = document.createElementNS(ns, 'text');
-    finger.setAttribute('class', 'trace-finger');
-    finger.setAttribute('x', current.x);
-    finger.setAttribute('y', Math.max(44, current.y - 52));
-    finger.textContent = '☝️';
-    markers.append(endCircle, endStar, target, number, finger);
+    // Direction arrow: replaces the finger and points along the path toward where
+    // the child should trace next (recomputed from the tangent on every move, so it
+    // points right for a rightward stroke, down for a downward stroke, and so on).
+    const i0 = Math.min(stroke.progress, stroke.samples.length - 1);
+    const i1 = Math.min(i0 + 12, stroke.samples.length - 1);
+    let dx = stroke.samples[i1].x - stroke.samples[i0].x;
+    let dy = stroke.samples[i1].y - stroke.samples[i0].y;
+    if (dx === 0 && dy === 0) {
+        // At the very end of the stroke, point along the direction we arrived from.
+        const ip = Math.max(0, i0 - 12);
+        dx = stroke.samples[i0].x - stroke.samples[ip].x;
+        dy = stroke.samples[i0].y - stroke.samples[ip].y;
+    }
+    const dirLen = Math.hypot(dx, dy) || 1;
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const lead = 54;
+    const arrow = document.createElementNS(ns, 'g');
+    arrow.setAttribute('class', 'trace-arrow');
+    arrow.setAttribute('transform', `translate(${current.x + dx / dirLen * lead}, ${current.y + dy / dirLen * lead}) rotate(${angle})`);
+    const arrowShape = document.createElementNS(ns, 'polygon');
+    arrowShape.setAttribute('class', 'trace-arrow-shape');
+    arrowShape.setAttribute('points', '-26,-9 6,-9 6,-22 34,0 6,22 6,9 -26,9');
+    arrow.append(arrowShape);
+    markers.append(endCircle, endStar, target, number, arrow);
 }
 
 function beginTracingPointer(ev) {
@@ -9367,7 +9430,7 @@ function finishTracingRound() {
     confettiShower(80);
     playCelebrationMusic(true);
     speak(t('tracingRoundSpeak'));
-    if (tracingCompleted >= 4) {
+    if (tracingCompleted >= TRACING_ROUND) {
         afterSpeech(() => {
             if (currentScreen === 'tracing-game') winGame('tracingWinMessage');
         }, 950);
