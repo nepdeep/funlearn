@@ -838,7 +838,7 @@
         .stamp-item { width: 46px; height: 46px; font-size: 1.5rem; flex: 0 0 auto; }
     }
 
-    /* ---- Little Writers: guided finger tracing ---- */
+    /* ---- Alphabet Writers / Little Writers: guided finger tracing ---- */
     #tracing-game {
         /* Lock the whole tracing screen so a child's finger never scrolls/zooms
            the page while writing (covers touches that start outside the SVG too). */
@@ -867,7 +867,7 @@
         box-shadow: 0 10px 22px rgba(0,0,0,.14), inset 0 2px 0 rgba(255,255,255,.8);
     }
     .trace-example strong {
-        min-width: 46px; font-family: "Fredoka", sans-serif;
+        min-width: 58px; font-family: "Fredoka", "Nirmala UI", "Mangal", sans-serif;
         font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1; color: var(--primary-700);
     }
     .trace-example span { font-size: .95rem; font-weight: 900; color: var(--ink-2); }
@@ -898,6 +898,40 @@
         box-shadow: 0 22px 48px rgba(26,18,79,.28), inset 0 0 0 5px rgba(255,255,255,.8);
     }
     .tracing-svg { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+    .trace-glyph-ghost {
+        fill: rgba(108,92,231,.085);
+        font-family: "Fredoka", "Nirmala UI", "Mangal", "Kokila", sans-serif;
+        font-size: 330px; font-weight: 900;
+        text-anchor: middle; dominant-baseline: central;
+        pointer-events: none; user-select: none;
+    }
+    .trace-glyph-real {
+        fill: rgba(38,31,77,.13);
+        stroke: rgba(38,31,77,.2);
+        stroke-width: 12;
+        paint-order: stroke fill;
+        font-family: "Nirmala UI", "Mangal", "Kokila", "Noto Sans Devanagari", sans-serif;
+        font-size: 352px; font-weight: 900;
+        text-anchor: middle; dominant-baseline: central;
+        pointer-events: none; user-select: none;
+    }
+    .trace-paper.trace-type-nepali .trace-glyph-real {
+        fill: rgba(255,95,162,.16);
+        stroke: rgba(47,39,82,.28);
+        stroke-width: 18;
+        font-size: 360px;
+    }
+    .trace-paper.trace-type-nepali .trace-glyph-compound {
+        font-size: 310px;
+    }
+    .trace-paper.trace-type-letterGarden {
+        background:
+            radial-gradient(circle at 16% 18%, rgba(255,216,77,.34) 0 9%, transparent 10%),
+            radial-gradient(circle at 84% 20%, rgba(84,214,106,.24) 0 8%, transparent 9%),
+            radial-gradient(circle at 78% 82%, rgba(255,95,162,.25) 0 10%, transparent 11%),
+            linear-gradient(rgba(77,163,255,.1) 2px, transparent 2px) 0 25% / 100% 25%,
+            #fffdf7;
+    }
     .trace-route, .trace-center, .trace-fill {
         fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
     }
@@ -906,6 +940,18 @@
     .trace-fill {
         stroke: var(--trace-color, #ff5fa2); stroke-width: 54;
         filter: drop-shadow(0 4px 3px rgba(108,92,231,.15));
+    }
+    .trace-paper.trace-type-nepali .trace-route {
+        stroke: rgba(255,255,255,.68);
+        stroke-width: 82;
+    }
+    .trace-paper.trace-type-nepali .trace-center {
+        stroke: rgba(47,39,82,.42);
+        stroke-width: 5;
+        stroke-dasharray: 8 18;
+    }
+    .trace-paper.trace-type-nepali .trace-fill {
+        stroke-width: 62;
     }
     .trace-stroke.done .trace-route { stroke: rgba(37,193,107,.18); }
     .trace-stroke.active .trace-route { animation: traceRouteGlow 1.2s ease-in-out infinite; }
@@ -1775,10 +1821,40 @@
                 </div>
             </section>
 
+            <!-- ALPHABET WRITERS -->
+            <section class="section-row" id="sec-alphabet-writing" data-sec="alphabetWriting">
+                <div class="section-head">
+                    <div class="section-icon pink">✍️</div>
+                    <div class="section-label-text">
+                        <h2 class="c-pink" data-i18n="alphabetWritersTitle">Alphabet Writers</h2>
+                        <p data-i18n="alphabetWritersHint">Trace A to Z, 0 to 9, Nepali letters, and playful rainbow letter art.</p>
+                    </div>
+                    <div class="section-progress"><div class="sp-bar"><div class="sp-fill"></div></div><span class="sp-count">0/4</span></div>
+                </div>
+                <div class="section-games">
+                    <button class="gcard" data-key="tracing:az" onclick="startTracingGame('az')">
+                        <div class="gcard-thumb t-pink">A-Z</div>
+                        <div class="gcard-footer"><h3 data-i18n="alphabetAzTitle">A to Z</h3></div>
+                    </button>
+                    <button class="gcard" data-key="tracing:digits" onclick="startTracingGame('digits')">
+                        <div class="gcard-thumb t-blue">0-9</div>
+                        <div class="gcard-footer"><h3 data-i18n="alphabetDigitsTitle">0 to 9</h3></div>
+                    </button>
+                    <button class="gcard" data-key="tracing:nepali" onclick="startTracingGame('nepali')">
+                        <div class="gcard-thumb t-yellow">क-ज्ञ</div>
+                        <div class="gcard-footer"><h3 data-i18n="nepaliLettersTitle">क to ज्ञ</h3></div>
+                    </button>
+                    <button class="gcard" data-key="tracing:letterGarden" onclick="startTracingGame('letterGarden')">
+                        <div class="gcard-thumb t-green">🌈A</div>
+                        <div class="gcard-footer"><h3 data-i18n="creativeLettersTitle">Rainbow Letters</h3></div>
+                    </button>
+                </div>
+            </section>
+
             <!-- LITTLE WRITERS -->
             <section class="section-row" id="sec-writing" data-sec="writing">
                 <div class="section-head">
-                    <div class="section-icon pink">✍️</div>
+                    <div class="section-icon pink">✏️</div>
                     <div class="section-label-text">
                         <h2 class="c-pink" data-i18n="littleWritersTitle">Little Writers</h2>
                         <p data-i18n="littleWritersHint">Follow the glowing path with a fingertip to form letters, numbers, lines, and shapes.</p>
@@ -4577,6 +4653,7 @@ let tracingGameType = 'letters';
 let tracingCompleted = 0;
 let tracingItems = [];
 let tracingItemIndex = 0;
+let tracingRoundTarget = 10;
 let tracingColor = '#ff5fa2';
 let tracingState = null;
 let tracingDrawing = false;
@@ -4684,12 +4761,22 @@ Object.assign(LOCALIZED_TEXT.ne, {
 
 
 Object.assign(LOCALIZED_TEXT.en, {
+    alphabetWritersTitle: "Alphabet Writers",
+    alphabetWritersHint: "Trace A to Z, 0 to 9, Nepali letters, and playful rainbow letter art.",
+    alphabetAzTitle: "A to Z",
+    alphabetDigitsTitle: "0 to 9",
+    nepaliLettersTitle: "क to ज्ञ",
+    creativeLettersTitle: "Rainbow Letters",
     littleWritersTitle: "Little Writers",
     littleWritersHint: "Follow the glowing path with a fingertip to form letters, numbers, lines, and shapes.",
     traceLettersTitle: "Trace Letters",
     traceNumbersTitle: "Trace Numbers",
     pencilPathsTitle: "Pencil Paths",
     traceFormsTitle: "Trace Shapes",
+    tracingAzPrompt: "Trace the capital letters from A to Z. Start at 1 and follow the dotted path.",
+    tracingDigitsPrompt: "Trace the numbers from 0 to 9. Start at 1 and follow the dotted path.",
+    tracingNepaliPrompt: "Trace the Nepali letters from क to ज्ञ. Start at 1 and follow the dotted path.",
+    tracingCreativePrompt: "Make rainbow letter art. Trace the bright path from 1 to the star.",
     tracingLettersPrompt: "Trace the letter. Start at 1 and follow the dotted path.",
     tracingNumbersPrompt: "Trace the number. Start at 1 and follow the dotted path.",
     tracingPathsPrompt: "Warm up your writing hand. Follow the path from start to star.",
@@ -4701,7 +4788,7 @@ Object.assign(LOCALIZED_TEXT.en, {
     startOverLabel: "↺ Start over",
     tracingDone: "Done",
     tracingRoundSpeak: "Wonderful tracing!",
-    tracingWinMessage: "Amazing writing practice! You followed every path!",
+    tracingWinMessage: "Amazing writing practice! You finished the whole writing trail!",
     traceAcross: "Across",
     traceDown: "Down",
     traceWave: "Wave",
@@ -4709,12 +4796,22 @@ Object.assign(LOCALIZED_TEXT.en, {
     traceLoop: "Loop"
 });
 Object.assign(LOCALIZED_TEXT.nl, {
+    alphabetWritersTitle: "Alfabet schrijven",
+    alphabetWritersHint: "Oefen A tot Z, 0 tot 9, Nepalese letters en regenboogletters.",
+    alphabetAzTitle: "A tot Z",
+    alphabetDigitsTitle: "0 tot 9",
+    nepaliLettersTitle: "क tot ज्ञ",
+    creativeLettersTitle: "Regenboogletters",
     littleWritersTitle: "Kleine schrijvers",
     littleWritersHint: "Volg het pad met je vinger en oefen letters, cijfers, lijnen en vormen.",
     traceLettersTitle: "Letters volgen",
     traceNumbersTitle: "Cijfers volgen",
     pencilPathsTitle: "Schrijfpaden",
     traceFormsTitle: "Vormen volgen",
+    tracingAzPrompt: "Volg de hoofdletters van A tot Z. Begin bij 1 en volg de stippellijn.",
+    tracingDigitsPrompt: "Volg de cijfers van 0 tot 9. Begin bij 1 en volg de stippellijn.",
+    tracingNepaliPrompt: "Volg de Nepalese letters van क tot ज्ञ. Begin bij 1 en volg de stippellijn.",
+    tracingCreativePrompt: "Maak regenboogletters. Volg het vrolijke pad van 1 naar de ster.",
     tracingLettersPrompt: "Volg de letter. Begin bij 1 en volg de stippellijn.",
     tracingNumbersPrompt: "Volg het cijfer. Begin bij 1 en volg de stippellijn.",
     tracingPathsPrompt: "Maak je schrijfhand warm. Volg het pad tot de ster.",
@@ -4726,7 +4823,7 @@ Object.assign(LOCALIZED_TEXT.nl, {
     startOverLabel: "↺ Opnieuw",
     tracingDone: "Klaar",
     tracingRoundSpeak: "Prachtig gevolgd!",
-    tracingWinMessage: "Geweldig geoefend! Je hebt alle paden gevolgd!",
+    tracingWinMessage: "Geweldig geoefend! Je hebt het hele schrijfpad gedaan!",
     traceAcross: "Opzij",
     traceDown: "Omlaag",
     traceWave: "Golf",
@@ -4734,12 +4831,22 @@ Object.assign(LOCALIZED_TEXT.nl, {
     traceLoop: "Lus"
 });
 Object.assign(LOCALIZED_TEXT.ne, {
+    alphabetWritersTitle: "अक्षर लेखाइ",
+    alphabetWritersHint: "A देखि Z, 0 देखि 9, नेपाली अक्षर र रंगीन अक्षर कोर।",
+    alphabetAzTitle: "A देखि Z",
+    alphabetDigitsTitle: "0 देखि 9",
+    nepaliLettersTitle: "क देखि ज्ञ",
+    creativeLettersTitle: "रंगीन अक्षर",
     littleWritersTitle: "साना लेखक",
     littleWritersHint: "औँलाले बाटो पछ्याएर अक्षर, अंक, रेखा र आकार लेख्न सिक।",
     traceLettersTitle: "अक्षर कोर",
     traceNumbersTitle: "अंक कोर",
     pencilPathsTitle: "लेख्ने बाटो",
     traceFormsTitle: "आकार कोर",
+    tracingAzPrompt: "A देखि Z सम्म ठूला अक्षर कोर। १ बाट सुरु गरेर थोप्लाको बाटो पछ्याऊ।",
+    tracingDigitsPrompt: "0 देखि 9 सम्म अंक कोर। १ बाट सुरु गरेर थोप्लाको बाटो पछ्याऊ।",
+    tracingNepaliPrompt: "क देखि ज्ञ सम्म नेपाली अक्षर कोर। १ बाट सुरु गरेर थोप्लाको बाटो पछ्याऊ।",
+    tracingCreativePrompt: "रंगीन अक्षर बनाऊ। १ बाट तारासम्म रमाइलो बाटो पछ्याऊ।",
     tracingLettersPrompt: "अक्षर कोर। १ बाट सुरु गरेर थोप्लाको बाटो पछ्याऊ।",
     tracingNumbersPrompt: "अंक कोर। १ बाट सुरु गरेर थोप्लाको बाटो पछ्याऊ।",
     tracingPathsPrompt: "लेख्ने हात तयार गर। सुरुबाट तारासम्म बाटो पछ्याऊ।",
@@ -4751,7 +4858,7 @@ Object.assign(LOCALIZED_TEXT.ne, {
     startOverLabel: "↺ फेरि सुरु",
     tracingDone: "सकियो",
     tracingRoundSpeak: "धेरै राम्रो लेखाइ!",
-    tracingWinMessage: "अद्भुत अभ्यास! तिमीले सबै बाटो पछ्यायौ!",
+    tracingWinMessage: "अद्भुत अभ्यास! तिमीले पूरा लेखाइ यात्रा सक्यौ!",
     traceAcross: "तेर्सो",
     traceDown: "तल",
     traceWave: "लहर",
@@ -5022,14 +5129,14 @@ function balloonItemForLetter(letter) {
     };
 
     const pool = balloonWords[lower] || wordList[lower] || [{word: letter.toUpperCase(), emoji: '🎈'}];
-    return randomItem(pool);
+    return pickFresh(pool, 'balloonWord:' + currentLanguage + ':' + lower, item => item.word);
 }
 
 function pickBalloonLetter() {
     const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
     const existing = new Set(gameBalloons.map(item => item.letter.toLowerCase()));
     const available = alphabet.filter(letter => !existing.has(letter));
-    return randomItem(available.length ? available : alphabet).toUpperCase();
+    return pickFresh(available.length ? available : alphabet, 'balloonLetter', letter => letter).toUpperCase();
 }
 
 function spawnLetterBalloon() {
@@ -5565,7 +5672,8 @@ function setupMemoryBoard() {
     memoryMoves = 0;
     memoryFlipped = [];
     memoryLocked = false;
-    const pool = shuffle([...categories.animals.items, ...categories.food.items, ...categories.pets.items, ...categories.vehicles.items]).slice(0, 4);
+    const memoryPool = [...categories.animals.items, ...categories.food.items, ...categories.pets.items, ...categories.vehicles.items];
+    const pool = pickFreshMany(memoryPool, 'memory:pairs', 4, item => item[1]);
     memoryCards = shuffle(pool.flatMap((item, id) => ([
         { id, emoji: item[0], wordKey: item[1], flipped: false, matched: false },
         { id, emoji: item[0], wordKey: item[1], flipped: false, matched: false }
@@ -5648,8 +5756,12 @@ function startCountGame(resetOnly = false) {
 
 function nextCountQuestion() {
     countLocked = false;
-    const number = pickFresh([1, 2, 3, 4, 5], 'countNumber', n => n);
-    const emoji = pickFresh(TINY_COUNT_EMOJIS, 'countEmoji', e => e);
+    const comboPool = [];
+    [1, 2, 3, 4, 5].forEach(number => {
+        TINY_COUNT_EMOJIS.forEach(emoji => comboPool.push({ number, emoji }));
+    });
+    const combo = pickFresh(comboPool, 'countCombo', item => item.number + '|' + item.emoji);
+    const { number, emoji } = combo;
     const options = new Set([number]);
     while (options.size < 4) options.add(1 + Math.floor(Math.random() * 5));
     countQuestion = { number, emoji, options: shuffle([...options]) };
@@ -5735,8 +5847,9 @@ function startOddGame(resetOnly = false) {
 function nextOddQuestion() {
     oddLocked = false;
     const mainKey = pickFresh(ODD_CATEGORY_KEYS, 'oddMain', k => k);
-    let oddKey = randomItem(ODD_CATEGORY_KEYS.filter(key => key !== mainKey));
-    const mainItems = shuffle([...categories[mainKey].items]).slice(0, 3).map(item => ({ emoji: item[0], wordKey: item[1], isOdd: false }));
+    let oddKey = pickFresh(ODD_CATEGORY_KEYS.filter(key => key !== mainKey), 'oddKey:' + mainKey, k => k);
+    const mainItems = pickFreshMany(categories[mainKey].items, 'oddMainItems:' + mainKey, 3, item => item[1])
+        .map(item => ({ emoji: item[0], wordKey: item[1], isOdd: false }));
     const oddItem = pickFresh(categories[oddKey].items, 'oddItem:' + oddKey, item => item[1]);
     oddQuestion = {
         mainKey,
@@ -5819,11 +5932,8 @@ function handleLetterGameKey(char) {
     const playList = letterPlayWordList();
     if (playList[lower]) {
         const choices = playList[lower];
-        const lastKey = `${currentLanguage}:${lower}`;
-        const available = choices.filter(item => item.word !== lastWords[lastKey]);
-        const pool = available.length ? available : choices;
-        selected = randomItem(pool);
-        lastWords[lastKey] = selected.word;
+        selected = pickFresh(choices, `letterPlay:${currentLanguage}:${lower}`, item => item.word);
+        lastWords[`${currentLanguage}:${lower}`] = selected.word;
     }
 
     main.textContent = char.toUpperCase();
@@ -8216,7 +8326,7 @@ let bgmLastSong = '';
 let bgmGainNode = null; // master music bus: ducks under the narrator, silences instantly on stop
 let bgmMarker = null;   // silent end-of-song marker on the audio clock (immune to tab throttling)
 let bgmDuckTarget = 1;
-const BGM_LOOPS_PER_SONG = 4;
+const BGM_LOOPS_PER_SONG = 2;
 const BGM_LOOP_GAP_SECONDS = 0.8;
 
 // Each note: [midi pitch (0 = rest), beats]
@@ -8482,7 +8592,7 @@ function bgmPlayNext() {
     const beatSec = 60 / song.bpm;
     let ctx, bus;
     try { ctx = ensureAudio(); bus = bgmBus(); } catch (e) { return; }
-    // Schedule four complete loops on the audio clock up front. Web Audio keeps rendering
+    // Schedule two complete loops on the audio clock up front. Web Audio keeps rendering
     // in background tabs, while setTimeout chains get throttled and would stall the tune.
     let t = 0.06;
     for (let loop = 0; loop < BGM_LOOPS_PER_SONG; loop++) {
@@ -8495,7 +8605,7 @@ function bgmPlayNext() {
         if (loop < BGM_LOOPS_PER_SONG - 1) t += BGM_LOOP_GAP_SECONDS;
     }
     // A silent marker node is our throttle-proof alarm clock: its onended fires on the
-    // audio clock after loop four + a 3.2s breath, then a different tune begins.
+    // audio clock after loop two + a 3.2s breath, then a different tune begins.
     try {
         const marker = ctx.createConstantSource ? ctx.createConstantSource() : ctx.createOscillator();
         const mute = ctx.createGain();
@@ -8581,28 +8691,134 @@ function shuffle(arr) {
     return arr;
 }
 
-function randomItem(arr) {
+/* ===== Anti-repeat helpers: exhaust a game's question pool before repeats ===== */
+const QUESTION_MEMORY_KEY = 'funlearn-question-memory-v1';
+const recentSelections = {};
+let activeQuestionMemoryKey = '';
+let freshPickDraft = null;
+
+function questionMemoryProfileId() {
+    try {
+        return localStorage.getItem('funlearn-active-profile') || 'p1';
+    } catch (e) {
+        return 'p1';
+    }
+}
+
+function questionMemoryKeyFor(profileId) {
+    return QUESTION_MEMORY_KEY + '::' + (profileId || questionMemoryProfileId());
+}
+
+function loadQuestionMemory(profileId) {
+    Object.keys(recentSelections).forEach(key => delete recentSelections[key]);
+    try {
+        const raw = localStorage.getItem(questionMemoryKeyFor(profileId));
+        const saved = raw ? JSON.parse(raw) : null;
+        if (!saved || typeof saved !== 'object') return;
+        Object.keys(saved).forEach(key => {
+            if (Array.isArray(saved[key])) recentSelections[key] = saved[key].slice();
+        });
+    } catch (e) {}
+}
+
+function saveQuestionMemory(profileId) {
+    try {
+        const compact = {};
+        Object.keys(recentSelections).forEach(key => {
+            if (Array.isArray(recentSelections[key]) && recentSelections[key].length) {
+                compact[key] = recentSelections[key];
+            }
+        });
+        localStorage.setItem(questionMemoryKeyFor(profileId), JSON.stringify(compact));
+    } catch (e) {}
+}
+
+function rawRandomItem(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/* ===== Anti-repeat helpers: keep questions feeling fresh across every game & category ===== */
-const recentSelections = {};
+function randomItem(arr) {
+    if (!arr || !arr.length) return undefined;
+    if (activeQuestionMemoryKey && arr.length > 1) {
+        return pickFresh(arr, activeQuestionMemoryKey + ':' + selectionId(arr), item => item);
+    }
+    return rawRandomItem(arr);
+}
 
-// Picks a random entry from `arr` while avoiding the most recently used ones for `key`.
-// keyFn maps an entry to a stable identity; `keep` is how many recent picks to avoid.
-function pickFresh(arr, key, keyFn, keep) {
+function selectionId(value) {
+    if (value == null) return String(value);
+    if (typeof value !== 'object') return String(value);
+    if (Array.isArray(value)) return '[' + value.map(selectionId).join(',') + ']';
+    const keys = Object.keys(value).sort();
+    return '{' + keys.map(key => key + ':' + selectionId(value[key])).join(',') + '}';
+}
+
+function snapshotFreshKey(key) {
+    if (!freshPickDraft || Object.prototype.hasOwnProperty.call(freshPickDraft.snapshots, key)) return;
+    freshPickDraft.snapshots[key] = recentSelections[key] ? recentSelections[key].slice() : null;
+}
+
+function beginFreshPickDraft() {
+    const draft = { snapshots: {}, previous: freshPickDraft };
+    freshPickDraft = draft;
+    return draft;
+}
+
+function commitFreshPickDraft(draft) {
+    if (freshPickDraft === draft) freshPickDraft = draft.previous;
+}
+
+function rollbackFreshPickDraft(draft) {
+    Object.keys(draft.snapshots).forEach(key => {
+        const snapshot = draft.snapshots[key];
+        if (snapshot === null) delete recentSelections[key];
+        else recentSelections[key] = snapshot.slice();
+    });
+    if (freshPickDraft === draft) freshPickDraft = draft.previous;
+}
+
+// Picks a random entry from `arr`, but remembers picks per `key` until every
+// distinct option has been used. Then the bag resets and starts a new cycle.
+function pickFresh(arr, key, keyFn) {
     if (!arr || !arr.length) return undefined;
     keyFn = keyFn || (x => x);
     if (arr.length === 1) return arr[0];
-    if (keep == null) keep = Math.min(arr.length - 1, Math.max(1, Math.round(arr.length * 0.6)));
-    else keep = Math.min(keep, arr.length - 1);
-    const recent = recentSelections[key] || (recentSelections[key] = []);
-    let pool = arr.filter(item => !recent.includes(keyFn(item)));
-    if (!pool.length) pool = arr.slice();
-    const pick = pool[Math.floor(Math.random() * pool.length)];
-    recent.push(keyFn(pick));
-    while (recent.length > keep) recent.shift();
+    const entries = arr.map(item => ({ item, id: selectionId(keyFn(item)) }));
+    const distinctCount = new Set(entries.map(entry => entry.id)).size;
+    snapshotFreshKey(key);
+    const used = recentSelections[key] || (recentSelections[key] = []);
+    if (used.length >= distinctCount) used.length = 0;
+    let pool = entries.filter(entry => !used.includes(entry.id));
+    if (!pool.length) {
+        used.length = 0;
+        pool = entries;
+    }
+    const chosen = rawRandomItem(pool);
+    const pick = chosen.item;
+    if (!used.includes(chosen.id)) {
+        used.push(chosen.id);
+        if (!freshPickDraft) saveQuestionMemory();
+    }
     return pick;
+}
+
+function pickFreshMany(arr, key, count, keyFn) {
+    const picks = [];
+    const picked = new Set();
+    const localKeyFn = keyFn || (x => x);
+    while (picks.length < count && arr && arr.length) {
+        let pool = arr.filter(item => !picked.has(selectionId(localKeyFn(item))));
+        if (!pool.length) {
+            const lastId = picks.length ? selectionId(localKeyFn(picks[picks.length - 1])) : '';
+            picked.clear();
+            pool = arr.length > 1 ? arr.filter(item => selectionId(localKeyFn(item)) !== lastId) : arr.slice();
+        }
+        const pick = pickFresh(pool, key, localKeyFn);
+        const id = selectionId(localKeyFn(pick));
+        picks.push(pick);
+        picked.add(id);
+    }
+    return picks;
 }
 
 // A compact identity for a built smart-choice question, used to detect repeats.
@@ -8615,26 +8831,63 @@ function smartQuestionSignature(question) {
     return [question.promptKey, params, question.correctLabel, stim].join('|');
 }
 
-// Builds a smart-choice question that isn't a repeat of the last few for this game type.
-// Prefers a fully-fresh question; if the pool is too small, it at least never repeats the
-// previous question back-to-back (unless there is genuinely only one possible question).
-function buildFreshSmartQuestion(type) {
-    const key = 'smartSig:' + type;
-    const recent = recentSelections[key] || (recentSelections[key] = []);
-    const last = recent[recent.length - 1];
-    let fresh = null, freshSig = '', notLast = null, notLastSig = '';
-    for (let attempt = 0; attempt < 24; attempt++) {
-        const q = buildSmartQuestion(type);
-        if (!q) return q;
-        const sig = smartQuestionSignature(q);
-        if (sig !== last && !notLast) { notLast = q; notLastSig = sig; }
-        if (!recent.includes(sig)) { fresh = q; freshSig = sig; break; }
+function rememberQuestionSignature(key, signature) {
+    const used = recentSelections[key] || (recentSelections[key] = []);
+    if (!used.includes(signature)) {
+        used.push(signature);
+        if (!freshPickDraft) saveQuestionMemory();
     }
-    const question = fresh || notLast || buildSmartQuestion(type);
-    const signature = fresh ? freshSig : (notLast ? notLastSig : smartQuestionSignature(question));
-    recent.push(signature);
-    while (recent.length > 5) recent.shift();
-    return question;
+}
+
+function buildSmartQuestionWithMemory(type) {
+    const previousKey = activeQuestionMemoryKey;
+    activeQuestionMemoryKey = 'smartPick:' + currentLanguage + ':' + type;
+    try {
+        return buildSmartQuestion(type);
+    } finally {
+        activeQuestionMemoryKey = previousKey;
+    }
+}
+
+// Builds a smart-choice question from a per-game signature cache. Finite pools
+// are exhausted before repeating; procedural games reroll away from seen
+// signatures and start a new cycle only when they cannot find a fresh one.
+function buildFreshSmartQuestion(type) {
+    const key = 'smartSig:' + currentLanguage + ':' + type;
+    const used = recentSelections[key] || (recentSelections[key] = []);
+    const last = used[used.length - 1];
+    for (let attempt = 0; attempt < 600; attempt++) {
+        const draft = beginFreshPickDraft();
+        const q = buildSmartQuestionWithMemory(type);
+        if (!q) {
+            rollbackFreshPickDraft(draft);
+            return q;
+        }
+        const sig = smartQuestionSignature(q);
+        if (!used.includes(sig)) {
+            commitFreshPickDraft(draft);
+            rememberQuestionSignature(key, sig);
+            return q;
+        }
+        rollbackFreshPickDraft(draft);
+    }
+    used.length = 0;
+    for (let attempt = 0; attempt < 60; attempt++) {
+        const draft = beginFreshPickDraft();
+        const q = buildSmartQuestionWithMemory(type);
+        if (!q) {
+            rollbackFreshPickDraft(draft);
+            return q;
+        }
+        const sig = smartQuestionSignature(q);
+        if (sig !== last || attempt === 59) {
+            commitFreshPickDraft(draft);
+            rememberQuestionSignature(key, sig);
+            return q;
+        }
+        rollbackFreshPickDraft(draft);
+    }
+    return null;
 }
 
 function randomBackground() {
@@ -8846,7 +9099,7 @@ function makePuzzleQuestion(type) {
         return { type: 'maze' };
     }
     if (type === 'shadowMatch') {
-        const answer = randomItem(puzzleEmojiPool);
+        const answer = pickFresh(puzzleEmojiPool, 'puz-shadow', e => e);
         const options = shuffle([answer, ...shuffle(puzzleEmojiPool.filter(e => e !== answer)).slice(0, 3)]);
         return {
             answer,
@@ -9039,30 +9292,163 @@ function answerPuzzle(value, btn) {
     }
 }
 
+const AZ_TRACING_ITEMS = [
+    { label: 'A', word: 'Apple', emoji: '🍎', strokes: ['M300 95 L165 500', 'M300 95 L435 500', 'M220 340 L380 340'] },
+    { label: 'B', word: 'Ball', emoji: '⚽', strokes: ['M185 95 L185 505', 'M185 100 C430 80 455 280 185 300', 'M185 300 C470 280 470 515 185 500'] },
+    { label: 'C', word: 'Cat', emoji: '🐱', strokes: ['M445 165 C390 85 205 85 155 300 C120 500 335 560 455 435'] },
+    { label: 'D', word: 'Dog', emoji: '🐶', strokes: ['M180 95 L180 505', 'M180 100 C455 80 500 500 180 500'] },
+    { label: 'E', word: 'Egg', emoji: '🥚', strokes: ['M190 95 L190 505', 'M190 105 L445 105', 'M190 300 L390 300', 'M190 495 L445 495'] },
+    { label: 'F', word: 'Fish', emoji: '🐟', strokes: ['M190 95 L190 505', 'M190 105 L445 105', 'M190 300 L390 300'] },
+    { label: 'G', word: 'Gift', emoji: '🎁', strokes: ['M455 170 C385 75 205 85 155 285 C120 485 320 565 455 430 L455 330 L340 330'] },
+    { label: 'H', word: 'House', emoji: '🏠', strokes: ['M180 95 L180 505', 'M420 95 L420 505', 'M180 305 L420 305'] },
+    { label: 'I', word: 'Ice Cream', emoji: '🍦', strokes: ['M185 105 L415 105', 'M300 105 L300 500', 'M185 500 L415 500'] },
+    { label: 'J', word: 'Juice', emoji: '🧃', strokes: ['M180 105 L430 105', 'M360 105 L360 390 C360 545 155 550 155 405'] },
+    { label: 'K', word: 'Kite', emoji: '🪁', strokes: ['M185 95 L185 505', 'M435 105 L185 305', 'M185 305 L445 505'] },
+    { label: 'L', word: 'Lion', emoji: '🦁', strokes: ['M195 95 L195 500', 'M195 500 L445 500'] },
+    { label: 'M', word: 'Moon', emoji: '🌙', strokes: ['M150 505 L150 100 L300 345 L450 100 L450 505'] },
+    { label: 'N', word: 'Nest', emoji: '🪺', strokes: ['M170 505 L170 100 L430 505 L430 100'] },
+    { label: 'O', word: 'Owl', emoji: '🦉', strokes: ['M300 95 C485 95 510 500 300 500 C90 500 115 95 300 95'] },
+    { label: 'P', word: 'Pizza', emoji: '🍕', strokes: ['M185 95 L185 505', 'M185 105 C455 80 455 320 185 315'] },
+    { label: 'Q', word: 'Queen', emoji: '👑', strokes: ['M300 95 C485 95 510 500 300 500 C90 500 115 95 300 95', 'M365 410 L455 515'] },
+    { label: 'R', word: 'Rainbow', emoji: '🌈', strokes: ['M185 95 L185 505', 'M185 105 C455 80 455 320 185 315', 'M255 320 L445 505'] },
+    { label: 'S', word: 'Star', emoji: '⭐', strokes: ['M440 145 C360 70 175 90 165 225 C155 320 415 285 425 390 C435 530 235 560 160 470'] },
+    { label: 'T', word: 'Tree', emoji: '🌳', strokes: ['M160 105 L440 105', 'M300 105 L300 505'] },
+    { label: 'U', word: 'Umbrella', emoji: '☂️', strokes: ['M170 105 L170 370 C170 540 430 540 430 370 L430 105'] },
+    { label: 'V', word: 'Violin', emoji: '🎻', strokes: ['M155 105 L300 505 L445 105'] },
+    { label: 'W', word: 'Watermelon', emoji: '🍉', strokes: ['M115 105 L210 505 L300 275 L390 505 L485 105'] },
+    { label: 'X', word: 'X-ray', emoji: '🩻', strokes: ['M165 105 L435 505', 'M435 105 L165 505'] },
+    { label: 'Y', word: 'Yoyo', emoji: '🪀', strokes: ['M155 105 L300 310 L445 105', 'M300 310 L300 505'] },
+    { label: 'Z', word: 'Zebra', emoji: '🦓', strokes: ['M160 105 L440 105 L165 500 L445 500'] }
+];
+
+const NUMBER_TRACING_ITEMS = [
+    { label: '0', word: 'Zero', emoji: '⭕', strokes: ['M300 95 C485 95 510 500 300 500 C90 500 115 95 300 95'] },
+    { label: '1', word: 'One', emoji: '🍎', strokes: ['M235 185 L315 100 L315 500'] },
+    { label: '2', word: 'Two', emoji: '🐥🐥', strokes: ['M175 190 C205 70 420 75 435 195 C450 285 330 340 170 500 L445 500'] },
+    { label: '3', word: 'Three', emoji: '⭐⭐⭐', strokes: ['M180 145 C300 65 445 105 420 235 C405 290 350 300 300 300 C370 295 445 330 425 445 C400 565 220 550 170 465'] },
+    { label: '4', word: 'Four', emoji: '🍀', strokes: ['M390 500 L390 95 L155 365 L455 365'] },
+    { label: '5', word: 'Five', emoji: '🖐️', strokes: ['M430 105 L205 105 L185 300 C260 250 430 270 435 390 C440 535 220 565 165 455'] },
+    { label: '6', word: 'Six', emoji: '🎲', strokes: ['M420 145 C310 65 165 155 165 355 C165 535 430 555 445 385 C455 250 260 230 170 350'] },
+    { label: '7', word: 'Seven', emoji: '🌈', strokes: ['M160 105 L445 105 L245 505'] },
+    { label: '8', word: 'Eight', emoji: '🎱', strokes: ['M300 300 C180 250 195 95 300 95 C405 95 420 250 300 300 C170 355 195 520 300 520 C405 520 430 355 300 300'] },
+    { label: '9', word: 'Nine', emoji: '🎈', strokes: ['M430 245 C430 105 185 80 175 250 C165 400 360 405 430 250 L380 505'] }
+];
+
+const NEPALI_TRACING_SEQUENCE = 'क ख ग घ ङ च छ ज झ ञ ट ठ ड ढ ण त थ द ध न प फ ब भ म य र ल व श ष स ह क्ष त्र ज्ञ'.split(' ');
+const NEPALI_TRACING_EMOJIS = ['🇳🇵', '🌸', '🪷', '⭐', '🌈', '🧡'];
+
+// Devanagari trace strokes, authored directly in the 600x600 tracing viewBox so every stroke
+// runs down the spine of the rendered glyph (Nirmala UI / Mangal, weight 900, font-size 360 for
+// base letters / 310 for conjuncts, anchored at x=300 y=323 with central baseline — i.e. exactly
+// how renderTracingSheet() paints the .trace-glyph-real text). Each path is snapped to the glyph's
+// medial axis (distance-transform centred, avg ~2.8px off) and emitted as smooth continuous beziers,
+// with connecting body strokes merged so the trace flows in as few pen-lifts as the letter allows.
+// Stroke 0 is the shirorekha (headline / टोपी); the remaining strokes are the body in writing order.
+const DEVANAGARI_TRACE_STROKES = [
+    ['M138 228.6 L422 230', 'M296.6 456 L298.5 232.1', 'M288.7 391.1 C283 392.9 265.9 400.2 254.3 401.7 C242.7 403.1 229.8 402.9 218.9 399.9 C207.9 396.9 197.2 390.6 188.5 383.7 C179.9 376.8 168.9 368 166.9 358.4 C164.8 348.9 170.3 336.3 176.2 326.5 C182.1 316.6 192.2 305.4 202.4 299.5 C212.5 293.6 225.4 290.9 237.1 291.2 C248.8 291.4 260.9 299.6 272.5 301 C284.2 302.3 295.3 299.7 307 299.3 C318.7 298.8 330.8 298.7 342.7 298.3 C354.6 297.8 367.9 292.9 378.4 296.5 C388.9 300.1 400.5 309.8 405.7 319.8 C410.9 329.8 411.7 345.2 409.7 356.5 C407.7 367.8 401.7 380 393.8 387.7 C385.8 395.4 373 401 362.1 402.7 C351.2 404.5 338.2 398 328.4 398 C318.6 398 307.3 402 303.1 402.8'], // क
+    ['M138 229.6 L464 229.9', 'M415.9 458 L416.1 230', 'M228 244.5 C229.5 250 237.3 267.1 236.7 277.8 C236.1 288.5 232.1 302.4 224.2 308.8 C216.4 315.1 199.8 310.8 189.7 315.9 C179.6 321.1 165.8 330.8 163.5 339.5 C161.2 348.3 168.8 360.7 175.7 368.5 C182.6 376.3 197.4 387.7 204.7 386.4 C212 385.1 215.6 370.5 219.3 360.9 C223 351.2 225.5 334 226.7 328.6', 'M292 300.4 C291.7 306.3 288.9 324.5 290.5 335.8 C292.1 347.1 294.7 359.3 301.5 368 C308.2 376.7 321.6 386.7 331.1 388.1 C340.5 389.4 355.6 383.2 358.1 376.1 C360.7 369 350 351.6 346.3 345.5 C342.6 339.5 337.7 340.9 336 340', 'M238 372 C237.7 377.7 233.5 395.6 236.4 406.2 C239.3 416.8 246.9 427.6 255.2 435.6 C263.6 443.7 275.3 451.6 286.5 454.3 C297.8 457 313.5 456.9 322.9 451.7 C332.3 446.5 337.7 431.8 342.8 422.9 C348 414 352 402.5 353.9 398.4'], // ख
+    ['M180 229.4 L422 229.7', 'M367 230 L367 458', 'M257 247 C257 252.9 257.3 270.6 257.1 282.4 C257 294.2 257.9 306.4 256.1 317.8 C254.3 329.2 250.6 341.6 246.4 350.9 C242.3 360.2 238.8 368 231.1 373.6 C223.3 379.1 205.2 382.3 200 384'], // ग
+    ['M180 230 L422 229.5', 'M364.7 456 L367.2 230.1', 'M225 246.9 C225.3 252.9 224.5 272 226.9 283.1 C229.4 294.2 234.3 305.4 239.8 313.5 C245.3 321.6 256.6 328.7 260 331.8', 'M222 330 C223.2 335.5 224.8 352.8 229.2 362.9 C233.6 373 239.9 384.6 248.5 390.6 C257 396.7 270 399.9 280.6 399.1 C291.2 398.3 301.1 389.2 311.9 385.8 C322.8 382.4 336.6 384.1 345.8 378.8 C355 373.6 363.5 358.5 367 354.4'], // घ
+    ['M150 229 L450 229.6', 'M337 245.1 C336.4 251 339.1 272.7 333.3 280.6 C327.4 288.5 313 289.6 302 292.6 C290.9 295.5 277.9 295.4 267 298.3 C256 301.3 244.6 303.7 236.2 310.4 C227.9 317.1 215.2 331.7 217 338.4 C218.8 345.2 241.9 349 246.9 351.1', 'M210 362 C205.8 365.3 186.5 372.8 184.6 381.5 C182.7 390.2 191.7 405.4 198.6 414.4 C205.5 423.3 216.3 429.3 226.2 435.2 C236.1 441.1 246.9 448.4 257.8 449.8 C268.6 451.3 280.4 447.2 291.2 443.9 C302 440.5 313.1 436.5 322.6 429.7 C332.1 422.9 343.9 413.1 348 403.2 C352.1 393.3 352.8 378.1 347.3 370.2 C341.9 362.4 321.7 359.1 315.4 356.2 C309.1 353.4 310.5 353.5 309.5 352.9', 'M398 313.8 L407 319.9'], // ङ
+    ['M169.9 227 L392 231.7', 'M371.4 458 L373.3 230', 'M318.8 309.9 C313 309.5 296.2 307.3 284.2 307.2 C272.2 307 259.2 308.5 246.8 309.2 C234.5 310 217.5 306 210 311.6 C202.6 317.2 201.1 332.8 202.2 343 C203.4 353.3 209 365.3 216.9 373 C224.8 380.8 239 383.4 249.6 389.7 C260.1 395.9 269 407.1 280.1 410.6 C291.2 414.1 304.6 413.1 316.1 410.7 C327.7 408.4 341.9 399.3 349.2 396.6 C356.5 393.9 358 395 359.8 394.7'], // च
+    ['M150 228.7 L450 229.4', 'M250.1 294 C244.3 294.1 224.9 290.1 215.5 294.9 C206.2 299.6 196.5 312 194 322.5 C191.6 332.9 198 346.6 200.8 357.6 C203.5 368.5 203.9 382.3 210.6 388.3 C217.4 394.3 234.1 393.5 241.2 393.7 C248.3 393.8 251.2 390 253.2 389.2', 'M330 292 C335.6 290.7 353.1 282.2 363.4 284.2 C373.7 286.1 385.4 294.9 391.9 303.8 C398.4 312.6 401.5 326 402.3 337.5 C403.1 349 399.5 361.5 396.5 372.8 C393.5 384 391.8 398.5 384.4 405.1 C377.1 411.7 360.8 416 352.3 412.4 C343.7 408.8 334 392.1 333 383.3 C332 374.6 343.1 363.8 346.3 360.2 C349.5 356.6 351.1 361.5 352.1 361.8', 'M211.8 397.6 C214.5 402.8 220.7 420.8 228.5 428.5 C236.3 436.2 247.9 440.7 258.6 443.9 C269.3 447 281.3 447.6 292.6 447.3 C303.9 447 315.7 445.5 326.6 442.2 C337.5 438.8 351 431.1 358 427.3 C365 423.5 366.8 420.9 368.5 419.6'], // छ
+    ['M158 228.3 L444 230', 'M389 230 L389.7 458', 'M247.7 306 L381.8 314.4', 'M283 306 C284.7 311.2 293.4 327.1 293 337.5 C292.6 347.9 285.5 358.3 280.6 368.5 C275.7 378.8 272.4 394.7 263.6 398.9 C254.8 403.1 237 394.3 227.8 393.5 C218.7 392.7 211.7 394 208.5 394.1', 'M223 304 C219 307.2 200.6 314.7 198.9 322.9 C197.2 331.1 210.7 348.1 213 353.2'], // ज
+    ['M150 228.8 L450 230.5', 'M396.1 458 L396.7 230', 'M280 245.4 C279.7 251.4 284.3 273.4 278.5 281.4 C272.6 289.4 256.6 289.9 245.1 293.3 C233.5 296.8 217.9 295.6 209.2 301.8 C200.4 308.1 192.1 321.3 192.5 330.6 C192.9 339.9 203.5 352.4 211.7 357.7 C219.9 363.1 236.7 362 241.7 362.8', 'M205 354 C211 355.5 228.9 361.4 240.8 363 C252.7 364.6 264.7 362.8 276.6 363.6 C288.5 364.4 300.5 367.3 312.4 368 C324.3 368.7 336.6 368.9 348.2 368 C359.8 367.1 375.4 363.5 382 362.5 C388.7 361.5 387 362.1 388 362', 'M285 360 C280.7 363.6 268.6 375.1 259.3 381.7 C250 388.2 238.9 394.9 229 399.3 C219.1 403.6 202.1 401.4 199.9 407.6 C197.8 413.8 209.8 432.1 216.1 436.4 C222.4 440.6 231.1 428.9 237.9 433.2 C244.8 437.5 250.6 452.6 257.2 462.1 C263.7 471.6 269.2 481.4 277.2 490.5 C285.2 499.5 300.7 512.3 305.4 516.6'], // झ
+    ['M150 228.4 L450 229.9', 'M388 230 C389.7 235.3 396.3 250.7 398 262 C399.7 273.3 398 286 398 298 C398 310 398.1 322 398 334 C397.9 346 397.4 358 397.4 370 C397.4 382 397.9 394 398 406 C398.1 418 398 433.3 398 442 C398 450.7 398 455.3 398 458', 'M299.1 310 C292.8 309.9 273.8 308.7 261.6 309.6 C249.4 310.4 232.9 309.2 225.7 315.1 C218.4 321 214.2 341 218.1 345 C222.1 349 241.5 341.2 249.4 338.8 C257.4 336.5 263 332.3 265.7 331', 'M212 300 C209.3 305 195.1 320.1 195.6 329.9 C196.1 339.7 209.6 348.7 215.1 358.8 C220.5 368.9 220.7 382.9 228.5 390.7 C236.3 398.5 250.6 403.3 261.9 405.6 C273.1 408 285.4 408.6 295.9 405 C306.3 401.3 314.6 390.1 324.3 383.9 C334 377.6 344.1 372 354.2 367.6 C364.3 363.3 379.9 359.6 385 358'], // ञ
+    ['M186 228.5 L414 229.5', 'M341 242 C341.2 248 344.3 266.7 341.9 277.8 C339.5 288.9 334.8 303.2 326.6 308.8 C318.4 314.4 304.5 309.7 292.8 311.4 C281.1 313 266 313.7 256.5 318.6 C246.9 323.4 240 331.2 235.7 340.6 C231.5 350.1 230.3 363.6 231 375.4 C231.6 387.1 234.1 400.5 239.6 411.1 C245.2 421.7 254.6 432.7 264.2 438.8 C273.8 445 286 447.2 297.2 447.9 C308.5 448.5 320.9 447 331.7 442.6 C342.5 438.3 357 429.2 362 421.8 C367.1 414.4 362 402 362 398'], // ट
+    ['M172 228.9 L428 229.3', 'M325 240 C324.9 245.9 327.5 265.4 324.4 275.6 C321.2 285.9 314.5 295.2 305.8 301.6 C297.1 308 280.2 310.9 272.1 314 C263.9 317.1 264.6 316.3 256.9 320.4 C249.1 324.4 232.7 329.7 225.6 338.2 C218.5 346.7 215 360 214.4 371.1 C213.8 382.2 217.7 394.4 222.1 404.8 C226.5 415.2 232.5 425.9 240.6 433.5 C248.7 441.1 259.8 447.5 270.5 450.3 C281.2 453.1 293.6 451.9 304.9 450.3 C316.2 448.7 327.8 445.9 338.2 440.7 C348.6 435.6 360.5 428.9 367.2 419.4 C374 410 378.3 395.9 378.5 384.1 C378.7 372.3 374.6 358.4 368.3 348.6 C362.1 338.9 348.8 330.9 341 325.6 C333.2 320.2 324.7 318.1 321.5 316.6'], // ठ
+    ['M172 228.5 L428 230', 'M361 240 C360.8 246 364.3 266.5 359.6 275.9 C354.9 285.2 343.1 291.5 332.7 296.1 C322.2 300.7 309.3 301.9 297 303.6 C284.7 305.2 266.2 302.3 258.7 306 C251.2 309.7 258.4 320.3 252 325.8 C245.6 331.4 227.3 331.6 220.3 339.3 C213.2 347.1 209.6 361.6 209.7 372.4 C209.7 383.2 214.6 394.4 220.7 404.3 C226.7 414.1 236.7 423.9 246 431.5 C255.2 439.2 265 446 276.3 450.3 C287.6 454.7 301.8 458.1 313.6 457.8 C325.3 457.6 336.6 454.1 346.7 448.8 C356.9 443.6 368.7 436 374.3 426.4 C380 416.9 382.8 402.4 380.5 391.7 C378.3 381 369.2 369.4 360.6 362.4 C352 355.4 336.1 352.3 329.1 349.5 C322.2 346.7 320.5 346.1 318.8 345.5'], // ड
+    ['M185 228.5 L416 229.2', 'M344 240 C344 245.9 346.1 264.1 344 275.1 C341.8 286.1 339.3 300.3 331.2 306 C323 311.6 306.9 307.5 294.9 309.2 C283 310.9 266.8 314.2 259.5 316.3 C252.2 318.3 257.1 317.2 251.2 321.6 C245.4 326.1 230.2 333.7 224.5 342.9 C218.8 352.1 215.9 365.7 216.9 376.9 C218 388 223.9 399.9 230.9 409.8 C237.8 419.7 248.6 429.9 258.5 436.2 C268.4 442.5 279.4 446.5 290.4 447.6 C301.4 448.6 313.4 446 324.2 442.5 C335.1 439 347.9 434.4 355.5 426.4 C363.1 418.3 370.5 404.5 369.7 394.2 C369 384 356.9 375.2 351.1 364.6 C345.3 354.1 341.6 338.5 335.1 330.9 C328.5 323.3 315.7 314.6 311.7 318.8 C307.8 322.9 312.6 347.4 311.3 355.6 C310.1 363.9 305.5 366.3 304.4 368.4'], // ढ
+    ['M165 231.1 L444 229.8', 'M392.2 230 L392.3 458', 'M293 230 C294.7 235.3 301.3 250.5 303 261.8 C304.7 273.1 303 285.7 303 297.6 C303 309.5 303.4 321.5 303 333.4 C302.6 345.3 303.7 358.3 300.4 369.2 C297.1 380.1 286.4 395.3 283 399 C279.6 402.7 286.3 392 279.9 391.4 C273.5 390.7 255.3 397.5 244.7 394.9 C234.1 392.4 222.7 385 216.5 376 C210.2 367.1 208.8 352.9 207.2 341.1 C205.6 329.4 207 317.3 207 305.4 C207 293.5 207.3 282.3 207 269.7 C206.7 257.1 205.3 236.6 205 230'], // ण
+    ['M185 228.4 L416 229.7', 'M361.2 230 L361.8 458', 'M356 310 C350 310 332.1 310 320.2 310 C308.3 310 296.4 310 284.4 310 C272.5 310 258.3 306.9 248.6 310 C239 313.1 229.8 319.5 226.5 328.7 C223.2 338 226.7 354 228.7 365.6 C230.6 377.3 233.4 388.1 238.2 398.6 C243 409.2 251.7 420.9 257.7 428.9 C263.7 437 271.6 443.8 274.4 446.8'], // त
+    ['M198 227.8 L424 227.1', 'M370.7 458 L372.4 230', 'M266 239.2 C261.6 236.3 248.8 221.3 240.1 221.6 C231.3 221.9 216.1 232.3 213.5 240.7 C210.9 249.2 217.3 269.8 224.5 272.3 C231.6 274.9 249.6 260.7 256.5 256.1 C263.4 251.5 264.4 246.6 266 244.7', 'M243 255 C242 260.2 236.2 275.8 237.2 286.5 C238.1 297.1 248.7 308.3 248.7 318.9 C248.7 329.5 236.6 340.2 237.3 350.1 C237.9 359.9 245.3 370.4 252.6 378 C259.9 385.7 270.3 392.5 281.1 395.8 C291.9 399.2 305.6 399.8 317.5 397.9 C329.3 396 343.4 388.1 352.4 384.5 C361.4 380.8 368.1 377.4 371.3 376'], // थ
+    ['M186 228.5 L414 229.7', 'M343 242 C343 248 345.2 267.3 342.9 278.2 C340.7 289.2 337.6 302.3 329.6 307.7 C321.6 313.2 306.8 309.4 295 311.2 C283.1 313 268.2 313.9 258.4 318.5 C248.5 323.1 240.6 329.6 236.1 338.8 C231.5 348 230.2 362.1 230.8 373.6 C231.5 385.2 234.7 398 239.7 408.1 C244.7 418.3 251.8 429.2 261.1 434.5 C270.3 439.8 283.6 440.1 295 439.9 C306.4 439.7 319 438.6 329.4 433.4 C339.7 428.3 351.7 419 357.1 409.1 C362.5 399.2 362.2 383.8 362 374 C361.8 364.1 357 354 356 350', 'M328.7 408.5 L379.6 512.6'], // द
+    ['M200 234 C205.3 232.1 220.7 225.1 232 222.8 C243.3 220.5 256.7 218.9 268 220.4 C279.3 221.9 288.7 231 300 231.6 C311.3 232.2 324 224.2 336 224 C348 223.8 360 229.4 372 230.2 C384 231 400.7 229.2 408 228.8 C415.3 228.4 414.7 228.1 416 228', 'M371.2 458 L373.7 230', 'M254.7 217 C249.4 219.3 229.2 223 223.1 230.7 C217 238.3 213.8 259.3 218 263 C222.2 266.7 244.4 256.8 248.1 252.9 C251.8 249 241.5 242 240.2 239.8', 'M214 249.4 C214.8 255.4 214.4 275.6 218.9 285.8 C223.5 296.1 232.5 304.3 241.4 310.8 C250.2 317.3 268.8 321 272.2 324.9 C275.7 328.7 263.8 332.3 262.1 333.8', 'M216 332 C218.8 336.7 226.7 350.5 232.6 360.4 C238.5 370.2 243 383.9 251.5 390.9 C260 397.8 271.9 400.7 283.6 401.9 C295.3 403 309.9 400.7 321.6 397.9 C333.2 395 345 391.3 353.5 384.7 C362.1 378.2 369.6 364.4 372.9 358.8 C376.2 353.3 373.1 352.7 373.2 351.5'], // ध
+    ['M177.9 227.1 L382 231.9', 'M367.1 230 L367.8 458', 'M365 328 C359 328 341.1 328 329.1 328 C317.2 328 305.2 327.6 293.3 328 C281.3 328.4 269.4 329.2 257.4 330.2 C245.5 331.2 229.2 329.6 221.6 334.2 C214 338.8 208.7 351.6 212 357.6 C215.4 363.6 234.8 368.9 241.5 370.2 C248.2 371.6 250.6 366.4 252.4 365.7'], // न
+    ['M186 229.9 L414 229.8', 'M357.8 458 L359 230', 'M241 247 C241 252.9 241 270.7 241 282.6 C241 294.4 240.5 306.3 241 318.1 C241.5 329.9 240.4 342.3 243.9 353.3 C247.4 364.4 253.4 377.6 261.8 384.5 C270.1 391.5 283.2 395.1 294.2 395.2 C305.2 395.3 317.5 390.4 327.8 385.3 C338.1 380.3 351 369.6 355.9 364.9 C360.8 360.3 356.9 358.7 357.1 357.4'], // प
+    ['M138 230.7 L464 228.6', 'M287 230 C288.7 235.3 295.3 250.7 297 262 C298.7 273.3 297 286 297 298 C297 310 297.3 322 297 334 C296.7 346 295.2 358 295.2 370 C295.2 382 296.7 394 297 406 C297.3 418 297 433.3 297 442 C297 450.7 297 455.3 297 458', 'M192 230 C191.3 235.9 188.7 253.7 188 265.6 C187.3 277.5 188 289.3 188 301.2 C188 313.1 186.7 324.9 188 336.8 C189.3 348.7 193.7 360.5 196 372.4 C198.3 384.3 201 402.1 202 408', 'M295.6 295 C301.3 295.6 318.1 299.1 329.9 298.6 C341.7 298 354.9 291 366.3 291.8 C377.7 292.6 390.3 295.7 398.2 303.2 C406.2 310.7 413.5 325.2 413.9 336.6 C414.3 348 408 362.8 400.5 371.5 C393 380.1 379.8 386.8 368.9 388.8 C358 390.7 346.2 383.1 335 383.2 C323.8 383.3 308.5 388.8 301.7 389.3 C294.8 389.9 295.1 387.2 293.8 386.7'], // फ
+    ['M185 228.3 L416 230.1', 'M360.8 458 L362.6 230', 'M348.6 306.9 C342.9 304.9 326 297.7 314.4 295.3 C302.7 292.8 290.2 290.5 278.8 292.2 C267.3 293.9 255.3 299.4 245.9 305.6 C236.6 311.8 225.7 319.5 222.8 329.4 C219.8 339.3 224.3 354.3 228 365.2 C231.6 376 236.5 386.8 244.6 394.5 C252.8 402.3 265.5 409.3 277 411.9 C288.6 414.6 301.7 413 313.8 410.4 C325.9 407.8 341.7 402.6 349.5 396.3 C357.4 390.1 359 376.8 360.9 372.9', 'M248.9 303.5 C246.4 308.7 232.6 327.2 233.7 334.9 C234.9 342.6 252.3 347.5 256 350'], // ब
+    ['M185 227.4 L444 226.6', 'M387.2 458 L388.3 230', 'M250.9 224.9 C245.3 224.6 225.4 218.8 217.4 223.2 C209.4 227.6 200.7 244 202.9 251.4 C205.1 258.7 221.2 266.9 230.5 267.1 C239.9 267.3 254.4 250 259.1 252.5 C263.9 255 259.2 271.1 259.1 282 C258.9 292.9 258.5 305.8 258.2 317.8 C257.9 329.7 257.6 341.6 257.3 353.6 C257 365.5 256.6 380.7 256.4 389.3 C256.2 398 256.1 402.6 256 405.2', 'M216 357 L385 358.2'], // भ
+    ['M172 228.9 L418 230.5', 'M361 230 C362.7 235.3 369.3 250.7 371 262 C372.7 273.3 371 286 371 298 C371 310 371.1 322 371 334 C370.9 346 370.4 358 370.4 370 C370.4 382 370.9 394 371 406 C371.1 418 371 433.3 371 442 C371 450.7 371 455.3 371 458', 'M249 247 C249 252.9 249 270.6 249 282.5 C249 294.3 249 306.1 249 317.9 C249 329.8 249.8 341.6 249 353.4 C248.2 365.2 248.2 380.6 244.2 388.9 C240.2 397.1 231.6 400.1 225.1 403 C218.5 405.9 208.3 405.5 205 406', 'M198 352 C203.3 353.7 218.7 360.5 230 362 C241.3 363.5 254 361.2 266 361 C278 360.8 290 361 302 361 C314 361 328.7 361 338 361 C347.3 361 354.7 361 358 361'], // म
+    ['M185 229.7 L416 230', 'M363.8 458 L364.9 230', 'M250 247.3 C251.4 253.1 258.5 270.2 258 281.6 C257.4 292.9 251.9 305.4 246.7 315.6 C241.6 325.8 228.1 332.9 227.2 342.8 C226.4 352.8 234.7 366.3 241.7 375.2 C248.7 384 258.6 391.9 269.1 395.9 C279.6 399.9 293 400.5 304.7 399.1 C316.4 397.7 331.6 389.8 339.2 387.7 C346.9 385.5 348.7 386.4 350.6 386.1'], // य
+    ['M205 228.8 L394 229.6', 'M322 230 C322.7 236 325 253.7 326.2 266 C327.3 278.2 332.1 292.6 329 303.5 C325.8 314.3 317.1 325.7 307.3 331.1 C297.6 336.5 275.9 335.8 270.4 335.9 C265 335.9 274.2 326.6 274.5 331.5 C274.9 336.4 270 354 272.5 365.1 C275 376.2 282.9 388.1 289.5 398.3 C296.1 408.5 304.5 416.9 312.1 426.2 C319.8 435.4 331.1 447.1 335.2 453.9 C339.4 460.6 336.8 464.4 337.1 466.5'], // र
+    ['M165 228.4 L438 229.7', 'M380.9 230 L382.1 458', 'M375 295 C369.1 295.2 350.5 293.9 339.3 296.4 C328.1 298.9 318.1 309.3 307.6 310 C297 310.7 287.1 302.6 275.8 300.4 C264.6 298.2 249.9 293.2 240.1 297 C230.3 300.8 221.3 313 217 323.1 C212.6 333.3 212.7 346.6 213.9 357.9 C215.1 369.2 218.8 380.4 224.1 390.8 C229.4 401.3 237.2 412.5 245.5 420.5 C253.7 428.5 266.3 435.2 273.6 439.1 C281 442.9 286.9 442.9 289.6 443.7', 'M275 298.7 L285.8 337.4'], // ल
+    ['M185 228.2 L416 229.9', 'M357.4 458 L358.7 230', 'M348.7 307.9 C343 306 326 298.9 314.3 296.4 C302.6 294 290 291.2 278.7 293.2 C267.3 295.3 255.7 301.9 246.3 308.6 C236.9 315.3 224.9 323.5 222.3 333.4 C219.7 343.4 225.6 357.9 230.7 368.5 C235.9 379 243.9 389.7 253.2 396.9 C262.6 404 275.2 410.2 286.9 411.4 C298.5 412.6 311.7 408.6 322.9 404.2 C334.1 399.8 348.4 390.2 354 384.9 C359.7 379.6 356.5 374.4 357 372.3'], // व
+    ['M150 230.8 L450 230.1', 'M396.7 458 L396.9 230', 'M214 245.2 C213.2 251.1 209.1 269.3 209.4 280.8 C209.7 292.2 216.4 303.2 215.6 313.8 C214.8 324.5 206.2 334.8 204.5 344.9 C202.8 354.9 199.6 368.6 205.5 374.1 C211.4 379.7 229.1 380.4 240 378.2 C250.8 376 265 365.3 270.6 360.9 C276.3 356.4 273.3 353.1 273.9 351.6', 'M300 245.1 C300.7 251.1 303.7 269 304.3 280.9 C304.9 292.9 305.7 305.4 303.7 316.7 C301.6 327.9 294.2 337.7 292.1 348.4 C290.1 359.2 290 370.3 291.3 381.2 C292.6 392.1 295.5 403.2 300 413.7 C304.5 424.2 314 434.9 318.4 444.1 C322.8 453.3 325.1 464.8 326.4 468.9'], // श
+    ['M185 230.5 L416 229.7', 'M360.5 458 L362.5 230', 'M242 248 C241.2 253.9 237.8 271.6 237 283.4 C236.2 295.2 236.5 307 237 318.8 C237.5 330.6 237 343.6 240.2 354.1 C243.4 364.6 248.3 375.1 256.1 381.8 C263.9 388.5 276.2 393.1 287.1 394.3 C298.1 395.6 311.7 391.1 321.8 389.1 C332 387.1 343.7 383.3 348.1 382.2', 'M275.9 275.9 L329.8 345.9'], // ष
+    ['M165 229.6 L444 229.5', 'M375 230 C376.7 235.3 383.3 250.7 385 262 C386.7 273.3 385 286 385 298 C385 310 384.8 322 384.8 334 C384.8 346 385 358 385 370 C385 382 385 394 385 406 C385 418 385 433.3 385 442 C385 450.7 385 455.3 385 458', 'M269.3 244.7 L277.9 337.6', 'M372 343 C366 343 348.1 343.1 336.2 343 C324.3 342.9 312.4 342.4 300.4 342.6 C288.5 342.8 276.6 342.6 264.6 344.2 C252.7 345.8 236.3 352.1 228.9 352 C221.4 351.9 220.3 339.5 220.1 343.6 C219.9 347.6 223.7 365.6 227.9 376.4 C232 387.2 240 397.1 245.2 408.2 C250.5 419.3 256.2 435.6 259.5 443.1 C262.7 450.6 263.9 451.5 264.8 453.2'], // स
+    ['M186 228.2 L414 229.7', 'M240 247 C241.7 252.9 250.2 270.6 250 282.4 C249.8 294.2 238.8 306 238.6 317.8 C238.4 329.6 248.7 341.4 249 353.2 C249.3 365 242.1 377.4 240.4 388.5 C238.7 399.7 239.2 414.8 239 420', 'M238 338 C242.7 341.2 255.3 355.2 266 357.4 C276.7 359.6 290 351.5 302 351.4 C314 351.3 330 355.9 338 357 C346 358.1 348 357.8 350 358', 'M356 239.9 C355.9 245.9 356.1 263.6 355.2 275.5 C354.4 287.4 353.2 299.3 350.9 311.2 C348.5 323 340 335.7 341.3 346.9 C342.6 358 356 367.1 358.5 378.3 C361 389.5 360.1 403 356.4 414.2 C352.7 425.4 341.5 434 336.4 445.3 C331.3 456.5 332.5 474.9 325.8 481.9 C319 489 304 486 295.9 487.4 C287.7 488.9 280.1 490 276.9 490.5'], // ह
+    ['M195 239.1 L424 238.5', 'M376 480 L378.5 240', 'M253.4 240.1 C248.7 243.2 229.2 250.2 225.6 258.8 C222 267.5 229.4 284.6 231.6 291.8 C233.9 299 238.8 294.9 239.2 301.8 C239.7 308.7 234.5 322.2 234.5 333.4 C234.4 344.6 239.9 357.4 239.1 369.3 C238.4 381.1 231 395.9 230 404.7 C229 413.5 226.8 418.9 233 422.2 C239.3 425.5 256.6 426.7 267.6 424.5 C278.6 422.3 293 412.5 299 408.9 C305 405.3 302.9 403.9 303.7 402.9', 'M289.4 315 C287.7 316.1 279 320.4 279 321.6 C279 322.9 287.6 322.3 289.3 322.4', 'M300 359.6 L312.4 481.3'], // क्ष
+    ['M204.9 240.3 L378 243.7', 'M348.1 442 L348.3 240', 'M345 315 C339.1 313.9 320.8 311.2 309.7 308.2 C298.6 305.2 289.4 296.9 278.3 296.8 C267.2 296.7 252.1 303.2 243 307.4 C234 311.6 226.7 316.4 224.2 321.8 C221.7 327.2 227.4 337 228 340', 'M309.7 322.4 C306.4 326.9 294.1 339.5 289.8 349.4 C285.5 359.4 289 372.3 283.9 382.2 C278.8 392.1 268 400.6 259.3 408.9 C250.7 417.2 236.6 428.2 232 432'], // त्र
+    ['M192 234 C197.3 235.3 212.7 240.7 224 242 C235.3 243.3 248 242 260 242 C272 242 284 242 296 242 C308 242 320 241.7 332 242 C344 242.3 356 244.7 368 244 C380 243.3 396 239.3 404 237.6 C412 235.9 414 234.6 416 234', 'M348 240 C349.7 245.3 356.3 260.7 358 272 C359.7 283.3 358 296 358 308 C358 320 358 332 358 344 C358 356 358 368 358 380 C358 392 359.3 404 358 416 C356.7 428 351.7 441.3 350 452 C348.3 462.7 348.3 475.3 348 480', 'M345 296 C339 296 321.2 295.6 309.3 296 C297.4 296.4 285.5 297.8 273.6 298.6 C261.7 299.4 247.3 296.5 237.9 300.6 C228.4 304.7 218.1 316.2 216.8 323.1 C215.5 330 227.8 338.9 230 342', 'M261 305 C262.3 310.9 269.4 328.6 268.6 340.3 C267.8 352.1 262.5 366.4 256.1 375.4 C249.8 384.4 238.5 392.8 230.3 394.4 C222 396 210.6 386.6 206.7 385.1', 'M258.4 382.8 C261.1 386.1 272.3 393.8 274.9 402.4 C277.4 410.9 270.8 423.9 273.5 434.3 C276.2 444.7 288.3 454.2 291 464.6 C293.8 475.1 290.1 491.6 289.9 497'] // ज्ञ
+];
+
+function devanagariStrokes(index, label = '') {
+    return DEVANAGARI_TRACE_STROKES[index % DEVANAGARI_TRACE_STROKES.length];
+}
+
+function buildNepaliTracingItems() {
+    return NEPALI_TRACING_SEQUENCE.map((label, index) => ({
+        label,
+        word: label,
+        emoji: NEPALI_TRACING_EMOJIS[index % NEPALI_TRACING_EMOJIS.length],
+        strokes: devanagariStrokes(index, label)
+    }));
+}
+
+const LETTER_GARDEN_TRACING_ITEMS = [
+    { label: 'A', word: 'Apple', emoji: '🌱', strokes: ['M300 95 L170 500', 'M300 95 L430 500', 'M220 345 L380 345', 'M205 500 C240 445 360 445 395 500'] },
+    { label: 'B', word: 'Butterfly', emoji: '🦋', strokes: ['M210 95 L210 505', 'M210 120 C430 70 460 285 210 300', 'M210 300 C470 285 470 540 210 500'] },
+    { label: 'C', word: 'Moon', emoji: '🌙', strokes: ['M450 155 C390 80 205 95 155 300 C120 500 340 555 455 430', 'M405 200 C330 185 240 230 225 320'] },
+    { label: 'M', word: 'Mountains', emoji: '⛰️', strokes: ['M135 505 L135 150 L300 380 L465 150 L465 505', 'M185 505 C245 430 355 430 415 505'] },
+    { label: 'O', word: 'Sun', emoji: '☀️', strokes: ['M300 125 C455 125 475 485 300 485 C125 485 145 125 300 125', 'M300 70 L300 15', 'M300 540 L300 590', 'M85 305 L35 305', 'M515 305 L565 305'] },
+    { label: 'S', word: 'Snake', emoji: '✨', strokes: ['M440 145 C360 70 175 90 165 225 C155 320 415 285 425 390 C435 530 235 560 160 470', 'M215 170 C255 210 310 210 350 170'] },
+    { label: 'W', word: 'Wave', emoji: '🌊', strokes: ['M115 125 L210 505 L300 275 L390 505 L485 125', 'M120 435 C190 375 250 495 320 435 C390 375 440 495 510 425'] },
+    { label: 'Z', word: 'Zigzag', emoji: '⚡', strokes: ['M160 105 L440 105 L165 500 L445 500', 'M185 210 L295 320 L405 210'] }
+];
+
 const tracingGameInfo = {
     letters: {
         titleKey: 'traceLettersTitle',
         promptKey: 'tracingLettersPrompt',
-        items: [
-            { label: 'A', word: 'Apple', emoji: '🍎', strokes: ['M300 95 L165 500', 'M300 95 L435 500', 'M220 340 L380 340'] },
-            { label: 'B', word: 'Ball', emoji: '⚽', strokes: ['M185 95 L185 505', 'M185 100 C430 80 455 280 185 300', 'M185 300 C470 280 470 515 185 500'] },
-            { label: 'C', word: 'Cat', emoji: '🐱', strokes: ['M445 165 C390 85 205 85 155 300 C120 500 335 560 455 435'] },
-            { label: 'D', word: 'Dog', emoji: '🐶', strokes: ['M180 95 L180 505', 'M180 100 C455 80 500 500 180 500'] },
-            { label: 'E', word: 'Egg', emoji: '🥚', strokes: ['M190 95 L190 505', 'M190 105 L445 105', 'M190 300 L390 300', 'M190 495 L445 495'] },
-            { label: 'F', word: 'Fish', emoji: '🐟', strokes: ['M190 95 L190 505', 'M190 105 L445 105', 'M190 300 L390 300'] }
-        ]
+        items: AZ_TRACING_ITEMS.slice(0, 6)
     },
     numbers: {
         titleKey: 'traceNumbersTitle',
         promptKey: 'tracingNumbersPrompt',
-        items: [
-            { label: '1', word: 'One', emoji: '🍎', strokes: ['M235 185 L315 100 L315 500'] },
-            { label: '2', word: 'Two', emoji: '🐥🐥', strokes: ['M175 190 C205 70 420 75 435 195 C450 285 330 340 170 500 L445 500'] },
-            { label: '3', word: 'Three', emoji: '⭐⭐⭐', strokes: ['M180 145 C300 65 445 105 420 235 C405 290 350 300 300 300 C370 295 445 330 425 445 C400 565 220 550 170 465'] },
-            { label: '4', word: 'Four', emoji: '🍀', strokes: ['M390 500 L390 95 L155 365 L455 365'] },
-            { label: '5', word: 'Five', emoji: '🖐️', strokes: ['M430 105 L205 105 L185 300 C260 250 430 270 435 390 C440 535 220 565 165 455'] },
-            { label: '6', word: 'Six', emoji: '🎲', strokes: ['M420 145 C310 65 165 155 165 355 C165 535 430 555 445 385 C455 250 260 230 170 350'] }
-        ]
+        items: NUMBER_TRACING_ITEMS.slice(1, 7)
+    },
+    az: {
+        titleKey: 'alphabetAzTitle',
+        promptKey: 'tracingAzPrompt',
+        ordered: true,
+        showGhost: true,
+        roundCount: AZ_TRACING_ITEMS.length,
+        items: AZ_TRACING_ITEMS
+    },
+    digits: {
+        titleKey: 'alphabetDigitsTitle',
+        promptKey: 'tracingDigitsPrompt',
+        ordered: true,
+        showGhost: true,
+        roundCount: NUMBER_TRACING_ITEMS.length,
+        items: NUMBER_TRACING_ITEMS
+    },
+    nepali: {
+        titleKey: 'nepaliLettersTitle',
+        promptKey: 'tracingNepaliPrompt',
+        ordered: true,
+        showGhost: true,
+        glyphTrace: true,
+        roundCount: NEPALI_TRACING_SEQUENCE.length,
+        items: buildNepaliTracingItems()
+    },
+    letterGarden: {
+        titleKey: 'creativeLettersTitle',
+        promptKey: 'tracingCreativePrompt',
+        showGhost: true,
+        roundCount: LETTER_GARDEN_TRACING_ITEMS.length,
+        items: LETTER_GARDEN_TRACING_ITEMS
     },
     paths: {
         titleKey: 'pencilPathsTitle',
@@ -9090,20 +9476,16 @@ const tracingGameInfo = {
 
 const tracingPalette = ['#ff5fa2', '#4da3ff', '#54d66a', '#ff9b3d', '#9b6bff', '#00bfa5'];
 
-// How many items a child traces per session. The pools are small (5–6 unique
-// shapes each), so we cycle reshuffled copies to fill the round, nudging the
-// batch boundary so the same item never appears twice in a row.
+// Default length for playful tracing sessions. Curriculum sessions can override
+// this with an ordered full set, such as A-Z or क-ज्ञ.
 const TRACING_ROUND = 10;
-function buildTracingItems(pool, count) {
-    const list = [];
-    while (list.length < count) {
-        const batch = shuffle(pool.slice());
-        if (list.length && batch.length > 1 && batch[0] === list[list.length - 1]) {
-            batch.push(batch.shift());
-        }
-        list.push(...batch);
+function buildTracingItems(pool, count, ordered = false, key = 'tracing') {
+    if (ordered) {
+        const orderedList = [];
+        while (orderedList.length < count) orderedList.push(...pool);
+        return orderedList.slice(0, count);
     }
-    return list.slice(0, count);
+    return pickFreshMany(pool, key, count, item => item.label || item.word || item.nameKey);
 }
 
 // While a tracing game is on screen, stop touch-dragging from scrolling/bouncing
@@ -9128,15 +9510,17 @@ function unlockTracingScroll() {
 
 function startTracingGame(type = 'letters', resetOnly = false) {
     tracingGameType = tracingGameInfo[type] ? type : 'letters';
+    const info = tracingGameInfo[tracingGameType];
     tracingCompleted = 0;
     tracingItemIndex = 0;
+    tracingRoundTarget = info.roundCount || TRACING_ROUND;
     tracingColor = tracingPalette[0];
-    tracingItems = buildTracingItems(tracingGameInfo[tracingGameType].items, TRACING_ROUND);
+    tracingItems = buildTracingItems(info.items, tracingRoundTarget, !!info.ordered, 'tracing:' + tracingGameType);
     showScreen('tracing-game');
     lockTracingScroll();
     updateTracingScore();
     renderTracingSheet();
-    if (!resetOnly) speak(t(tracingGameInfo[tracingGameType].promptKey));
+    if (!resetOnly) speak(t(info.promptKey));
 }
 
 function restartTracingGame(resetOnly = false) {
@@ -9145,7 +9529,7 @@ function restartTracingGame(resetOnly = false) {
 
 function updateTracingScore() {
     const score = document.getElementById('tracing-score');
-    if (score) score.textContent = `${t('tracingDone')}: ${tracingCompleted} / ${TRACING_ROUND}`;
+    if (score) score.textContent = `${t('tracingDone')}: ${tracingCompleted} / ${tracingRoundTarget}`;
 }
 
 function tracingItemName(item) {
@@ -9196,16 +9580,29 @@ function renderTracingSheet() {
 
     board.innerHTML = '';
     const paper = document.createElement('div');
-    paper.className = 'trace-paper';
+    paper.className = `trace-paper trace-type-${tracingGameType}`;
     paper.style.setProperty('--trace-color', tracingColor);
+    const isCompoundGlyph = info.glyphTrace && item.label.includes('्');
+    const compoundClass = isCompoundGlyph ? ' trace-glyph-compound' : '';
+    const clipId = info.glyphTrace ? `trace-glyph-clip-${tracingGameType}-${tracingItemIndex}-${Date.now()}` : '';
+    const clipAttr = clipId ? ` clip-path="url(#${clipId})"` : '';
     const strokeMarkup = item.strokes.map((d, index) =>
-        `<g class="trace-stroke" data-stroke="${index}">
+        `<g class="trace-stroke" data-stroke="${index}"${clipAttr}>
             <path class="trace-route" d="${d}"></path>
             <path class="trace-center" d="${d}"></path>
             <path class="trace-fill" d="${d}"></path>
         </g>`
     ).join('');
-    paper.innerHTML = `<svg class="tracing-svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" aria-label="${item.label}">${strokeMarkup}<g class="trace-markers"></g></svg>`;
+    const defsMarkup = info.glyphTrace
+        ? `<defs><clipPath id="${clipId}"><text class="trace-glyph-real${compoundClass}" x="300" y="323">${item.label}</text></clipPath></defs>`
+        : '';
+    let glyphMarkup = '';
+    if (info.glyphTrace) {
+        glyphMarkup = `<text class="trace-glyph-real${compoundClass}" x="300" y="323">${item.label}</text>`;
+    } else if (info.showGhost) {
+        glyphMarkup = `<text class="trace-glyph-ghost" x="300" y="320">${item.label}</text>`;
+    }
+    paper.innerHTML = `<svg class="tracing-svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" aria-label="${item.label}">${defsMarkup}${glyphMarkup}${strokeMarkup}<g class="trace-markers"></g></svg>`;
     board.appendChild(paper);
 
     const svg = paper.querySelector('.tracing-svg');
@@ -9430,7 +9827,7 @@ function finishTracingRound() {
     confettiShower(80);
     playCelebrationMusic(true);
     speak(t('tracingRoundSpeak'));
-    if (tracingCompleted >= TRACING_ROUND) {
+    if (tracingCompleted >= tracingRoundTarget) {
         afterSpeech(() => {
             if (currentScreen === 'tracing-game') winGame('tracingWinMessage');
         }, 950);
@@ -9527,7 +9924,7 @@ function renderDotGame(traceMode) {
         { ghost: '🦋', points: [[50,20],[28,25],[18,45],[36,58],[22,78],[50,62],[78,78],[64,58],[82,45],[72,25]] },
         { ghost: '🌸', points: [[50,15],[66,32],[85,32],[70,50],[85,68],[64,68],[50,85],[36,68],[15,68],[30,50],[15,32],[34,32]] }
     ];
-    creativeShape = randomItem(shapes);
+    creativeShape = pickFresh(shapes, 'creative-dot:' + (traceMode ? 'traceShape' : 'connectDots'), shape => shape.ghost);
     creativeDotIndex = 0;
     board.innerHTML = `<div class="dot-game"><div class="trace-ghost">${creativeShape.ghost}</div><svg id="dot-lines" class="dot-lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>${creativeShape.points.map((pt, i) => `<button class="dot-btn" style="left:${pt[0]}%;top:${pt[1]}%" onclick="tapCreativeDot(${i})">${i + 1}</button>`).join('')}</div>`;
 }
@@ -10371,10 +10768,12 @@ if ('speechSynthesis' in window) {
         }
     };
     function activateProfile() {
+        if (typeof loadQuestionMemory === 'function') loadQuestionMemory(activeProfile);
         load(); applyAgeGroup(); refreshHome(); updateProfileChip();
     }
     function flSwitchProfile(id) {
         if (id === activeProfile) { window.flCloseProfiles(); return; }
+        if (typeof saveQuestionMemory === 'function') saveQuestionMemory(activeProfile);
         save();
         activeProfile = id; saveProfiles();
         activateProfile();
@@ -10406,7 +10805,11 @@ if ('speechSynthesis' in window) {
         if (profiles.length < 2) return;
         if (!window.confirm(tr('deleteConfirm', 'Remove this profile and all its progress?'))) return;
         profiles = profiles.filter(function (p) { return p.id !== id; });
-        try { localStorage.removeItem(progressKeyFor(id)); localStorage.removeItem(ageKeyFor(id)); } catch (e) {}
+        try {
+            localStorage.removeItem(progressKeyFor(id));
+            localStorage.removeItem(ageKeyFor(id));
+            if (typeof questionMemoryKeyFor === 'function') localStorage.removeItem(questionMemoryKeyFor(id));
+        } catch (e) {}
         if (activeProfile === id) { activeProfile = profiles[0].id; saveProfiles(); activateProfile(); }
         else saveProfiles();
         renderProfiles();
@@ -10504,7 +10907,7 @@ if ('speechSynthesis' in window) {
     /* progress sheet */
     var SEC_COLOR = {
         core: 'var(--primary)', brain: 'var(--c-green)', language: 'var(--c-blue)',
-        writing: 'var(--c-pink)', explorer: 'var(--c-coral)', puzzle: 'var(--c-orange)', creative: 'var(--c-pink)',
+        alphabetWriting: 'var(--c-pink)', writing: 'var(--c-pink)', explorer: 'var(--c-coral)', puzzle: 'var(--c-orange)', creative: 'var(--c-pink)',
         character: 'var(--c-violet)', math: 'var(--c-green)', logic: 'var(--c-blue)',
         world: 'var(--c-coral)', tiny: 'var(--c-pink)',
         reading: 'var(--c-blue)', wordwiz: 'var(--c-violet)', numlab: 'var(--c-green)',
@@ -10625,6 +11028,7 @@ if ('speechSynthesis' in window) {
     /* ---------- boot ---------- */
     function boot() {
         loadProfiles();
+        if (typeof loadQuestionMemory === 'function') loadQuestionMemory(activeProfile);
         load();
         applyTheme();
         applyHideSeg();
