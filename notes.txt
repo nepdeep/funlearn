@@ -1,0 +1,9 @@
+For Tracing  क  to ज्ञ  nepali letters, I want to modify the tracing sequence / pattern.
+
+First I want to  create a sample html which will be used to train how to write the letters.
+it will store that informatio in a json and once finalized use this pattern (sequence) of drawing
+in the game engine.
+
+Can we make a sample.html that gives me each word. I draw the the trace over the letter.
+i can press reset or set button
+reset will start over my trace and pressing set will store the value which will be exporeted when export button is created.
